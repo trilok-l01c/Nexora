@@ -5,6 +5,7 @@ import helmet from "helmet";
 import { env } from "./config/env.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 import authRoutes from "./routes/authRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 
 const app = express();
@@ -13,8 +14,9 @@ app.use(helmet());
 app.use(
     cors({
         origin: env.corsOrigin.split(",").map((origin) => origin.trim()),
-        methods: ["GET", "POST"],
+        methods: ["GET", "POST", "PATCH"],
         allowedHeaders: ["Content-Type", "Authorization"],
+        credentials: true,
     }),
 );
 app.use(express.json({ limit: "20kb" }));
@@ -50,6 +52,7 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api/auth", loginLimiter, authRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/contact", contactLimiter, contactRoutes);
 app.use(notFound);
 app.use(errorHandler);

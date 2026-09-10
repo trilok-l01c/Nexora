@@ -1,4 +1,4 @@
-export function errorHandler(error, req, res, next) {
+export function errorHandler(error, _, res, next) {
     if (res.headersSent) {
         return next(error);
     }
@@ -10,12 +10,10 @@ export function errorHandler(error, req, res, next) {
     }
 
     console.error("Request error:", error);
-    return res
-        .status(500)
-        .json({
-            success: false,
-            message: "Something went wrong on the server.",
-        });
+    return res.status(500).json({
+        success: false,
+        message: "Something went wrong on the server.",
+    });
 }
 
 export function notFound(req, res) {
