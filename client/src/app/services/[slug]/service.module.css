@@ -1,0 +1,298 @@
+.page {
+    --ink: #111310;
+    --muted: #72766d;
+    --paper: #f1f0eb;
+    --acid: #d8f55a;
+    --line: rgba(17, 19, 16, 0.16);
+    min-height: 100vh;
+    overflow: hidden;
+    color: var(--ink);
+    background: var(--paper);
+}
+.nav {
+    max-width: 1320px;
+    height: 88px;
+    margin: auto;
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+}
+.brandMark {
+    display: grid;
+    place-items: center;
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--acid);
+    font-size: 13px;
+}
+.backLink,
+.navCta {
+    font-size: 12px;
+    font-weight: 600;
+}
+.backLink {
+    margin-left: auto;
+    margin-right: 38px;
+    color: var(--muted);
+}
+.backLink:hover {
+    color: #789c00;
+}
+.navCta {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    border-bottom: 1px solid var(--ink);
+    padding: 9px 0;
+}
+.hero {
+    position: relative;
+    max-width: 1320px;
+    min-height: 680px;
+    margin: auto;
+    padding: 105px 32px 130px;
+}
+.heroMeta {
+    display: flex;
+    justify-content: space-between;
+    color: var(--muted);
+    font:
+        10px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.heroContent {
+    position: relative;
+    z-index: 1;
+    max-width: 770px;
+    padding-top: 92px;
+}
+.eyebrow,
+.kicker {
+    color: #879c27;
+    font:
+        600 10px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+.hero h1 {
+    max-width: 770px;
+    margin: 24px 0 30px;
+    font-size: clamp(58px, 8vw, 116px);
+    line-height: 0.88;
+    letter-spacing: -0.085em;
+}
+.intro {
+    max-width: 430px;
+    margin-bottom: 32px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.65;
+}
+.primaryButton {
+    display: inline-flex;
+    gap: 28px;
+    align-items: center;
+    padding: 16px 19px;
+    background: var(--ink);
+    color: var(--acid);
+    font-size: 12px;
+    font-weight: 600;
+}
+.primaryButton:hover {
+    background: #4e5b13;
+}
+.signal {
+    position: absolute;
+    right: 9%;
+    bottom: 105px;
+    display: flex;
+    width: 250px;
+    height: 250px;
+    flex-direction: column;
+    justify-content: center;
+    padding: 28px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--acid);
+    box-shadow: 22px 22px 0 #dfe0d4;
+}
+.signalLabel,
+.signal small {
+    color: #7e8878;
+    font:
+        9px var(--font-geist-mono),
+        monospace;
+}
+.signal strong {
+    margin: 16px 0 2px;
+    font-size: 60px;
+    letter-spacing: -0.08em;
+}
+.signal i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--acid);
+}
+.signal small {
+    margin-top: 18px;
+}
+.details,
+.capabilities {
+    display: grid;
+    grid-template-columns: 1fr 1.3fr;
+    gap: 70px;
+    padding: 125px max(32px, calc((100% - 1256px) / 2));
+}
+.details {
+    background: #dfe2cf;
+}
+.details h2,
+.capabilities h2,
+.contact h2 {
+    margin: 22px 0 0;
+    font-size: clamp(45px, 5vw, 72px);
+    line-height: 0.92;
+    letter-spacing: -0.08em;
+}
+.details h2 em,
+.contact h2 em {
+    color: #8ea91c;
+    font-style: normal;
+}
+.outcomes {
+    align-self: end;
+}
+.outcomes div {
+    display: flex;
+    gap: 25px;
+    align-items: baseline;
+    border-bottom: 1px solid var(--line);
+    padding: 20px 0;
+}
+.outcomes span {
+    color: var(--muted);
+    font:
+        10px var(--font-geist-mono),
+        monospace;
+}
+.outcomes strong {
+    font-size: 21px;
+    letter-spacing: -0.04em;
+}
+.capabilities {
+    background: var(--ink);
+    color: var(--paper);
+}
+.capabilities .kicker {
+    color: #7e8878;
+}
+.capabilities h2 {
+    margin-top: 0;
+}
+.capabilities ul {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 35px;
+    max-width: 610px;
+    margin: 48px 0 0;
+    padding: 0;
+    list-style: none;
+}
+.capabilities li {
+    border-top: 1px solid #343a30;
+    padding: 18px 0;
+    color: #c0c8bc;
+    font-size: 13px;
+    line-height: 1.45;
+}
+.capabilities li::before {
+    content: "↗";
+    margin-right: 12px;
+    color: var(--acid);
+}
+.contact {
+    padding: 145px 32px 160px;
+    text-align: center;
+    background: var(--acid);
+}
+.contact h2 {
+    margin-bottom: 45px;
+}
+@media (max-width: 760px) {
+    .nav {
+        height: 72px;
+        padding: 0 20px;
+    }
+    .backLink {
+        display: none;
+    }
+    .navCta {
+        font-size: 11px;
+    }
+    .hero {
+        min-height: 720px;
+        padding: 65px 20px 100px;
+    }
+    .heroMeta {
+        gap: 20px;
+    }
+    .heroMeta span {
+        text-align: right;
+    }
+    .heroContent {
+        padding-top: 105px;
+    }
+    .hero h1 {
+        font-size: clamp(58px, 17vw, 92px);
+    }
+    .signal {
+        right: 20px;
+        bottom: 68px;
+        width: 170px;
+        height: 170px;
+        padding: 20px;
+    }
+    .signal strong {
+        margin: 8px 0 0;
+        font-size: 40px;
+    }
+    .signal small {
+        margin-top: 9px;
+    }
+    .details,
+    .capabilities {
+        display: block;
+        padding: 90px 20px;
+    }
+    .outcomes {
+        margin-top: 55px;
+    }
+    .outcomes strong {
+        font-size: 18px;
+    }
+    .capabilities h2 {
+        margin-top: 20px;
+    }
+    .capabilities ul {
+        display: block;
+        margin-top: 45px;
+    }
+    .contact {
+        padding: 100px 20px 115px;
+    }
+}

@@ -1,0 +1,241 @@
+.hero {
+    min-height: 650px;
+    max-width: 1320px;
+    margin: auto;
+    padding: 75px 32px 105px;
+    display: grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    align-items: center;
+    gap: 40px;
+}
+.heroCopy {
+    position: relative;
+    z-index: 1;
+}
+.eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 30px;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.4;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+.eyebrowDot {
+    width: 6px;
+    height: 6px;
+    display: inline-block;
+    border-radius: 50%;
+    background: #aac72b;
+    box-shadow: 0 0 0 4px rgba(170, 199, 43, 0.16);
+}
+.hero h1 {
+    max-width: 700px;
+    margin: 0;
+    font-size: clamp(64px, 8.4vw, 124px);
+    line-height: 0.88;
+    letter-spacing: -0.085em;
+    font-weight: 700;
+}
+.hero h1 em {
+    color: #9ab921;
+    font-style: normal;
+}
+.heroText {
+    max-width: 385px;
+    margin: 35px 0 29px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.6;
+}
+.heroActions {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+.buttonPrimary {
+    display: inline-flex;
+    gap: 25px;
+    align-items: center;
+    padding: 15px 18px;
+    background: var(--ink);
+    color: var(--acid);
+    font-size: 12px;
+    font-weight: 600;
+}
+.buttonQuiet {
+    display: inline-flex;
+    gap: 15px;
+    font-size: 12px;
+    font-weight: 600;
+}
+.buttonPrimary:hover {
+    background: #4e5b13;
+    transform: translateY(-2px);
+}
+.buttonQuiet:hover {
+    color: #789c00;
+}
+.signalBoard {
+    position: relative;
+    width: min(100%, 510px);
+    aspect-ratio: 1 / 0.91;
+    justify-self: end;
+    overflow: hidden;
+    padding: 20px;
+    background: #171a15;
+    color: #f1f0eb;
+    box-shadow: 22px 22px 0 #dfe0d4;
+}
+.signalBoard::before {
+    content: "";
+    position: absolute;
+    inset: 30px;
+    border: 1px solid rgba(216, 245, 90, 0.14);
+    border-radius: 50%;
+}
+.boardTop,
+.boardBottom {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    color: #7a8074;
+    font:
+        9px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.06em;
+}
+.boardTop span:last-child,
+.boardBottom span:last-child {
+    color: var(--acid);
+}
+.boardTop i {
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    margin-left: 5px;
+    border-radius: 50%;
+    background: var(--acid);
+}
+.boardOrb {
+    position: absolute;
+    top: 22%;
+    left: 18%;
+    width: 52%;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+}
+.orbCore {
+    display: grid;
+    place-items: center;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: var(--acid);
+    color: var(--ink);
+    font-size: 22px;
+    font-weight: 700;
+    box-shadow: 0 0 55px rgba(216, 245, 90, 0.3);
+}
+.orbitOne,
+.orbitTwo {
+    position: absolute;
+    width: 100%;
+    height: 43%;
+    border: 1px solid rgba(216, 245, 90, 0.55);
+    border-radius: 50%;
+    transform: rotate(35deg);
+}
+.orbitTwo {
+    width: 43%;
+    height: 100%;
+}
+.boardReadout {
+    position: absolute;
+    right: 22px;
+    bottom: 72px;
+    width: 37%;
+    border-left: 1px solid #626a56;
+    padding-left: 14px;
+}
+.boardReadout span {
+    color: #7a8074;
+    font:
+        8px var(--font-geist-mono),
+        monospace;
+}
+.boardReadout strong {
+    display: block;
+    margin: 6px 0 8px;
+    color: var(--acid);
+    font-size: 31px;
+    letter-spacing: -0.07em;
+}
+.boardReadout small {
+    font-size: 12px;
+    font-weight: 400;
+}
+.chart {
+    height: 28px;
+    display: flex;
+    align-items: end;
+    gap: 4px;
+    border-bottom: 1px solid #464d3d;
+}
+.chart span {
+    flex: 1;
+    background: var(--acid);
+    opacity: 0.7;
+}
+.chart span:nth-child(1) {
+    height: 25%;
+}
+.chart span:nth-child(2) {
+    height: 42%;
+}
+.chart span:nth-child(3) {
+    height: 31%;
+}
+.chart span:nth-child(4) {
+    height: 70%;
+}
+.chart span:nth-child(5) {
+    height: 54%;
+}
+.chart span:nth-child(6) {
+    height: 82%;
+}
+.chart span:nth-child(7) {
+    height: 100%;
+}
+.boardBottom {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    left: 20px;
+    border-top: 1px solid #363d31;
+    padding-top: 12px;
+}
+@media (max-width: 760px) {
+    .hero {
+        display: block;
+        min-height: auto;
+        padding: 60px 20px 85px;
+    }
+    .hero h1 {
+        font-size: clamp(58px, 18vw, 92px);
+    }
+    .heroText {
+        margin-top: 28px;
+    }
+    .signalBoard {
+        width: 100%;
+        margin-top: 65px;
+        box-shadow: 12px 12px 0 #dfe0d4;
+    }
+}

@@ -1,0 +1,137 @@
+.solutions {
+    max-width: 1320px;
+    margin: auto;
+    padding: 150px 32px 165px;
+}
+.sectionIntro {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    margin-bottom: 65px;
+}
+.kicker {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.4;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+.sectionIntro h2 {
+    margin: 0;
+    font-size: clamp(44px, 6vw, 76px);
+    line-height: 0.93;
+    letter-spacing: -0.07em;
+}
+.sectionIntro h2 span {
+    color: #9ab921;
+}
+.solutionGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    border-top: 1px solid var(--line);
+}
+.solutionCard {
+    position: relative;
+    min-height: 320px;
+    padding: 28px 28px 30px;
+    border-bottom: 1px solid var(--line);
+}
+.solutionCard:nth-child(odd) {
+    border-right: 1px solid var(--line);
+}
+.featuredCard {
+    display: grid;
+    grid-template-columns: 42px 1fr;
+    background: #e8e8df;
+}
+.cardNumber {
+    color: #8d9187;
+    font:
+        10px var(--font-geist-mono),
+        monospace;
+}
+.cardLabel {
+    margin: 0 0 13px;
+    color: #879c27;
+    font:
+        10px var(--font-geist-mono),
+        monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+.solutionCard h3 {
+    margin: 0 0 16px;
+    font-size: clamp(28px, 3vw, 42px);
+    line-height: 0.94;
+    letter-spacing: -0.07em;
+}
+.cardText {
+    max-width: 265px;
+    margin: 0 0 24px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.55;
+}
+.cardLink {
+    display: inline-flex;
+    gap: 14px;
+    color: var(--ink);
+    font-size: 11px;
+    font-weight: 700;
+    transition:
+        color 0.2s,
+        transform 0.2s;
+}
+.cardLink:hover {
+    color: #789c00;
+}
+.cardLink span {
+    font-size: 16px;
+}
+.cardPattern {
+    position: absolute;
+    right: 30px;
+    bottom: 29px;
+    display: flex;
+    gap: 5px;
+    align-items: end;
+}
+.cardPattern span {
+    display: block;
+    width: 13px;
+    height: 34px;
+    background: #c2dc43;
+}
+.cardPattern span:nth-child(2) {
+    height: 56px;
+    opacity: 0.75;
+}
+.cardPattern span:nth-child(3) {
+    height: 44px;
+    opacity: 0.5;
+}
+.cardPattern span:nth-child(4) {
+    height: 72px;
+    opacity: 0.3;
+}
+@media (max-width: 760px) {
+    .solutions {
+        padding: 100px 20px;
+    }
+    .sectionIntro {
+        display: block;
+        margin-bottom: 45px;
+    }
+    .sectionIntro h2 {
+        margin-top: 22px;
+    }
+    .solutionGrid {
+        display: block;
+    }
+    .solutionCard,
+    .solutionCard:nth-child(odd) {
+        min-height: 285px;
+        border-right: 0;
+    }
+}

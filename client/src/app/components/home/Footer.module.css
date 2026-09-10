@@ -1,0 +1,45 @@
+.footer {
+    max-width: 1320px;
+    margin: auto;
+    padding: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--muted);
+    font:
+        10px var(--font-geist-mono),
+        monospace;
+}
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    font:
+        700 17px var(--font-geist-sans),
+        sans-serif;
+    letter-spacing: -0.04em;
+}
+.brandMark {
+    display: grid;
+    place-items: center;
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: var(--acid);
+    font:
+        13px var(--font-geist-sans),
+        sans-serif;
+}
+@media (max-width: 760px) {
+    .footer {
+        padding: 27px 20px;
+        flex-wrap: wrap;
+        gap: 18px;
+    }
+    .footer > span:nth-child(2) {
+        order: 3;
+        width: 100%;
+    }
+}

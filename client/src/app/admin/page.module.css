@@ -1,0 +1,199 @@
+.page {
+    min-height: 100vh;
+    padding: 32px;
+    color: #111310;
+    background: #f1f0eb;
+}
+.loginPanel,
+.dashboard {
+    max-width: 900px;
+    margin: auto;
+}
+.loginPanel {
+    max-width: 520px;
+    padding-top: 80px;
+}
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: #111310;
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.04em;
+}
+.brandMark {
+    display: grid;
+    place-items: center;
+    width: 27px;
+    height: 27px;
+    border-radius: 50%;
+    background: #111310;
+    color: #d8f55a;
+    font-size: 13px;
+}
+.kicker {
+    margin: 90px 0 20px;
+    color: #879c27;
+    font:
+        600 10px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+.loginPanel h1,
+.dashboard h1 {
+    margin: 0 0 45px;
+    font-size: clamp(58px, 9vw, 112px);
+    line-height: 0.86;
+    letter-spacing: -0.09em;
+}
+.loginPanel h1 em,
+.dashboard h1 em {
+    color: #9ab921;
+    font-style: normal;
+}
+.loginPanel form {
+    max-width: 420px;
+}
+.loginPanel label {
+    display: block;
+    margin-bottom: 20px;
+    color: #72766d;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.loginPanel input {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+    border: 1px solid rgba(17, 19, 16, 0.22);
+    border-radius: 0;
+    padding: 14px;
+    color: #111310;
+    background: transparent;
+    font:
+        14px var(--font-geist-sans),
+        sans-serif;
+    outline: none;
+}
+.loginPanel input:focus {
+    border-color: #789c00;
+    box-shadow: 0 0 0 2px rgba(120, 156, 0, 0.15);
+}
+.loginPanel button,
+.dashboard button {
+    border: 0;
+    padding: 15px 18px;
+    color: #d8f55a;
+    background: #111310;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.loginPanel button:hover,
+.dashboard button:hover {
+    background: #4e5b13;
+}
+.loginPanel button:disabled,
+.dashboard button:disabled {
+    cursor: wait;
+    opacity: 0.6;
+}
+.message {
+    min-height: 20px;
+    margin: 4px 0 18px;
+    color: #a3402b;
+    font-size: 12px;
+}
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 110px;
+}
+.logout {
+    padding: 9px 0;
+    border-bottom: 1px solid #111310;
+    color: #111310;
+    background: transparent;
+}
+.logout:hover {
+    color: #789c00;
+    background: transparent;
+}
+.dashboard .kicker {
+    margin: 0 0 20px;
+}
+.dashboard h1 {
+    margin-bottom: 65px;
+}
+.leads {
+    border-top: 1px solid rgba(17, 19, 16, 0.18);
+}
+.empty {
+    padding: 25px 0;
+    color: #72766d;
+    font-size: 14px;
+}
+.lead {
+    padding: 25px 0;
+    border-bottom: 1px solid rgba(17, 19, 16, 0.18);
+}
+.leadTop {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+}
+.lead strong {
+    font-size: 20px;
+    letter-spacing: -0.04em;
+}
+.leadTop span {
+    color: #879c27;
+    font:
+        10px var(--font-geist-mono),
+        monospace;
+    text-transform: uppercase;
+}
+.lead p {
+    margin: 8px 0 0;
+    color: #72766d;
+    font-size: 13px;
+}
+.lead .service {
+    color: #111310;
+    font-weight: 700;
+}
+.lead div {
+    max-width: 650px;
+    margin-top: 14px;
+    font-size: 14px;
+    line-height: 1.55;
+}
+.lead small {
+    display: block;
+    margin-top: 16px;
+    color: #8d9187;
+    font:
+        10px var(--font-geist-mono),
+        monospace;
+}
+@media (max-width: 600px) {
+    .page {
+        padding: 22px 20px;
+    }
+    .loginPanel {
+        padding-top: 45px;
+    }
+    .header {
+        margin-bottom: 75px;
+    }
+    .loginPanel h1,
+    .dashboard h1 {
+        font-size: clamp(52px, 17vw, 85px);
+    }
+}
