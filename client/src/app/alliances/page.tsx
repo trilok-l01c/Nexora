@@ -45,6 +45,32 @@ export default function AlliancesPage() {
                     text: "Strong alliances create better options for clients without adding unnecessary layers or handoffs.",
                 },
             ]}
+            projects={[
+                {
+                    client: "Kavya Rao",
+                    business: "AsterGrid Systems · Hyderabad",
+                    project: "Cloud foundations for scale",
+                    summary:
+                        "A fictional partner scenario combining platform engineering with Nexora product delivery for a fast-growing operations company.",
+                    services: "Cloud infrastructure · DevOps",
+                },
+                {
+                    client: "Vikram Shah",
+                    business: "Northstar Creative Co. · Ahmedabad",
+                    project: "One story, many touchpoints",
+                    summary:
+                        "A fictional alliance concept pairing brand strategy and content craft with Nexora websites, analytics, and digital systems.",
+                    services: "Digital presence · Product engineering",
+                },
+                {
+                    client: "Meera Joshi",
+                    business: "Sutra Data Labs · Delhi",
+                    project: "From signal to decision",
+                    summary:
+                        "A fictional collaboration model connecting specialist data science with Nexora decision tools and practical team workflows.",
+                    services: "Data analysis · AI systems",
+                },
+            ]}
         />
     );
 }

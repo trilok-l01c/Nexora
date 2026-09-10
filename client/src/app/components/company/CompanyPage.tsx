@@ -13,6 +13,13 @@ type CompanyPageProps = {
         title: string;
         text: string;
     }>;
+    projects: Array<{
+        client: string;
+        business: string;
+        project: string;
+        summary: string;
+        services: string;
+    }>;
 };
 
 export default function CompanyPage({
@@ -23,6 +30,7 @@ export default function CompanyPage({
     sectionLabel,
     sectionTitle,
     cards,
+    projects,
 }: CompanyPageProps) {
     return (
         <main className={styles.page}>
@@ -78,6 +86,45 @@ export default function CompanyPage({
                             </div>
                             <h3>{card.title}</h3>
                             <p>{card.text}</p>
+                        </article>
+                    ))}
+                </div>
+            </section>
+            <section className={styles.projects}>
+                <div className={styles.projectsIntro}>
+                    <p className={styles.kicker}>02 / Illustrative work</p>
+                    <h2>
+                        Ideas shaped for
+                        <br />
+                        <em>real businesses.</em>
+                    </h2>
+                    <p className={styles.disclaimer}>
+                        Placeholder projects for demonstration only. Real client
+                        stories will be added as they become available.
+                    </p>
+                </div>
+                <div className={styles.projectList}>
+                    {projects.map((project, index) => (
+                        <article
+                            className={styles.project}
+                            key={project.client}
+                        >
+                            <span className={styles.projectNumber}>
+                                0{index + 1}
+                            </span>
+                            <div>
+                                <p className={styles.projectClient}>
+                                    {project.client}
+                                </p>
+                                <small>{project.business}</small>
+                            </div>
+                            <h3>{project.project}</h3>
+                            <p className={styles.projectSummary}>
+                                {project.summary}
+                            </p>
+                            <span className={styles.projectServices}>
+                                {project.services}
+                            </span>
                         </article>
                     ))}
                 </div>
