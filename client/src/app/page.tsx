@@ -2,6 +2,7 @@ import Approach from "./components/home/Approach";
 import Contact from "./components/home/Contact";
 import Footer from "./components/home/Footer";
 import Hero from "./components/home/Hero";
+import Industries from "./components/home/Industries";
 import Nav from "./components/home/Nav";
 import Solutions from "./components/home/Solutions";
 import Ticker from "./components/home/Ticker";
@@ -14,6 +15,7 @@ export default function Home() {
             <Hero />
             <Ticker />
             <Solutions />
+            <Industries />
             <Approach />
             <Contact />
             <Footer />

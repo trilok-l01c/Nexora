@@ -79,7 +79,8 @@ export default function Nav() {
                     )}
                 </div>
                 <a href="#approach">Approach</a>
-                <a href="#about">About</a>
+                <Link href="/clients">Clients</Link>
+                <Link href="/alliances">Alliances</Link>
             </div>
             <a className={styles.navCta} href="#contact">
                 Start a project <span aria-hidden="true">↗</span>
