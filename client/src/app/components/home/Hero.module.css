@@ -142,18 +142,41 @@
     font-weight: 700;
     box-shadow: 0 0 55px rgba(216, 245, 90, 0.3);
 }
-.orbitOne,
-.orbitTwo {
+.orbitTrack {
     position: absolute;
-    width: 100%;
-    height: 43%;
     border: 1px solid rgba(216, 245, 90, 0.55);
     border-radius: 50%;
+    transform-origin: center;
+}
+.orbitTrack i {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--acid);
+    box-shadow: 0 0 12px rgba(216, 245, 90, 0.8);
+    offset-path: ellipse(50% 50% at 50% 50%);
+    offset-rotate: 0deg;
+    animation: satelliteOne 8s linear infinite;
+}
+.orbitTrackOne {
+    width: 100%;
+    height: 43%;
     transform: rotate(35deg);
 }
-.orbitTwo {
+.orbitTrackTwo {
     width: 43%;
     height: 100%;
+    transform: rotate(35deg);
+}
+.orbitTrackTwo i {
+    width: 6px;
+    height: 6px;
+    animation-name: satelliteTwo;
+    animation-duration: 5.5s;
+    animation-direction: reverse;
 }
 .boardReadout {
     position: absolute;
@@ -220,6 +243,27 @@
     left: 20px;
     border-top: 1px solid #363d31;
     padding-top: 12px;
+}
+@keyframes satelliteOne {
+    from {
+        offset-distance: 0%;
+    }
+    to {
+        offset-distance: 100%;
+    }
+}
+@keyframes satelliteTwo {
+    from {
+        offset-distance: 0%;
+    }
+    to {
+        offset-distance: 100%;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .orbitTrack i {
+        animation: none;
+    }
 }
 @media (max-width: 760px) {
     .hero {

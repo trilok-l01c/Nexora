@@ -38,8 +38,16 @@ export default function Hero() {
                     </span>
                 </div>
                 <div className={styles.boardOrb}>
-                    <span className={styles.orbitOne} />
-                    <span className={styles.orbitTwo} />
+                    <span
+                        className={`${styles.orbitTrack} ${styles.orbitTrackOne}`}
+                    >
+                        <i />
+                    </span>
+                    <span
+                        className={`${styles.orbitTrack} ${styles.orbitTrackTwo}`}
+                    >
+                        <i />
+                    </span>
                     <span className={styles.orbCore}>NX</span>
                 </div>
                 <div className={styles.boardReadout}>
