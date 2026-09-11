@@ -12,7 +12,7 @@ The frontend is a Next.js App Router application in `client/`.
 
 ## Contact form
 
-The form sends JSON to `${NEXT_PUBLIC_API_URL}/api/contact` with:
+The form sends `multipart/form-data` to `${NEXT_PUBLIC_API_URL}/api/contact` with:
 
 ```ts
 {
@@ -22,10 +22,11 @@ The form sends JSON to `${NEXT_PUBLIC_API_URL}/api/contact` with:
   company,
   service,
   message,
+  attachments,
 }
 ```
 
-It disables the submit button while sending and shows success or API error feedback.
+Attachments are optional. The UI accepts up to five files and shows loading, success, and API error feedback. The submit button is disabled while sending.
 
 ## Admin interface
 
@@ -35,6 +36,8 @@ Open `/admin` to log in and manage leads. The page uses cookie credentials for:
 - `GET /api/admin/leads`
 - `PATCH /api/admin/leads/:id/status`
 - `POST /api/admin/logout`
+
+Lead attachments are rendered as links to authenticated admin download endpoints.
 
 ## Design constraint
 

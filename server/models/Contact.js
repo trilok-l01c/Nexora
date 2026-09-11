@@ -37,6 +37,15 @@ const contactSchema = new mongoose.Schema(
             trim: true,
             maxlength: 5000,
         },
+        attachments: [
+            {
+                originalName: { type: String, required: true, maxlength: 255 },
+                storedName: { type: String, required: true, select: false },
+                storagePath: { type: String, required: true, select: false },
+                mimeType: { type: String, required: true, maxlength: 120 },
+                size: { type: Number, required: true, max: 10 * 1024 * 1024 },
+            },
+        ],
         status: {
             type: String,
             enum: ["new", "contacted", "in_progress", "completed", "rejected"],

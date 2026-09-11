@@ -8,7 +8,7 @@ npm --prefix client run lint
 npm --prefix client run build
 ```
 
-The server test command currently has no automated test files. The client lint and production build validate the application compilation.
+The server test suite includes request-level checks for health, required fields, invalid email, unsupported attachments, unavailable database handling, protected routes, logout, and malformed JSON. These API tests do not require a running MongoDB instance.
 
 ## Manual API checks
 
@@ -28,8 +28,11 @@ Test a contact submission:
 
 ```bash
 curl -X POST http://localhost:4292/api/contact \
-  -H 'Content-Type: application/json' \
-  -d '{"name":"Test User","email":"test@example.com","service":"Software development","message":"Test request"}'
+  -F 'name=Test User' \
+  -F 'email=test@example.com' \
+  -F 'service=Software development' \
+  -F 'message=Test request' \
+  -F 'attachments=@project-brief.pdf'
 ```
 
 Test admin login with a cookie jar:

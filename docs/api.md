@@ -20,17 +20,17 @@ Returns service health.
 
 ### `POST /api/contact`
 
-Creates a lead. Required fields: `name`, `email`, `service`, `message`. Optional fields: `phone`, `company`.
+Creates a lead using `multipart/form-data`. Required fields are `name`, `email`, `service`, and `message`. Optional fields are `phone`, `company`, and repeated `attachments` file fields. Up to five files are accepted, at 10 MB per file. Accepted types are PDF, DOC/DOCX, XLS/XLSX, PPT/PPTX, TXT, JPG/JPEG, PNG, and WebP.
 
-```json
-{
-    "name": "John Doe",
-    "email": "john@example.com",
-    "phone": "+254700000000",
-    "company": "Example Ltd",
-    "service": "Software development",
-    "message": "We need a website for our business."
-}
+```bash
+curl -X POST http://localhost:4292/api/contact \
+    -F 'name=John Doe' \
+    -F 'email=john@example.com' \
+    -F 'phone=+254700000000' \
+    -F 'company=Example Ltd' \
+    -F 'service=Software development' \
+    -F 'message=We need a website for our business.' \
+    -F 'attachments=@project-brief.pdf'
 ```
 
 Success: `201`.
@@ -59,6 +59,8 @@ Returns leads newest first. Filter with `?status=new`, `contacted`, `in_progress
 
 Returns one lead or `404`.
 
+Each lead includes attachment metadata and an authenticated `downloadUrl`; the stored filesystem path is never returned.
+
 ### `PATCH /api/admin/leads/:id/status`
 
 ```json
@@ -66,6 +68,10 @@ Returns one lead or `404`.
 ```
 
 Allowed statuses: `new`, `contacted`, `in_progress`, `completed`, `rejected`.
+
+### `GET /api/admin/leads/:id/attachments/:attachmentId`
+
+Downloads one lead attachment. Requires the admin HttpOnly cookie and never exposes the upload directory publicly.
 
 ## Status flow
 

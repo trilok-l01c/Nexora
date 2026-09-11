@@ -16,6 +16,7 @@ export default function Contact() {
         "idle" | "sending" | "success" | "error"
     >("idle");
     const [statusMessage, setStatusMessage] = useState("");
+    const [attachments, setAttachments] = useState<File[]>([]);
 
     function updateField(field: keyof typeof form, value: string) {
         setForm((current) => ({ ...current, [field]: value }));
@@ -26,13 +27,28 @@ export default function Contact() {
         setStatus("sending");
         setStatusMessage("");
 
+        if (attachments.length > 5) {
+            setStatus("error");
+            setStatusMessage("You can attach up to 5 files.");
+            return;
+        }
+        if (attachments.some((file) => file.size > 10 * 1024 * 1024)) {
+            setStatus("error");
+            setStatusMessage("Each attachment must be 10 MB or smaller.");
+            return;
+        }
+
         try {
+            const payload = new FormData();
+            Object.entries(form).forEach(([field, value]) =>
+                payload.append(field, value),
+            );
+            attachments.forEach((file) => payload.append("attachments", file));
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292"}/api/contact`,
                 {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(form),
+                    body: payload,
                 },
             );
             const result = await response.json();
@@ -53,6 +69,7 @@ export default function Contact() {
                 service: "",
                 message: "",
             });
+            setAttachments([]);
         } catch (error) {
             setStatus("error");
             setStatusMessage(
@@ -74,7 +91,9 @@ export default function Contact() {
             <form className={styles.contactForm} onSubmit={submitContact}>
                 <div className={styles.formGrid}>
                     <label>
-                        Name <span>*</span>
+                        <span className={styles.fieldLabel}>
+                            Name<span aria-hidden="true">*</span>
+                        </span>
                         <input
                             value={form.name}
                             onChange={(event) =>
@@ -85,7 +104,9 @@ export default function Contact() {
                         />
                     </label>
                     <label>
-                        Email <span>*</span>
+                        <span className={styles.fieldLabel}>
+                            Email<span aria-hidden="true">*</span>
+                        </span>
                         <input
                             type="email"
                             value={form.email}
@@ -97,7 +118,7 @@ export default function Contact() {
                         />
                     </label>
                     <label>
-                        Phone
+                        <span className={styles.fieldLabel}>Phone</span>
                         <input
                             type="tel"
                             value={form.phone}
@@ -108,7 +129,7 @@ export default function Contact() {
                         />
                     </label>
                     <label>
-                        Company
+                        <span className={styles.fieldLabel}>Company</span>
                         <input
                             value={form.company}
                             onChange={(event) =>
@@ -118,7 +139,10 @@ export default function Contact() {
                         />
                     </label>
                     <label className={styles.formWide}>
-                        What can we help with? <span>*</span>
+                        <span className={styles.fieldLabel}>
+                            What can we help with?
+                            <span aria-hidden="true">*</span>
+                        </span>
                         <select
                             value={form.service}
                             onChange={(event) =>
@@ -136,7 +160,9 @@ export default function Contact() {
                         </select>
                     </label>
                     <label className={styles.formWide}>
-                        Project details <span>*</span>
+                        <span className={styles.fieldLabel}>
+                            Project details<span aria-hidden="true">*</span>
+                        </span>
                         <textarea
                             value={form.message}
                             onChange={(event) =>
@@ -146,6 +172,26 @@ export default function Contact() {
                             maxLength={5000}
                             rows={5}
                         />
+                    </label>
+                    <label className={styles.formWide}>
+                        <span className={styles.fieldLabel}>Share files</span>
+                        <input
+                            className={styles.fileInput}
+                            type="file"
+                            multiple
+                            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.webp"
+                            onChange={(event) =>
+                                setAttachments(
+                                    Array.from(event.target.files || []),
+                                )
+                            }
+                        />
+                        <small className={styles.fileHint}>
+                            Optional. Up to 5 files, 10 MB each.
+                            {attachments.length > 0
+                                ? ` ${attachments.length} selected.`
+                                : ""}
+                        </small>
                     </label>
                 </div>
                 <div className={styles.formFooter}>

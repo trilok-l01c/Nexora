@@ -1,62 +1,47 @@
 import styles from "./Approach.module.css";
+import { defaultHomeContent, type HomeContent } from "../../homeContent";
 
-export default function Approach() {
+export default function Approach({
+    content = defaultHomeContent.approach,
+    stats = defaultHomeContent.stats,
+}: {
+    content?: HomeContent["approach"];
+    stats?: HomeContent["stats"];
+}) {
     return (
         <section className={styles.approach} id="approach">
             <div className={styles.approachMeta}>
                 <p className={styles.kicker}>02 / Our approach</p>
                 <p className={styles.metaNote}>
-                    Small team. Big range.
+                    {content.meta}
                     <br />
-                    Always in your corner.
+                    {content.metaSecondLine}
                 </p>
             </div>
             <div className={styles.approachCopy}>
                 <h2>
-                    Good technology
+                    {content.title}
                     <br />
-                    should feel like
+                    {content.titleSecondLine}
                     <br />
-                    <em>good energy.</em>
+                    <em>{content.titleEmphasis}</em>
                 </h2>
-                <p>
-                    We bring strategy, design, engineering, and intelligence
-                    into one room. No handoffs into the void. No mystery
-                    timelines. Just thoughtful work that keeps moving.
-                </p>
+                <p>{content.text}</p>
                 <a className={styles.textLink} href="#contact">
-                    Meet your new tech partner <span>↗</span>
+                    {content.linkLabel} <span>↗</span>
                 </a>
             </div>
             <div className={styles.stats}>
-                <div>
-                    <strong>
-                        12<span>+</span>
-                    </strong>
-                    <small>
-                        industries
-                        <br />
-                        served
-                    </small>
-                </div>
-                <div>
-                    <strong>
-                        4.9<span>★</span>
-                    </strong>
-                    <small>
-                        partner
-                        <br />
-                        rating
-                    </small>
-                </div>
-                <div>
-                    <strong>∞</strong>
-                    <small>
-                        ways to
-                        <br />
-                        move forward
-                    </small>
-                </div>
+                {stats.map((stat) => (
+                    <div key={`${stat.value}-${stat.label}`}>
+                        <strong>{stat.value}</strong>
+                        <small>
+                            {stat.label}
+                            <br />
+                            {stat.detail}
+                        </small>
+                    </div>
+                ))}
             </div>
         </section>
     );

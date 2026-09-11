@@ -12,6 +12,7 @@ Stored fields:
 - `company`: optional string, max 120 characters
 - `service`: required string, max 120 characters
 - `message`: required string, max 5000 characters
+- `attachments`: optional array of private file metadata and internal storage fields
 - `status`: enum with default `new`
 - `createdAt` and `updatedAt`: automatic timestamps
 
@@ -34,3 +35,5 @@ Stored fields:
 ## Connection behavior
 
 The server logs a safe connection message and starts the HTTP server after attempting MongoDB connection. Contact and admin data operations return `503` when the database is unavailable.
+
+Attachment binaries are stored in the configured private `UPLOAD_DIR`; MongoDB stores their metadata and the admin download endpoint verifies the lead and attachment before sending a file.

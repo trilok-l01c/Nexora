@@ -1,23 +1,23 @@
 import styles from "./Hero.module.css";
+import { defaultHomeContent, type HomeContent } from "../../homeContent";
 
-export default function Hero() {
+export default function Hero({
+    content = defaultHomeContent.hero,
+}: {
+    content?: HomeContent["hero"];
+}) {
     return (
         <section className={styles.hero} id="top">
             <div className={styles.heroCopy}>
                 <p className={styles.eyebrow}>
-                    <span className={styles.eyebrowDot} /> Independent digital
-                    studio / 2026
+                    <span className={styles.eyebrowDot} /> {content.eyebrow}
                 </p>
                 <h1>
-                    Build what
+                    {content.title}
                     <br />
-                    <em>moves</em> people.
+                    <em>{content.titleEmphasis}</em> {content.titleSuffix}
                 </h1>
-                <p className={styles.heroText}>
-                    Nexora turns ambitious ideas into intelligent digital
-                    products, from the first line of code to the last meaningful
-                    interaction.
-                </p>
+                <p className={styles.heroText}>{content.text}</p>
                 <div className={styles.heroActions}>
                     <a className={styles.buttonPrimary} href="#contact">
                         Tell us about it <span aria-hidden="true">↗</span>

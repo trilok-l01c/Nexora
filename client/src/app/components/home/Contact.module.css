@@ -40,7 +40,12 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
 }
-.formGrid label span {
+.fieldLabel {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0;
+}
+.fieldLabel span {
     color: #879c27;
 }
 .formWide {
@@ -68,6 +73,16 @@
 }
 .formGrid textarea {
     resize: vertical;
+}
+.fileInput {
+    padding: 10px !important;
+}
+.fileHint {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
 }
 .formFooter {
     display: flex;

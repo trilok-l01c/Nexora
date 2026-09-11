@@ -7,6 +7,7 @@ import { errorHandler, notFound } from "./middleware/errorHandler.js";
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
+import homeRoutes from "./routes/homeRoutes.js";
 
 const app = express();
 
@@ -51,7 +52,9 @@ app.get("/api/health", (req, res) => {
     res.json({ success: true, status: "ok" });
 });
 
+app.use("/api/home", homeRoutes);
 app.use("/api/auth", loginLimiter, authRoutes);
+app.use("/api/admin/login", loginLimiter);
 app.use("/api/admin", adminRoutes);
 app.use("/api/contact", contactLimiter, contactRoutes);
 app.use(notFound);

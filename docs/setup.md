@@ -39,19 +39,22 @@ Open `http://localhost:3000`.
 
 ## Environment variables
 
-| Variable         | Description                                   |
-| ---------------- | --------------------------------------------- |
-| `MONGODB_URI`    | MongoDB connection string                     |
-| `PORT`           | API port, normally `4292`                     |
-| `CORS_ORIGIN`    | Allowed frontend origin(s), comma-separated   |
-| `NODE_ENV`       | `development` or `production`                 |
-| `ADMIN_EMAIL`    | Admin account email used during bootstrap     |
-| `ADMIN_PASSWORD` | Admin account password, hashed before storage |
-| `JWT_SECRET`     | Secret used to sign admin tokens              |
-| `JWT_EXPIRES_IN` | Token lifetime, such as `2h`                  |
+| Variable         | Description                                             |
+| ---------------- | ------------------------------------------------------- |
+| `MONGODB_URI`    | MongoDB connection string                               |
+| `PORT`           | API port, normally `4292`                               |
+| `CORS_ORIGIN`    | Allowed frontend origin(s), comma-separated             |
+| `NODE_ENV`       | `development` or `production`                           |
+| `ADMIN_EMAIL`    | Admin account email used during bootstrap               |
+| `ADMIN_PASSWORD` | Admin account password, hashed before storage           |
+| `JWT_SECRET`     | Secret used to sign admin tokens                        |
+| `JWT_EXPIRES_IN` | Token lifetime, such as `2h`                            |
+| `UPLOAD_DIR`     | Private attachment directory, default `storage/uploads` |
 
 The client uses `client/.env.local`:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:4292
 ```
+
+The server creates `UPLOAD_DIR` when it starts. Keep this directory outside any static/public web root and use persistent private storage in production.

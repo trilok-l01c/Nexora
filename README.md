@@ -1,39 +1,95 @@
 # Nexora
 
-Nexora is an IT solutions company website with a Next.js frontend, Express API, MongoDB lead storage, and a private admin dashboard.
+Nexora is an IT solutions company website with a Next.js frontend, Express API, MongoDB lead storage, and a private admin dashboard. The primary workflow is visitor enquiry -> validated lead -> MongoDB -> admin follow-up and status tracking.
 
-## Documentation
+## Stack and structure
 
-- [Project overview](docs/overview.md)
-- [Setup and environment](docs/setup.md)
-- [API reference](docs/api.md)
-- [Authentication](docs/authentication.md)
-- [Database models](docs/database.md)
-- [Frontend integration](docs/frontend.md)
-- [Testing guide](docs/testing.md)
-- [Architecture](docs/architecture.md)
+- `client/`: Next.js App Router frontend and admin interface.
+- `server/`: Express API, Mongoose models, validation, authentication, and services.
+- MongoDB stores leads, admin users, and editable homepage content.
+- Contact attachments are stored outside the public web root and are downloadable only through authenticated admin routes.
 
 ## Quick start
 
-Install dependencies:
+Requirements: Node.js, npm, and MongoDB or MongoDB Atlas.
 
 ```bash
 npm --prefix server install
 npm --prefix client install
+cp server/.env.example server/.env
 ```
 
-Start the backend:
+Set real values in `server/.env`, then start both applications:
 
 ```bash
 npm --prefix server run dev
-```
-
-Start the frontend in another terminal:
-
-```bash
 npm --prefix client run dev
 ```
 
-Open `http://localhost:3000` for the website and `http://localhost:3000/admin` for the private lead dashboard.
+Open `http://localhost:3000` for the public website and `/admin` for the private admin dashboard.
 
-Never commit `server/.env` or `client/.env.local`.
+The client may use `client/.env.local`:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:4292
+```
+
+Never commit `server/.env`, `client/.env.local`, or `server/storage/uploads/`.
+
+## Environment variables
+
+| Variable         | Purpose                                                  |
+| ---------------- | -------------------------------------------------------- |
+| `MONGODB_URI`    | MongoDB connection string.                               |
+| `PORT`           | API port, normally `4292`.                               |
+| `CORS_ORIGIN`    | Allowed frontend origin(s), comma-separated.             |
+| `ADMIN_EMAIL`    | Admin account created during server bootstrap.           |
+| `ADMIN_PASSWORD` | Bootstrap password; stored as a bcrypt hash.             |
+| `JWT_SECRET`     | Secret for the admin session token.                      |
+| `JWT_EXPIRES_IN` | JWT lifetime, such as `2h`.                              |
+| `UPLOAD_DIR`     | Private attachment directory, default `storage/uploads`. |
+| `NODE_ENV`       | `development` or `production`.                           |
+
+## API and authentication
+
+Public contact submissions use `POST /api/contact` and accept multipart form data with required `name`, `email`, `service`, and `message`; `phone`, `company`, and up to five `attachments` are optional. Each attachment may be up to 10 MB and must be a PDF, common Office document, text file, or PNG/JPEG/WebP image.
+
+Admin-only endpoints are:
+
+- `POST /api/admin/login`
+- `POST /api/admin/logout`
+- `GET /api/admin/leads?status=new`
+- `GET /api/admin/leads/:id`
+- `PATCH /api/admin/leads/:id/status`
+- `GET /api/admin/leads/:id/attachments/:attachmentId`
+- `GET/PATCH /api/admin/home`
+
+Admin login uses a short-lived JWT in an HttpOnly cookie. There is no public user registration, public login, Google OAuth, or Facebook OAuth. See [docs/api.md](docs/api.md) and [docs/authentication.md](docs/authentication.md) for request details.
+
+## Lead status workflow
+
+New leads may become `contacted` or `rejected`; contacted leads may become `in_progress` or `rejected`; in-progress leads may become `completed` or `rejected`. Completed and rejected leads are final.
+
+## Testing and production notes
+
+```bash
+npm --prefix server test
+npm --prefix client run lint
+npm --prefix client run build
+```
+
+The server validates untrusted input, limits JSON and multipart payloads, rate-limits contact and admin-login routes, uses Helmet and configured CORS, and returns safe error messages. For production, use HTTPS, a strong secret, a managed/private MongoDB deployment, persistent private file storage or object storage, and a backup/retention policy for uploaded files. Email notifications are intentionally not enabled yet; the lead controller remains the integration point for a future `emailService`.
+
+## Browser extension note
+
+If Next.js reports a hydration mismatch containing `one-sec-browser-extension-id` or injected inline styles on form controls, test in a private window with browser extensions disabled. The One Sec extension modifies the server-rendered DOM after delivery; the application renders consistently in a clean browser session, so this warning should not be addressed with `suppressHydrationWarning` or client-only rendering hacks.
+
+## More documentation
+
+- [Setup](docs/setup.md)
+- [API reference](docs/api.md)
+- [Authentication](docs/authentication.md)
+- [Database models](docs/database.md)
+- [Frontend integration](docs/frontend.md)
+- [Testing](docs/testing.md)
+- [Architecture](docs/architecture.md)
