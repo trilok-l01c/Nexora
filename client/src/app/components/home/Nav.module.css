@@ -1,11 +1,16 @@
 .nav {
-    max-width: 1320px;
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 1000;
+    width: 100vw;
+    max-width: none;
     height: 88px;
     margin: auto;
     padding: 0 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background: var(--paper, #f1f0eb);
 }
 .brand {
     display: inline-flex;
@@ -59,7 +64,7 @@
 }
 .dropdownMenu {
     position: absolute;
-    z-index: 5;
+    z-index: 1001;
     top: calc(100% + 22px);
     left: -18px;
     width: 255px;
@@ -67,6 +72,9 @@
     border: 1px solid var(--line);
     background: #f8f7f2;
     box-shadow: 8px 8px 0 #dfe0d4;
+}
+.navDropdown > div {
+    height: 100%;
 }
 .dropdownMenu a {
     display: block;
@@ -116,13 +124,13 @@
 }
 @media (max-width: 760px) {
     .nav {
-        position: relative;
+        position: fixed;
         height: 72px;
         padding: 0 20px;
     }
     .navLinks {
         position: absolute;
-        z-index: 6;
+        z-index: 1001;
         top: 72px;
         right: 20px;
         left: 20px;

@@ -34,24 +34,6 @@ export default function CompanyPage({
 }: CompanyPageProps) {
     return (
         <main className={styles.page}>
-            <nav className={styles.nav} aria-label="Company page navigation">
-                <Link
-                    className={styles.brand}
-                    href="/"
-                    aria-label="Nexora home"
-                >
-                    <span className={styles.brandMark} aria-hidden="true">
-                        N
-                    </span>
-                    <span>Nexora</span>
-                </Link>
-                <Link className={styles.backLink} href="/">
-                    <span aria-hidden="true">←</span> Back to studio
-                </Link>
-                <Link className={styles.navCta} href="/#contact">
-                    Start a project <span aria-hidden="true">↗</span>
-                </Link>
-            </nav>
             <section className={styles.hero}>
                 <div className={styles.heroMeta}>
                     <span>NX / {eyebrow}</span>

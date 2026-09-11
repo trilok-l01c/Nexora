@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import { allServices } from "../../services";
 import styles from "./service.module.css";
@@ -34,24 +33,6 @@ export default async function ServicePage({ params }: ServicePageProps) {
 
     return (
         <main className={styles.page}>
-            <nav className={styles.nav} aria-label="Service navigation">
-                <Link
-                    className={styles.brand}
-                    href="/"
-                    aria-label="Nexora home"
-                >
-                    <span className={styles.brandMark} aria-hidden="true">
-                        N
-                    </span>
-                    <span>Nexora</span>
-                </Link>
-                <Link className={styles.backLink} href="/">
-                    <span aria-hidden="true">←</span> Back to studio
-                </Link>
-                <a className={styles.navCta} href="mailto:hello@nexora.studio">
-                    Start a project <span aria-hidden="true">↗</span>
-                </a>
-            </nav>
             <section className={styles.hero}>
                 <div className={styles.heroMeta}>
                     <p>NX / {service.category}</p>
