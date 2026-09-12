@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { serviceGroups } from "../../services";
+import AuthDialog from "../auth/AuthDialog";
 import styles from "./Nav.module.css";
 
 export default function Nav() {
@@ -118,9 +119,12 @@ export default function Nav() {
                 <Link href="/clients">Clients</Link>
                 <Link href="/alliances">Alliances</Link>
             </div>
-            <Link className={styles.navCta} href="/#contact">
-                Start a project <span aria-hidden="true">↗</span>
-            </Link>
+            <div className={styles.navActions}>
+                <AuthDialog />
+                <Link className={styles.navCta} href="/#contact">
+                    Start a project <span aria-hidden="true">↗</span>
+                </Link>
+            </div>
         </nav>
     );
 }

@@ -122,6 +122,11 @@
     font-size: 12px;
     font-weight: 600;
 }
+.navActions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
 @media (max-width: 760px) {
     .nav {
         position: fixed;
@@ -153,5 +158,8 @@
     }
     .navCta {
         font-size: 11px;
+    }
+    .navActions {
+        gap: 8px;
     }
 }

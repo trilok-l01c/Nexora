@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Nav from "./components/home/Nav";
+import ConditionalNav from "./ConditionalNav";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -26,7 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             className={`${geistSans.variable} ${geistMono.variable}`}
         >
             <body>
-                <Nav />
+                <ConditionalNav />
                 {children}
             </body>
         </html>

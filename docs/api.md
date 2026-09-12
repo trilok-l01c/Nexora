@@ -73,6 +73,26 @@ Allowed statuses: `new`, `contacted`, `in_progress`, `completed`, `rejected`.
 
 Downloads one lead attachment. Requires the admin HttpOnly cookie and never exposes the upload directory publicly.
 
+## Client authentication and portal endpoints
+
+### `POST /api/auth/signup`
+
+Creates a client account from `name`, `email`, `company`, `password`, and `confirmPassword`. The backend always sets `role: "client"`, reuses an exact case-insensitive company name when present, and creates no project assignments. Returns `409` for a duplicate email.
+
+### `POST /api/auth/login`
+
+Authenticates a client and sets the HttpOnly `nexora_client_token` cookie.
+
+### `POST /api/auth/logout`
+
+Clears client and admin session cookies.
+
+The following routes require the client session cookie and scope all project access to the authenticated user's `companyId`:
+
+- `GET /api/client/dashboard` returns the client's company, projects, recent activity, and support tickets.
+- `GET /api/client/projects/:projectId` returns project details only when the project belongs to the authenticated user's company; otherwise it returns `404`.
+- `POST /api/client/tickets` creates a support request. An optional `projectId` is checked against the same company before association.
+
 ## Status flow
 
 - `new` -> `contacted` or `rejected`

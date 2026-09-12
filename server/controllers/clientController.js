@@ -1,0 +1,153 @@
+import mongoose from "mongoose";
+import { isDatabaseReady } from "../config/database.js";
+import { Company } from "../models/Company.js";
+import { Project } from "../models/Project.js";
+import { Ticket } from "../models/Ticket.js";
+
+const publicMemberFields = "name professionalTitle professionalBio avatarUrl";
+const projectPopulate = [
+    { path: "teamMembers", select: publicMemberFields },
+    { path: "updates.author", select: publicMemberFields },
+    { path: "activity.actor", select: publicMemberFields },
+];
+
+function validId(value) {
+    return mongoose.Types.ObjectId.isValid(value);
+}
+
+function safeProjectQuery(id, companyId) {
+    return validId(id) ? { _id: id, companyId } : null;
+}
+
+export async function getDashboard(req, res, next) {
+    if (!isDatabaseReady()) {
+        return res.status(503).json({
+            success: false,
+            message: "Your project workspace is temporarily unavailable.",
+        });
+    }
+    try {
+        const [company, projects, tickets] = await Promise.all([
+            Company.findById(req.user.companyId).select("name").lean(),
+            Project.find({ companyId: req.user.companyId })
+                .populate(projectPopulate)
+                .sort({ updatedAt: -1 })
+                .lean(),
+            Ticket.find({ companyId: req.user.companyId })
+                .select("number subject status priority projectId createdAt")
+                .sort({ createdAt: -1 })
+                .limit(8)
+                .lean(),
+        ]);
+
+        const activity = projects
+            .flatMap((project) =>
+                (project.activity || []).map((item) => ({
+                    ...item,
+                    projectId: project._id,
+                    projectName: project.name,
+                    actor: item.actor?.name || "Nexora team",
+                })),
+            )
+            .sort(
+                (left, right) =>
+                    new Date(right.createdAt) - new Date(left.createdAt),
+            )
+            .slice(0, 8);
+
+        return res.json({
+            success: true,
+            data: { company, projects, activity, tickets },
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function getProject(req, res, next) {
+    const query = safeProjectQuery(req.params.projectId, req.user.companyId);
+    if (!query)
+        return res
+            .status(404)
+            .json({ success: false, message: "Project not found." });
+    if (!isDatabaseReady()) {
+        return res.status(503).json({
+            success: false,
+            message: "This project is temporarily unavailable.",
+        });
+    }
+    try {
+        const project = await Project.findOne(query)
+            .populate(projectPopulate)
+            .lean();
+        if (!project)
+            return res
+                .status(404)
+                .json({ success: false, message: "Project not found." });
+        return res.json({ success: true, data: project });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function createTicket(req, res, next) {
+    const {
+        subject,
+        description,
+        priority = "Normal",
+        projectId,
+    } = req.body || {};
+    if (
+        typeof subject !== "string" ||
+        !subject.trim() ||
+        typeof description !== "string" ||
+        !description.trim()
+    ) {
+        return res.status(400).json({
+            success: false,
+            message: "Subject and description are required.",
+        });
+    }
+    if (!isDatabaseReady()) {
+        return res.status(503).json({
+            success: false,
+            message: "Support requests are temporarily unavailable.",
+        });
+    }
+    if (!["Low", "Normal", "High", "Urgent"].includes(priority)) {
+        return res
+            .status(400)
+            .json({ success: false, message: "Invalid ticket priority." });
+    }
+    try {
+        let project;
+        if (projectId) {
+            const query = safeProjectQuery(projectId, req.user.companyId);
+            if (!query)
+                return res.status(404).json({
+                    success: false,
+                    message: "Related project not found.",
+                });
+            project = await Project.findOne(query).select("_id").lean();
+            if (!project)
+                return res.status(404).json({
+                    success: false,
+                    message: "Related project not found.",
+                });
+        }
+        const ticket = await Ticket.create({
+            companyId: req.user.companyId,
+            createdBy: req.user.sub,
+            projectId: project?._id,
+            subject: subject.trim(),
+            description: description.trim(),
+            priority,
+        });
+        return res.status(201).json({
+            success: true,
+            data: { number: ticket.number, status: ticket.status },
+        });
+    } catch (error) {
+        next(error);
+    }
+}

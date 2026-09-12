@@ -174,7 +174,9 @@ export default function Contact() {
                         />
                     </label>
                     <label className={styles.formWide}>
-                        <span className={styles.fieldLabel}>Share files</span>
+                        <span className={styles.fieldLabel}>
+                            Share project detail in files
+                        </span>
                         <input
                             className={styles.fileInput}
                             type="file"

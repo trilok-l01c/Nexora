@@ -17,8 +17,32 @@ const userSchema = new mongoose.Schema(
         },
         role: {
             type: String,
-            enum: ["admin"],
-            default: "admin",
+            enum: ["admin", "staff", "client"],
+            default: "client",
+        },
+        name: {
+            type: String,
+            trim: true,
+            maxlength: 120,
+        },
+        companyId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Company",
+        },
+        professionalTitle: {
+            type: String,
+            trim: true,
+            maxlength: 120,
+        },
+        professionalBio: {
+            type: String,
+            trim: true,
+            maxlength: 500,
+        },
+        avatarUrl: {
+            type: String,
+            trim: true,
+            maxlength: 500,
         },
         active: {
             type: Boolean,

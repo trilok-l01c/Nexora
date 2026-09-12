@@ -1,0 +1,171 @@
+.trigger {
+    border: 1px solid var(--ink);
+    padding: 9px 14px;
+    color: var(--ink);
+    background: transparent;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.trigger:hover {
+    color: var(--acid);
+    background: var(--ink);
+}
+.backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(17, 19, 16, 0.58);
+}
+.dialog {
+    position: relative;
+    width: min(470px, 100%);
+    max-height: min(760px, 92vh);
+    overflow-y: auto;
+    border: 1px solid var(--ink);
+    padding: 38px;
+    color: var(--ink);
+    background: #f8f7f2;
+    box-shadow: 12px 12px 0 rgba(216, 245, 90, 0.8);
+}
+.close {
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    border: 0;
+    color: var(--ink);
+    background: transparent;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+}
+.kicker {
+    margin-bottom: 18px;
+    color: #879c27;
+    font:
+        700 10px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+.dialog h2 {
+    max-width: 330px;
+    margin-bottom: 10px;
+    font-size: clamp(34px, 7vw, 54px);
+    letter-spacing: -0.08em;
+    line-height: 0.92;
+}
+.intro {
+    margin-bottom: 26px;
+    color: #72766d;
+    font-size: 13px;
+    line-height: 1.5;
+}
+.field {
+    display: grid;
+    gap: 7px;
+    margin-bottom: 15px;
+    color: #72766d;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.field input {
+    width: 100%;
+    border: 1px solid rgba(17, 19, 16, 0.25);
+    border-radius: 0;
+    padding: 13px;
+    color: var(--ink);
+    background: transparent;
+    font:
+        14px var(--font-geist-sans),
+        sans-serif;
+    letter-spacing: 0;
+    text-transform: none;
+    outline: none;
+}
+.field input:focus {
+    border-color: #789c00;
+    box-shadow: 0 0 0 2px rgba(120, 156, 0, 0.16);
+}
+.passwordWrap {
+    position: relative;
+}
+.passwordWrap input {
+    padding-right: 58px;
+}
+.passwordToggle {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    border: 0;
+    color: #5e7012;
+    background: transparent;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.passwordHint {
+    min-height: 16px;
+    color: #72766d;
+    font-size: 11px;
+    line-height: 1.4;
+}
+.message {
+    min-height: 21px;
+    margin: 5px 0 10px;
+    color: #5e7012;
+    font-size: 12px;
+    line-height: 1.4;
+}
+.error {
+    color: #a3402b;
+}
+.submit {
+    width: 100%;
+    border: 0;
+    padding: 14px;
+    color: var(--acid);
+    background: var(--ink);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.submit:hover {
+    background: #4e5b13;
+}
+.submit:disabled {
+    cursor: wait;
+    opacity: 0.6;
+}
+.switchPrompt {
+    margin-top: 20px;
+    color: #72766d;
+    font-size: 12px;
+    text-align: center;
+}
+.switchPrompt button {
+    border: 0;
+    padding: 0;
+    color: #5e7012;
+    background: transparent;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+@media (max-width: 760px) {
+    .trigger {
+        padding: 8px 10px;
+        font-size: 11px;
+    }
+    .dialog {
+        padding: 32px 24px 25px;
+        box-shadow: 7px 7px 0 rgba(216, 245, 90, 0.8);
+    }
+}
