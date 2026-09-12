@@ -6,7 +6,7 @@
     gap: 40px;
     padding: 12px 30px;
     background: var(--acid);
-    color: #4c5a11;
+    color: var(--ticker-text);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -14,7 +14,7 @@
     transform: rotate(-1.2deg) scale(1.02);
 }
 .ticker b {
-    color: #8aab18;
+    color: var(--ticker-star);
     font-size: 16px;
 }
 @media (max-width: 760px) {

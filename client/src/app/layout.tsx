@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ConditionalNav from "./ConditionalNav";
+import { ThemeProvider } from "./ThemeProvider";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -25,9 +26,28 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             lang="en"
             className={`${geistSans.variable} ${geistMono.variable}`}
         >
+            <head>
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            (function() {
+                                try {
+                                    var stored = localStorage.getItem("nexora-theme");
+                                    var theme = stored === "light" || stored === "dark"
+                                        ? stored
+                                        : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+                                    document.documentElement.setAttribute("data-theme", theme);
+                                } catch (e) {}
+                            })();
+                        `,
+                    }}
+                />
+            </head>
             <body>
-                <ConditionalNav />
-                {children}
+                <ThemeProvider>
+                    <ConditionalNav />
+                    {children}
+                </ThemeProvider>
             </body>
         </html>
     );

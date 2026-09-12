@@ -1,9 +1,4 @@
 .page {
-    --ink: #111310;
-    --muted: #72766d;
-    --paper: #f1f0eb;
-    --acid: #d8f55a;
-    --line: rgba(17, 19, 16, 0.16);
     min-height: 100vh;
     overflow: clip;
     color: var(--ink);
@@ -37,8 +32,8 @@
     width: 27px;
     height: 27px;
     border-radius: 50%;
-    background: var(--ink);
-    color: var(--acid);
+    background: var(--brand-mark-bg);
+    color: var(--brand-mark-text);
     font-size: 13px;
 }
 .backLink,
@@ -52,7 +47,7 @@
     color: var(--muted);
 }
 .backLink:hover {
-    color: #789c00;
+    color: var(--link-hover);
 }
 .navCta {
     display: flex;
@@ -86,7 +81,7 @@
 }
 .eyebrow,
 .kicker {
-    color: #879c27;
+    color: var(--card-label);
     font:
         600 10px var(--font-geist-mono),
         monospace;
@@ -112,13 +107,13 @@
     gap: 28px;
     align-items: center;
     padding: 16px 19px;
-    background: var(--ink);
-    color: var(--acid);
+    background: var(--button-bg);
+    color: var(--button-text);
     font-size: 12px;
     font-weight: 600;
 }
 .primaryButton:hover {
-    background: #4e5b13;
+    background: var(--button-hover-bg);
 }
 .signal {
     position: absolute;
@@ -131,13 +126,13 @@
     justify-content: center;
     padding: 28px;
     border-radius: 50%;
-    background: var(--ink);
+    background: var(--section-dark-bg);
     color: var(--acid);
-    box-shadow: 22px 22px 0 #dfe0d4;
+    box-shadow: 22px 22px 0 var(--signal-shadow);
 }
 .signal span,
 .signal small {
-    color: #7e8878;
+    color: var(--signal-muted);
     font:
         9px var(--font-geist-mono),
         monospace;
@@ -158,7 +153,7 @@
 }
 .content {
     padding: 125px max(32px, calc((100% - 1256px) / 2));
-    background: #e5e7d8;
+    background: var(--content-bg);
 }
 .contentIntro {
     display: grid;
@@ -175,7 +170,7 @@
 }
 .contentIntro h2 em,
 .contact h2 em {
-    color: #8ea91c;
+    color: var(--hero-emphasis-dark);
     font-style: normal;
 }
 .cardGrid {
@@ -193,13 +188,13 @@
 .cardTop {
     display: flex;
     justify-content: space-between;
-    color: #7e8878;
+    color: var(--card-top);
     font:
         10px var(--font-geist-mono),
         monospace;
 }
 .cardTop i {
-    color: #879c27;
+    color: var(--card-top-accent);
     font-style: normal;
 }
 .card h3 {
@@ -218,8 +213,8 @@
 }
 .projects {
     padding: 125px max(32px, calc((100% - 1256px) / 2));
-    background: var(--ink);
-    color: var(--paper);
+    background: var(--section-dark-bg);
+    color: var(--section-dark-text);
 }
 .projectsIntro {
     display: grid;
@@ -241,25 +236,25 @@
 .disclaimer {
     max-width: 240px;
     margin: 0;
-    color: #9aa197;
+    color: var(--project-disclaimer);
     font-size: 11px;
     line-height: 1.55;
 }
 .projectList {
-    border-top: 1px solid #343a30;
+    border-top: 1px solid var(--project-border);
 }
 .project {
     display: grid;
     grid-template-columns: 45px 1fr 1.1fr 1.4fr 1fr;
     gap: 25px;
     align-items: start;
-    border-bottom: 1px solid #343a30;
+    border-bottom: 1px solid var(--project-border);
     padding: 25px 0;
 }
 .projectNumber,
 .project small,
 .projectServices {
-    color: #7e8878;
+    color: var(--industries-muted);
     font:
         10px var(--font-geist-mono),
         monospace;
@@ -285,7 +280,7 @@
     letter-spacing: -0.04em;
 }
 .projectSummary {
-    color: #c0c8bc;
+    color: var(--project-summary);
     font-size: 12px;
     line-height: 1.5;
 }

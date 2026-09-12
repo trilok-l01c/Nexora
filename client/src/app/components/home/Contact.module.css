@@ -1,7 +1,7 @@
 .contact {
     padding: 150px 32px 160px;
     text-align: center;
-    background: #dfe2cf;
+    background: var(--contact-bg);
 }
 .kicker {
     color: var(--muted);
@@ -22,8 +22,8 @@
     margin: 0 auto 35px;
     padding: 28px;
     text-align: left;
-    border: 1px solid rgba(17, 19, 16, 0.2);
-    background: rgba(241, 240, 235, 0.38);
+    border: 1px solid var(--contact-border);
+    background: var(--contact-form-bg);
 }
 .formGrid {
     display: grid;
@@ -46,7 +46,7 @@
     gap: 0;
 }
 .fieldLabel span {
-    color: #879c27;
+    color: var(--card-label);
 }
 .formWide {
     grid-column: 1 / -1;
@@ -55,11 +55,11 @@
 .formGrid select,
 .formGrid textarea {
     width: 100%;
-    border: 1px solid rgba(17, 19, 16, 0.24);
+    border: 1px solid var(--contact-input-border);
     border-radius: 0;
     padding: 12px;
     color: var(--ink);
-    background: rgba(241, 240, 235, 0.7);
+    background: var(--contact-input-bg);
     font:
         13px var(--font-geist-sans),
         sans-serif;
@@ -68,7 +68,7 @@
 .formGrid input:focus,
 .formGrid select:focus,
 .formGrid textarea:focus {
-    border-color: #789c00;
+    border-color: var(--link-hover);
     box-shadow: 0 0 0 2px rgba(120, 156, 0, 0.15);
 }
 .formGrid textarea {
@@ -99,17 +99,17 @@
     line-height: 1.4;
 }
 .formStatus[data-status="success"] {
-    color: #587500;
+    color: var(--auth-success);
 }
 .formStatus[data-status="error"] {
-    color: #a3402b;
+    color: var(--auth-error);
 }
 .contactButton:disabled {
     cursor: wait;
     opacity: 0.6;
 }
 .contact h2 em {
-    color: #9ab921;
+    color: var(--hero-emphasis);
     font-style: normal;
 }
 .contactButton {
@@ -117,8 +117,8 @@
     gap: 40px;
     align-items: center;
     padding: 18px 23px;
-    background: var(--ink);
-    color: var(--acid);
+    background: var(--button-bg);
+    color: var(--button-text);
     font-size: 12px;
     font-weight: 600;
     transition:
@@ -127,7 +127,7 @@
         transform 0.2s;
 }
 .contactButton:hover {
-    background: #4e5b13;
+    background: var(--button-hover-bg);
     transform: translateY(-2px);
 }
 @media (max-width: 760px) {

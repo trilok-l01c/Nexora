@@ -4,9 +4,44 @@
     --portal-paper: #f4f7f3;
     --portal-line: #dbe4dc;
     --portal-green: #185c4b;
+    --portal-card: #fff;
+    --portal-input-bg: #fbfdfb;
+    --portal-hover: #edf5ed;
+    --portal-notice-bg: #e8f3e8;
+    --portal-badge-bg: #e8f3e8;
+    --portal-track: #e7ece7;
+    --portal-modal-shadow: #b9d7bc;
+    --portal-empty-border: #b9cbbd;
+    --portal-error: #a13f35;
+    --portal-button-text: #e8f4e6;
+    --portal-button-hover: #0f4538;
+    --portal-milestone-border: #a9bcae;
     min-height: 100vh;
     color: var(--portal-ink);
     background: var(--portal-paper);
+    transition:
+        color 0.3s ease,
+        background 0.3s ease;
+}
+
+html[data-theme="dark"] .portal {
+    --portal-ink: #e8e8e2;
+    --portal-muted: #9aa197;
+    --portal-paper: #0f1110;
+    --portal-line: rgba(232, 232, 226, 0.14);
+    --portal-green: #a8c72e;
+    --portal-card: #1a1d1a;
+    --portal-input-bg: #1a1d1a;
+    --portal-hover: #1a1d1a;
+    --portal-notice-bg: rgba(168, 199, 46, 0.12);
+    --portal-badge-bg: rgba(168, 199, 46, 0.12);
+    --portal-track: #2a2e28;
+    --portal-modal-shadow: #2a2e28;
+    --portal-empty-border: #2a2e28;
+    --portal-error: #e07a5f;
+    --portal-button-text: #0f1110;
+    --portal-button-hover: #8aa51f;
+    --portal-milestone-border: #3a4038;
 }
 .shell {
     display: grid;
@@ -19,7 +54,7 @@
     gap: 36px;
     border-right: 1px solid var(--portal-line);
     padding: 34px 24px;
-    background: #fff;
+    background: var(--portal-card);
 }
 .brand {
     display: flex;
@@ -59,7 +94,7 @@
 .nav button:hover,
 .nav .active {
     color: var(--portal-green);
-    background: #edf5ed;
+    background: var(--portal-hover);
 }
 .logout {
     margin-top: auto;
@@ -99,7 +134,7 @@
     border-left: 3px solid var(--portal-green);
     padding: 12px 14px;
     color: var(--portal-green);
-    background: #e8f3e8;
+    background: var(--portal-notice-bg);
     font-size: 13px;
     line-height: 1.5;
 }
@@ -118,7 +153,7 @@
 .overviewCell {
     min-height: 128px;
     padding: 22px;
-    background: #fff;
+    background: var(--portal-card);
 }
 .overviewCell strong {
     display: block;
@@ -157,13 +192,13 @@
     display: block;
     border: 1px solid var(--portal-line);
     padding: 22px;
-    background: #fff;
+    background: var(--portal-card);
     transition:
         border-color 0.2s,
         transform 0.2s;
 }
 .projectCard:hover {
-    border-color: #8db39c;
+    border-color: var(--portal-green);
     transform: translateY(-2px);
 }
 .projectTop {
@@ -182,7 +217,7 @@
     border-radius: 999px;
     padding: 5px 8px;
     color: var(--portal-green);
-    background: #e8f3e8;
+    background: var(--portal-badge-bg);
     font-size: 10px;
     font-weight: 700;
     white-space: nowrap;
@@ -197,7 +232,7 @@
 .progressTrack {
     height: 7px;
     overflow: hidden;
-    background: #e7ece7;
+    background: var(--portal-track);
 }
 .progressBar {
     height: 100%;
@@ -246,7 +281,7 @@
 .ticketPanel {
     border: 1px solid var(--portal-line);
     padding: 22px;
-    background: #fff;
+    background: var(--portal-card);
 }
 .ticketPanel h3 {
     margin-bottom: 16px;
@@ -270,7 +305,7 @@
     border-radius: 0;
     padding: 11px;
     color: var(--portal-ink);
-    background: #fbfdfb;
+    background: var(--portal-input-bg);
     font: inherit;
     font-size: 13px;
     text-transform: none;
@@ -282,7 +317,7 @@
 .button {
     border: 0;
     padding: 12px 16px;
-    color: #e8f4e6;
+    color: var(--portal-button-text);
     background: var(--portal-green);
     font-size: 12px;
     font-weight: 700;
@@ -295,14 +330,14 @@
 .addProjectButton {
     border: 1px solid var(--portal-green);
     padding: 11px 14px;
-    color: #fff;
+    color: var(--portal-button-text);
     background: var(--portal-green);
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
 }
 .addProjectButton:hover {
-    background: #0f4538;
+    background: var(--portal-button-hover);
 }
 .emptyProjectState {
     display: grid;
@@ -327,7 +362,7 @@
     border: 1px solid var(--portal-ink);
     padding: 34px;
     background: var(--portal-paper);
-    box-shadow: 12px 12px 0 #b9d7bc;
+    box-shadow: 12px 12px 0 var(--portal-modal-shadow);
 }
 .portalModalClose {
     position: absolute;
@@ -366,13 +401,13 @@
     font-size: 12px;
 }
 .error {
-    color: #a13f35;
+    color: var(--portal-error);
 }
 .empty {
-    border: 1px dashed #b9cbbd;
+    border: 1px dashed var(--portal-empty-border);
     padding: 30px;
     color: var(--portal-muted);
-    background: #fff;
+    background: var(--portal-card);
 }
 .back {
     display: inline-block;
@@ -443,7 +478,7 @@
     place-items: center;
     width: 28px;
     height: 28px;
-    border: 1px solid #a9bcae;
+    border: 1px solid var(--portal-milestone-border);
     border-radius: 50%;
     color: var(--portal-muted);
     background: var(--portal-paper);
@@ -452,7 +487,7 @@
 .milestone[data-status="completed"] .milestoneDot,
 .milestone[data-status="current"] .milestoneDot {
     border-color: var(--portal-green);
-    color: #fff;
+    color: var(--portal-button-text);
     background: var(--portal-green);
 }
 .milestone[data-status="current"] strong {
@@ -487,7 +522,7 @@
     gap: 13px;
     border: 1px solid var(--portal-line);
     padding: 16px;
-    background: #fff;
+    background: var(--portal-card);
 }
 .avatar {
     display: grid;
@@ -495,7 +530,7 @@
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    color: #e8f4e6;
+    color: var(--portal-button-text);
     background: var(--portal-green);
     font-weight: 700;
 }
@@ -522,7 +557,7 @@
     border: 1px solid var(--portal-line);
     padding: 6px 8px;
     color: var(--portal-muted);
-    background: #fff;
+    background: var(--portal-card);
     font-size: 12px;
 }
 .loginPage {
@@ -536,7 +571,7 @@
     width: min(440px, 100%);
     border: 1px solid var(--portal-line);
     padding: 36px;
-    background: #fff;
+    background: var(--portal-card);
 }
 .loginCard h1 {
     margin: 45px 0 10px;

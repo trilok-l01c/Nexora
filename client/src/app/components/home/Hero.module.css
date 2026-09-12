@@ -29,8 +29,8 @@
     height: 6px;
     display: inline-block;
     border-radius: 50%;
-    background: #aac72b;
-    box-shadow: 0 0 0 4px rgba(170, 199, 43, 0.16);
+    background: var(--eyebrow-dot);
+    box-shadow: 0 0 0 4px var(--eyebrow-dot-glow);
 }
 .hero h1 {
     max-width: 700px;
@@ -41,7 +41,7 @@
     font-weight: 700;
 }
 .hero h1 em {
-    color: #9ab921;
+    color: var(--hero-emphasis);
     font-style: normal;
 }
 .heroText {
@@ -61,8 +61,8 @@
     gap: 25px;
     align-items: center;
     padding: 15px 18px;
-    background: var(--ink);
-    color: var(--acid);
+    background: var(--button-bg);
+    color: var(--button-text);
     font-size: 12px;
     font-weight: 600;
 }
@@ -73,11 +73,11 @@
     font-weight: 600;
 }
 .buttonPrimary:hover {
-    background: #4e5b13;
+    background: var(--button-hover-bg);
     transform: translateY(-2px);
 }
 .buttonQuiet:hover {
-    color: #789c00;
+    color: var(--link-hover);
 }
 .signalBoard {
     position: relative;
@@ -86,15 +86,15 @@
     justify-self: end;
     overflow: hidden;
     padding: 20px;
-    background: #171a15;
-    color: #f1f0eb;
-    box-shadow: 22px 22px 0 #dfe0d4;
+    background: var(--signal-bg);
+    color: var(--signal-text);
+    box-shadow: 22px 22px 0 var(--signal-shadow);
 }
 .signalBoard::before {
     content: "";
     position: absolute;
     inset: 30px;
-    border: 1px solid rgba(216, 245, 90, 0.14);
+    border: 1px solid var(--board-inner-border);
     border-radius: 50%;
 }
 .boardTop,
@@ -103,7 +103,7 @@
     z-index: 2;
     display: flex;
     justify-content: space-between;
-    color: #7a8074;
+    color: var(--signal-muted);
     font:
         9px var(--font-geist-mono),
         monospace;
@@ -137,14 +137,14 @@
     height: 88px;
     border-radius: 50%;
     background: var(--acid);
-    color: var(--ink);
+    color: var(--signal-orb-text);
     font-size: 22px;
     font-weight: 700;
-    box-shadow: 0 0 55px rgba(216, 245, 90, 0.3);
+    box-shadow: 0 0 55px var(--signal-orb-glow);
 }
 .orbitTrack {
     position: absolute;
-    border: 1px solid rgba(216, 245, 90, 0.55);
+    border: 1px solid var(--signal-orb-border);
     border-radius: 50%;
     transform-origin: center;
 }
@@ -156,7 +156,7 @@
     height: 8px;
     border-radius: 50%;
     background: var(--acid);
-    box-shadow: 0 0 12px rgba(216, 245, 90, 0.8);
+    box-shadow: 0 0 12px var(--signal-orb-dot);
     offset-path: ellipse(50% 50% at 50% 50%);
     offset-rotate: 0deg;
     animation: satelliteOne 8s linear infinite;
@@ -183,11 +183,11 @@
     right: 22px;
     bottom: 72px;
     width: 37%;
-    border-left: 1px solid #626a56;
+    border-left: 1px solid var(--signal-border);
     padding-left: 14px;
 }
 .boardReadout span {
-    color: #7a8074;
+    color: var(--signal-muted);
     font:
         8px var(--font-geist-mono),
         monospace;
@@ -208,7 +208,7 @@
     display: flex;
     align-items: end;
     gap: 4px;
-    border-bottom: 1px solid #464d3d;
+    border-bottom: 1px solid var(--signal-chart-border);
 }
 .chart span {
     flex: 1;
@@ -241,7 +241,7 @@
     right: 20px;
     bottom: 20px;
     left: 20px;
-    border-top: 1px solid #363d31;
+    border-top: 1px solid var(--signal-bottom-border);
     padding-top: 12px;
 }
 @keyframes satelliteOne {
@@ -280,6 +280,6 @@
     .signalBoard {
         width: 100%;
         margin-top: 65px;
-        box-shadow: 12px 12px 0 #dfe0d4;
+        box-shadow: 12px 12px 0 var(--signal-shadow);
     }
 }

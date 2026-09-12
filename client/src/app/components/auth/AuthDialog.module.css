@@ -1,7 +1,7 @@
 .trigger {
-    border: 1px solid var(--ink);
+    border: 1px solid var(--auth-trigger-border);
     padding: 9px 14px;
-    color: var(--ink);
+    color: var(--auth-trigger-text);
     background: transparent;
     font: inherit;
     font-size: 12px;
@@ -9,8 +9,8 @@
     cursor: pointer;
 }
 .trigger:hover {
-    color: var(--acid);
-    background: var(--ink);
+    color: var(--auth-trigger-hover-text);
+    background: var(--auth-trigger-hover-bg);
 }
 .backdrop {
     position: fixed;
@@ -29,8 +29,8 @@
     border: 1px solid var(--ink);
     padding: 38px;
     color: var(--ink);
-    background: #f8f7f2;
-    box-shadow: 12px 12px 0 rgba(216, 245, 90, 0.8);
+    background: var(--auth-dialog-bg);
+    box-shadow: 12px 12px 0 var(--auth-dialog-shadow);
 }
 .close {
     position: absolute;
@@ -45,7 +45,7 @@
 }
 .kicker {
     margin-bottom: 18px;
-    color: #879c27;
+    color: var(--card-label);
     font:
         700 10px var(--font-geist-mono),
         monospace;
@@ -61,7 +61,7 @@
 }
 .intro {
     margin-bottom: 26px;
-    color: #72766d;
+    color: var(--auth-muted);
     font-size: 13px;
     line-height: 1.5;
 }
@@ -69,7 +69,7 @@
     display: grid;
     gap: 7px;
     margin-bottom: 15px;
-    color: #72766d;
+    color: var(--auth-muted);
     font-size: 10px;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -77,7 +77,7 @@
 }
 .field input {
     width: 100%;
-    border: 1px solid rgba(17, 19, 16, 0.25);
+    border: 1px solid var(--auth-field-border);
     border-radius: 0;
     padding: 13px;
     color: var(--ink);
@@ -90,7 +90,7 @@
     outline: none;
 }
 .field input:focus {
-    border-color: #789c00;
+    border-color: var(--link-hover);
     box-shadow: 0 0 0 2px rgba(120, 156, 0, 0.16);
 }
 .passwordWrap {
@@ -105,7 +105,7 @@
     right: 10px;
     transform: translateY(-50%);
     border: 0;
-    color: #5e7012;
+    color: var(--auth-accent);
     background: transparent;
     font-size: 11px;
     font-weight: 700;
@@ -113,32 +113,32 @@
 }
 .passwordHint {
     min-height: 16px;
-    color: #72766d;
+    color: var(--auth-muted);
     font-size: 11px;
     line-height: 1.4;
 }
 .message {
     min-height: 21px;
     margin: 5px 0 10px;
-    color: #5e7012;
+    color: var(--auth-accent);
     font-size: 12px;
     line-height: 1.4;
 }
 .error {
-    color: #a3402b;
+    color: var(--auth-error);
 }
 .submit {
     width: 100%;
     border: 0;
     padding: 14px;
-    color: var(--acid);
-    background: var(--ink);
+    color: var(--button-text);
+    background: var(--button-bg);
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
 }
 .submit:hover {
-    background: #4e5b13;
+    background: var(--button-hover-bg);
 }
 .submit:disabled {
     cursor: wait;
@@ -146,14 +146,14 @@
 }
 .switchPrompt {
     margin-top: 20px;
-    color: #72766d;
+    color: var(--auth-muted);
     font-size: 12px;
     text-align: center;
 }
 .switchPrompt button {
     border: 0;
     padding: 0;
-    color: #5e7012;
+    color: var(--auth-accent);
     background: transparent;
     font: inherit;
     font-weight: 700;
@@ -166,6 +166,6 @@
     }
     .dialog {
         padding: 32px 24px 25px;
-        box-shadow: 7px 7px 0 rgba(216, 245, 90, 0.8);
+        box-shadow: 7px 7px 0 var(--auth-dialog-shadow);
     }
 }
