@@ -1,13 +1,12 @@
 # Nexora
 
-Nexora is an IT solutions company website with a Next.js frontend, Express API, MongoDB lead storage, a private admin dashboard, and a company-scoped client portal. The primary workflows are visitor enquiry -> validated lead -> admin follow-up, and authenticated client -> company projects -> progress updates and support requests.
+Nexora is an IT solutions company website with a Next.js frontend, Express API, MongoDB enquiry and project storage, a private admin workspace, and a company-scoped client portal. The primary workflow is public website -> authentication -> company/client -> projects -> team, progress, technology, updates, and support.
 
 ## Stack and structure
 
 - `client/`: Next.js App Router frontend and admin interface.
 - `server/`: Express API, Mongoose models, validation, authentication, and services.
-- MongoDB stores leads, users, companies, projects, project updates, and support tickets.
-- Contact attachments are stored outside the public web root and are downloadable only through authenticated admin routes.
+- MongoDB stores general enquiries, users, companies, projects, project updates, and support tickets.
 
 ## Quick start
 
@@ -81,11 +80,13 @@ The data relationship is `User.companyId -> Company -> Project.companyId`. Proje
 
 Client sessions use a separate HttpOnly `nexora_client_token` cookie. The client middleware requires a `client` JWT with a company id. Every project read and ticket project association filters by both the requested project id and the authenticated user's company id, returning `404` when the project is not in that company. Team population is restricted to name, professional title, professional bio, and avatar URL; private credentials and personal contact data are never returned.
 
-Admin login uses a short-lived JWT in an HttpOnly cookie. The public website includes a modal client sign-in/sign-up flow. `POST /api/auth/signup` validates name, work email, company, password, and confirmation, always assigns the `client` role, reuses an existing company by name, and never grants project access until staff assigns projects. Duplicate emails return `409`. Admin/staff accounts are not created through public signup and the existing `/admin` login workflow remains separate. See [docs/api.md](docs/api.md) and [docs/authentication.md](docs/authentication.md) for request details.
+Admin login uses a short-lived JWT in an HttpOnly cookie. The public website includes a modal client sign-in/sign-up flow. `POST /api/auth/signup` validates name, work email, company, password, and confirmation, always assigns the `client` role, reuses an existing company by name, and never grants project access until staff assigns projects. Duplicate emails return `409`. Admin/staff accounts are not created through public signup and the existing `/admin` workflow remains separate. See [docs/api.md](docs/api.md) and [docs/authentication.md](docs/authentication.md) for request details.
 
-## Lead status workflow
+## Project-first workflow
 
-New leads may become `contacted` or `rejected`; contacted leads may become `in_progress` or `rejected`; in-progress leads may become `completed` or `rejected`. Completed and rejected leads are final.
+New client requests are created as `Pending Review` with `0%` progress. Staff controls status, progress, dates, team, milestones, technologies, and updates through authenticated admin project operations. Client reads and support tickets are always scoped to the authenticated user's company.
+
+The former lead inbox, lead status lifecycle, lead attachments, and lead conversion workflow have been removed. Public contact is now a lightweight general enquiry stored as `Enquiry`; it is not a CRM lead and has no admin lead API or attachment system.
 
 ## Testing and production notes
 

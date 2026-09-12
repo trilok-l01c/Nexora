@@ -9,6 +9,7 @@ import adminRoutes from "./routes/adminRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
 import homeRoutes from "./routes/homeRoutes.js";
 import clientRoutes from "./routes/clientRoutes.js";
+import projectRoutes from "./routes/projectRoutes.js";
 
 const app = express();
 
@@ -59,6 +60,7 @@ app.use("/api/admin/login", loginLimiter);
 app.use("/api/admin", adminRoutes);
 app.use("/api/contact", contactLimiter, contactRoutes);
 app.use("/api/client", clientRoutes);
+app.use("/api/projects", projectRoutes);
 app.use(notFound);
 app.use(errorHandler);
 

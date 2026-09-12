@@ -26,7 +26,10 @@ export function authenticateAdmin(req, res, next) {
 
     try {
         const payload = jwt.verify(token, env.jwtSecret);
-        if (typeof payload !== "object" || payload.role !== "admin") {
+        if (
+            typeof payload !== "object" ||
+            !["admin", "staff"].includes(payload.role)
+        ) {
             return res
                 .status(403)
                 .json({ success: false, message: "Admin access required." });

@@ -8,36 +8,33 @@ The frontend is a Next.js App Router application in `client/`.
 - Individual service pages under `/services/[slug]`.
 - Contact form under the Approach section.
 - Static company contact email link.
-- No public login or sign-up controls.
+- Public Sign In opens the authentication dialog; signup is client-only.
+- Client routes: `/client/login`, `/client/dashboard`, and `/client/projects/[projectId]`.
 
 ## Contact form
 
-The form sends `multipart/form-data` to `${NEXT_PUBLIC_API_URL}/api/contact` with:
+The form sends JSON to `${NEXT_PUBLIC_API_URL}/api/contact` with:
 
 ```ts
 {
   name,
   email,
-  phone,
   company,
   service,
   message,
-  attachments,
 }
 ```
 
-Attachments are optional. The UI accepts up to five files and shows loading, success, and API error feedback. The submit button is disabled while sending.
+The message is stored as a general enquiry. It does not create a CRM lead or upload attachments.
 
 ## Admin interface
 
-Open `/admin` to log in and manage leads. The page uses cookie credentials for:
+Open `/admin` to log in and manage project requests. The page uses cookie credentials for:
 
 - `POST /api/admin/login`
-- `GET /api/admin/leads`
-- `PATCH /api/admin/leads/:id/status`
+- `GET /api/admin/projects`
+- `PATCH /api/admin/projects/:id`
 - `POST /api/admin/logout`
-
-Lead attachments are rendered as links to authenticated admin download endpoints.
 
 ## Design constraint
 

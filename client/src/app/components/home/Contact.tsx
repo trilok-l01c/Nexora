@@ -7,7 +7,6 @@ export default function Contact() {
     const [form, setForm] = useState({
         name: "",
         email: "",
-        phone: "",
         company: "",
         service: "",
         message: "",
@@ -16,7 +15,6 @@ export default function Contact() {
         "idle" | "sending" | "success" | "error"
     >("idle");
     const [statusMessage, setStatusMessage] = useState("");
-    const [attachments, setAttachments] = useState<File[]>([]);
 
     function updateField(field: keyof typeof form, value: string) {
         setForm((current) => ({ ...current, [field]: value }));
@@ -27,28 +25,13 @@ export default function Contact() {
         setStatus("sending");
         setStatusMessage("");
 
-        if (attachments.length > 5) {
-            setStatus("error");
-            setStatusMessage("You can attach up to 5 files.");
-            return;
-        }
-        if (attachments.some((file) => file.size > 10 * 1024 * 1024)) {
-            setStatus("error");
-            setStatusMessage("Each attachment must be 10 MB or smaller.");
-            return;
-        }
-
         try {
-            const payload = new FormData();
-            Object.entries(form).forEach(([field, value]) =>
-                payload.append(field, value),
-            );
-            attachments.forEach((file) => payload.append("attachments", file));
             const response = await fetch(
                 `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292"}/api/contact`,
                 {
                     method: "POST",
-                    body: payload,
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(form),
                 },
             );
             const result = await response.json();
@@ -64,12 +47,10 @@ export default function Contact() {
             setForm({
                 name: "",
                 email: "",
-                phone: "",
                 company: "",
                 service: "",
                 message: "",
             });
-            setAttachments([]);
         } catch (error) {
             setStatus("error");
             setStatusMessage(
@@ -118,17 +99,6 @@ export default function Contact() {
                         />
                     </label>
                     <label>
-                        <span className={styles.fieldLabel}>Phone</span>
-                        <input
-                            type="tel"
-                            value={form.phone}
-                            onChange={(event) =>
-                                updateField("phone", event.target.value)
-                            }
-                            maxLength={30}
-                        />
-                    </label>
-                    <label>
                         <span className={styles.fieldLabel}>Company</span>
                         <input
                             value={form.company}
@@ -172,28 +142,6 @@ export default function Contact() {
                             maxLength={5000}
                             rows={5}
                         />
-                    </label>
-                    <label className={styles.formWide}>
-                        <span className={styles.fieldLabel}>
-                            Share project detail in files
-                        </span>
-                        <input
-                            className={styles.fileInput}
-                            type="file"
-                            multiple
-                            accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.webp"
-                            onChange={(event) =>
-                                setAttachments(
-                                    Array.from(event.target.files || []),
-                                )
-                            }
-                        />
-                        <small className={styles.fileHint}>
-                            Optional. Up to 5 files, 10 MB each.
-                            {attachments.length > 0
-                                ? ` ${attachments.length} selected.`
-                                : ""}
-                        </small>
                     </label>
                 </div>
                 <div className={styles.formFooter}>

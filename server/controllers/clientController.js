@@ -64,6 +64,104 @@ export async function getDashboard(req, res, next) {
     }
 }
 
+export async function listClientProjects(req, res, next) {
+    if (!isDatabaseReady()) {
+        return res.status(503).json({
+            success: false,
+            message: "Your projects are temporarily unavailable.",
+        });
+    }
+    try {
+        const projects = await Project.find({ companyId: req.user.companyId })
+            .populate(projectPopulate)
+            .sort({ updatedAt: -1 })
+            .lean();
+        return res.json({ success: true, data: projects });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function createClientProject(req, res, next) {
+    const {
+        name,
+        description,
+        serviceType,
+        requirements = "",
+        preferredStartDate,
+        expectedBudget,
+    } = req.body || {};
+    if (typeof name !== "string" || !name.trim()) {
+        return res
+            .status(400)
+            .json({ success: false, message: "Project name is required." });
+    }
+    if (typeof description !== "string" || !description.trim()) {
+        return res
+            .status(400)
+            .json({
+                success: false,
+                message: "Project description is required.",
+            });
+    }
+    if (typeof serviceType !== "string" || !serviceType.trim()) {
+        return res
+            .status(400)
+            .json({ success: false, message: "Please choose a service type." });
+    }
+    if (typeof requirements !== "string" || requirements.length > 5000) {
+        return res
+            .status(400)
+            .json({
+                success: false,
+                message: "Project requirements are too long.",
+            });
+    }
+    if (preferredStartDate && Number.isNaN(Date.parse(preferredStartDate))) {
+        return res
+            .status(400)
+            .json({
+                success: false,
+                message: "Preferred start date is invalid.",
+            });
+    }
+    if (
+        expectedBudget !== undefined &&
+        (typeof expectedBudget !== "string" || expectedBudget.length > 120)
+    ) {
+        return res
+            .status(400)
+            .json({ success: false, message: "Expected budget is invalid." });
+    }
+    if (!isDatabaseReady()) {
+        return res
+            .status(503)
+            .json({
+                success: false,
+                message: "Project requests are temporarily unavailable.",
+            });
+    }
+    try {
+        const project = await Project.create({
+            companyId: req.user.companyId,
+            name: name.trim(),
+            description: description.trim(),
+            serviceType: serviceType.trim(),
+            requirements: requirements.trim(),
+            preferredStartDate: preferredStartDate || undefined,
+            expectedBudget: expectedBudget?.trim(),
+            status: "Pending Review",
+            progress: 0,
+            milestones: [],
+            updates: [],
+            activity: [{ text: "Project request submitted" }],
+        });
+        return res.status(201).json({ success: true, data: project });
+    } catch (error) {
+        next(error);
+    }
+}
+
 export async function getProject(req, res, next) {
     const query = safeProjectQuery(req.params.projectId, req.user.companyId);
     if (!query)

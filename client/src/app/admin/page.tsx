@@ -5,32 +5,16 @@ import { FormEvent, useState } from "react";
 import { defaultHomeContent, type HomeContent } from "../homeContent";
 import styles from "./page.module.css";
 
-type Lead = {
+type Project = {
     _id: string;
     name: string;
-    email: string;
-    phone?: string;
-    company?: string;
-    service: string;
-    message: string;
+    companyId: string;
+    serviceType: string;
+    description: string;
     status: string;
+    progress: number;
     createdAt: string;
-    attachments?: {
-        _id: string;
-        originalName: string;
-        mimeType: string;
-        size: number;
-        downloadUrl: string;
-    }[];
 };
-
-type LeadStatus =
-    | "all"
-    | "new"
-    | "contacted"
-    | "in_progress"
-    | "completed"
-    | "rejected";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
 
@@ -70,8 +54,7 @@ export default function AdminPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [authenticated, setAuthenticated] = useState(false);
-    const [leads, setLeads] = useState<Lead[]>([]);
-    const [statusFilter, setStatusFilter] = useState<LeadStatus>("all");
+    const [projects, setProjects] = useState<Project[]>([]);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
     const [homeContent, setHomeContent] =
@@ -79,15 +62,32 @@ export default function AdminPage() {
     const [contentSection, setContentSection] =
         useState<ContentSection>("hero");
 
-    async function loadLeads(filter: LeadStatus = statusFilter) {
-        const query = filter === "all" ? "" : `?status=${filter}`;
-        const response = await fetch(`${apiUrl}/api/admin/leads${query}`, {
+    async function loadProjects() {
+        const response = await fetch(`${apiUrl}/api/admin/projects`, {
             credentials: "include",
         });
         const result = await response.json();
         if (!response.ok)
-            throw new Error(result.message || "Could not load leads.");
-        setLeads(result.data);
+            throw new Error(result.message || "Could not load projects.");
+        setProjects(result.data);
+    }
+
+    async function updateProject(
+        id: string,
+        changes: { status?: string; progress?: number },
+    ) {
+        const response = await fetch(`${apiUrl}/api/admin/projects/${id}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify(changes),
+        });
+        const result = await response.json();
+        if (!response.ok) {
+            setMessage(result.message || "Could not update project.");
+            return;
+        }
+        await loadProjects();
     }
 
     async function loadHomeContent() {
@@ -172,7 +172,7 @@ export default function AdminPage() {
             const result = await response.json();
             if (!response.ok)
                 throw new Error(result.message || "Login failed.");
-            await loadLeads();
+            await loadProjects();
             await loadHomeContent();
             setAuthenticated(true);
         } catch (error) {
@@ -190,26 +190,8 @@ export default function AdminPage() {
             credentials: "include",
         }).catch(() => undefined);
         setAuthenticated(false);
-        setLeads([]);
+        setProjects([]);
         setPassword("");
-    }
-
-    async function updateStatus(
-        id: string,
-        status: Exclude<LeadStatus, "all">,
-    ) {
-        const response = await fetch(`${apiUrl}/api/admin/leads/${id}/status`, {
-            method: "PATCH",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ status }),
-        });
-        const result = await response.json();
-        if (!response.ok) {
-            setMessage(result.message || "Could not update lead status.");
-            return;
-        }
-        await loadLeads();
     }
 
     if (!authenticated) {
@@ -276,11 +258,11 @@ export default function AdminPage() {
                         Sign out
                     </button>
                 </header>
-                <p className={styles.kicker}>Lead inbox</p>
+                <p className={styles.kicker}>Project operations</p>
                 <h1>
-                    People ready
+                    Work worth
                     <br />
-                    <em>to move.</em>
+                    <em>moving.</em>
                 </h1>
                 <section className={styles.contentEditor}>
                     <div className={styles.editorHeader}>
@@ -870,105 +852,96 @@ export default function AdminPage() {
                         </div>
                     </div>
                 </section>
-                <div
-                    className={styles.filters}
-                    aria-label="Filter leads by status"
-                >
-                    {(
-                        [
-                            "all",
-                            "new",
-                            "contacted",
-                            "in_progress",
-                            "completed",
-                            "rejected",
-                        ] as LeadStatus[]
-                    ).map((status) => (
-                        <button
-                            className={
-                                statusFilter === status
-                                    ? styles.filterActive
-                                    : styles.filter
-                            }
-                            key={status}
-                            type="button"
-                            onClick={() => {
-                                setStatusFilter(status);
-                                loadLeads(status);
-                            }}
-                        >
-                            {status === "all"
-                                ? "All"
-                                : status.replace("_", " ")}
+                <section className={styles.contentEditor}>
+                    <div className={styles.editorHeader}>
+                        <div>
+                            <p className={styles.editorKicker}>Projects</p>
+                            <p className={styles.editorHint}>
+                                New requests appear here for review. Project
+                                lifecycle fields remain staff-controlled.
+                            </p>
+                        </div>
+                        <button type="button" onClick={loadProjects}>
+                            Refresh projects
                         </button>
-                    ))}
-                </div>
-                <div className={styles.leads}>
-                    {leads.length === 0 ? (
-                        <p className={styles.empty}>No contact requests yet.</p>
-                    ) : (
-                        leads.map((lead) => (
-                            <article className={styles.lead} key={lead._id}>
-                                <div className={styles.leadTop}>
-                                    <strong>{lead.name}</strong>
-                                    <span>{lead.status}</span>
-                                </div>
-                                <p>
-                                    {lead.email}
-                                    {lead.company ? ` · ${lead.company}` : ""}
-                                </p>
-                                {lead.phone && <p>{lead.phone}</p>}
-                                <p className={styles.service}>{lead.service}</p>
-                                <div>{lead.message}</div>
-                                {lead.attachments &&
-                                    lead.attachments.length > 0 && (
-                                        <div className={styles.attachments}>
-                                            <strong>Attachments</strong>
-                                            {lead.attachments.map(
-                                                (attachment) => (
-                                                    <a
-                                                        key={attachment._id}
-                                                        href={`${apiUrl}${attachment.downloadUrl}`}
-                                                        target="_blank"
-                                                        rel="noreferrer"
-                                                    >
-                                                        {
-                                                            attachment.originalName
-                                                        }
-                                                    </a>
-                                                ),
-                                            )}
-                                        </div>
-                                    )}
-                                <small>
-                                    {new Date(lead.createdAt).toLocaleString()}
-                                </small>
-                                <select
-                                    className={styles.statusSelect}
-                                    value={lead.status}
-                                    onChange={(event) =>
-                                        updateStatus(
-                                            lead._id,
-                                            event.target.value as Exclude<
-                                                LeadStatus,
-                                                "all"
-                                            >,
-                                        )
-                                    }
-                                    aria-label={`Update status for ${lead.name}`}
+                    </div>
+                    <div className={styles.leads}>
+                        {projects.length === 0 ? (
+                            <p className={styles.empty}>
+                                No projects have been requested yet.
+                            </p>
+                        ) : (
+                            projects.map((project) => (
+                                <article
+                                    className={styles.lead}
+                                    key={project._id}
                                 >
-                                    <option value="new">New</option>
-                                    <option value="contacted">Contacted</option>
-                                    <option value="in_progress">
-                                        In progress
-                                    </option>
-                                    <option value="completed">Completed</option>
-                                    <option value="rejected">Rejected</option>
-                                </select>
-                            </article>
-                        ))
-                    )}
-                </div>
+                                    <div className={styles.leadTop}>
+                                        <strong>{project.name}</strong>
+                                        <span>{project.status}</span>
+                                    </div>
+                                    <p>
+                                        {project.serviceType} ·{" "}
+                                        {project.progress}% complete
+                                    </p>
+                                    <p>{project.description}</p>
+                                    <small>
+                                        Requested{" "}
+                                        {new Date(
+                                            project.createdAt,
+                                        ).toLocaleString()}
+                                    </small>
+                                    <div className={styles.editorGrid}>
+                                        <label className={styles.editorField}>
+                                            <span>Status</span>
+                                            <select
+                                                value={project.status}
+                                                onChange={(event) =>
+                                                    updateProject(project._id, {
+                                                        status: event.target
+                                                            .value,
+                                                    })
+                                                }
+                                            >
+                                                {[
+                                                    "Pending Review",
+                                                    "Planning",
+                                                    "Design",
+                                                    "Development",
+                                                    "Testing",
+                                                    "Review",
+                                                    "Deployment",
+                                                    "Completed",
+                                                    "On Hold",
+                                                ].map((status) => (
+                                                    <option key={status}>
+                                                        {status}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </label>
+                                        <label className={styles.editorField}>
+                                            <span>Progress</span>
+                                            <input
+                                                type="number"
+                                                min="0"
+                                                max="100"
+                                                value={project.progress}
+                                                onChange={(event) =>
+                                                    updateProject(project._id, {
+                                                        progress: Number(
+                                                            event.target.value,
+                                                        ),
+                                                    })
+                                                }
+                                            />
+                                        </label>
+                                    </div>
+                                </article>
+                            ))
+                        )}
+                    </div>
+                </section>
             </section>
         </main>
     );

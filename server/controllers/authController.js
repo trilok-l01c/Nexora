@@ -23,7 +23,12 @@ export async function login(req, res, next, requiredRole) {
             "+passwordHash",
         );
         const validPassword =
-            user && user.active && (!requiredRole || user.role === requiredRole)
+            user &&
+            user.active &&
+            (!requiredRole ||
+                (Array.isArray(requiredRole)
+                    ? requiredRole.includes(user.role)
+                    : user.role === requiredRole))
                 ? await bcrypt.compare(
                       req.loginInput.password,
                       user.passwordHash,
@@ -49,9 +54,9 @@ export async function login(req, res, next, requiredRole) {
         );
 
         const cookieName =
-            user.role === "admin"
-                ? "nexora_admin_token"
-                : "nexora_client_token";
+            user.role === "client"
+                ? "nexora_client_token"
+                : "nexora_admin_token";
         res.setHeader(
             "Set-Cookie",
             serializeAuthCookie(cookieName, token, 2 * 60 * 60),
@@ -87,7 +92,7 @@ export function logout(req, res) {
 }
 
 export function loginAdmin(req, res, next) {
-    return login(req, res, next, "admin");
+    return login(req, res, next, ["admin", "staff"]);
 }
 
 export function loginClient(req, res, next) {
@@ -174,13 +179,11 @@ export async function signupClient(req, res, next) {
         });
     } catch (error) {
         if (error?.code === 11000) {
-            return res
-                .status(409)
-                .json({
-                    success: false,
-                    message:
-                        "An account or company with these details already exists.",
-                });
+            return res.status(409).json({
+                success: false,
+                message:
+                    "An account or company with these details already exists.",
+            });
         }
         next(error);
     }

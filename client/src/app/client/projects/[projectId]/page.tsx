@@ -16,6 +16,7 @@ type Member = {
 type Project = {
     name: string;
     description: string;
+    requirements?: string;
     serviceType: string;
     status: string;
     progress: number;
@@ -145,6 +146,14 @@ export default function ProjectDetails() {
                                 <p className={styles.subtle}>
                                     {project?.description}
                                 </p>
+                                {project?.status === "Pending Review" && (
+                                    <p className={styles.requestNotice}>
+                                        Your project request has been submitted.
+                                        The Nexora team will review the
+                                        requirements and update the project
+                                        status.
+                                    </p>
+                                )}
                                 <div className={styles.projectFacts}>
                                     <div>
                                         <span className={styles.label}>

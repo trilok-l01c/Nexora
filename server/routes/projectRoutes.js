@@ -1,8 +1,6 @@
 import { Router } from "express";
 import {
     createClientProject,
-    createTicket,
-    getDashboard,
     getProject,
     listClientProjects,
 } from "../controllers/clientController.js";
@@ -10,10 +8,8 @@ import { authenticateClient } from "../middleware/authenticateUser.js";
 
 const router = Router();
 router.use(authenticateClient);
-router.get("/dashboard", getDashboard);
-router.get("/projects", listClientProjects);
-router.post("/projects", createClientProject);
-router.get("/projects/:projectId", getProject);
-router.post("/tickets", createTicket);
+router.get("/", listClientProjects);
+router.post("/", createClientProject);
+router.get("/:projectId", getProject);
 
 export default router;

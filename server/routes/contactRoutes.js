@@ -1,21 +1,9 @@
 import { Router } from "express";
-import {
-    createContact,
-    downloadContactAttachment,
-    listContacts,
-} from "../controllers/contactController.js";
-import { authenticateAdmin } from "../middleware/authenticateAdmin.js";
-import { validateContact } from "../middleware/validateContact.js";
-import { uploadContactFiles } from "../middleware/uploadContactFiles.js";
+import { createEnquiry } from "../controllers/enquiryController.js";
+import { validateEnquiry } from "../middleware/validateEnquiry.js";
 
 const router = Router();
 
-router.post("/", uploadContactFiles, validateContact, createContact);
-router.get("/", authenticateAdmin, listContacts);
-router.get(
-    "/:id/attachments/:attachmentId",
-    authenticateAdmin,
-    downloadContactAttachment,
-);
+router.post("/", validateEnquiry, createEnquiry);
 
 export default router;

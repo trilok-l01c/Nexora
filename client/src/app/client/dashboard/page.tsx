@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import ProjectDialog from "../ProjectDialog";
 import styles from "../portal.module.css";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
@@ -228,17 +229,16 @@ export default function ClientDashboard() {
                                     My projects
                                 </h2>
                             </div>
-                            <span className={styles.subtle}>
-                                {projects.length} project
-                                {projects.length === 1 ? "" : "s"}
-                            </span>
+                            <ProjectDialog />
                         </div>
                         {projects.length === 0 ? (
-                            <p className={styles.empty}>
-                                No projects yet. Your Nexora projects will
-                                appear here once a project has been created for
-                                your company.
-                            </p>
+                            <div className={styles.emptyProjectState}>
+                                <p className={styles.empty}>
+                                    No projects yet. Start your next project
+                                    with Nexora.
+                                </p>
+                                <ProjectDialog />
+                            </div>
                         ) : (
                             <div className={styles.projectGrid}>
                                 {projects.map((project) => (

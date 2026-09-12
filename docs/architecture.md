@@ -26,8 +26,8 @@ server/
 
 ## Request flow
 
-Public contact requests pass through body parsing, rate limiting, validation, and MongoDB persistence. Admin requests pass through authentication before lead queries or status updates. Errors are converted into consistent JSON responses by centralized middleware.
+Public enquiries pass through body parsing, rate limiting, validation, and MongoDB persistence. Client project reads and writes pass through client authentication and use the authenticated company id; admin project operations pass through admin authentication. Errors are converted into consistent JSON responses by centralized middleware.
 
 ## Email notifications
 
-Email notification is intentionally not implemented yet. A future `server/services/emailService.js` can be called after successful lead creation without changing the public contact API.
+Email notification is intentionally not implemented yet. A future `server/services/emailService.js` can be called after an enquiry or project request without changing the client ownership model.

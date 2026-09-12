@@ -17,7 +17,9 @@ Open `http://localhost:3000`.
 
 - `/`: public company website
 - `/services/[slug]`: service landing pages
-- `/admin`: private admin login and lead inbox
+- `/admin`: private admin login and project operations workspace
+- `/client/login`: client sign-in fallback page
+- `/client/dashboard`: authenticated company project dashboard
 
 ## Configuration
 

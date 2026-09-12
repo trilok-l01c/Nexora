@@ -37,7 +37,7 @@ test("contact validation rejects missing required fields", async () => {
     });
     assert.equal(response.status, 400);
     assert.equal(body.success, false);
-    assert.match(body.message, /name is required/i);
+    assert.equal(body.message, "Name is required.");
 });
 
 test("contact validation rejects invalid email", async () => {
@@ -52,27 +52,7 @@ test("contact validation rejects invalid email", async () => {
         }),
     });
     assert.equal(response.status, 400);
-    assert.equal(body.message, "Invalid email address.");
-});
-
-test("contact validation rejects unsupported file types", async () => {
-    const payload = new FormData();
-    payload.append("name", "Client");
-    payload.append("email", "client@example.com");
-    payload.append("service", "Software development");
-    payload.append("message", "Project details");
-    payload.append(
-        "attachments",
-        new Blob(["executable"], { type: "application/x-msdownload" }),
-        "malware.exe",
-    );
-
-    const { response, body } = await request("/api/contact", {
-        method: "POST",
-        body: payload,
-    });
-    assert.equal(response.status, 400);
-    assert.equal(body.success, false);
+    assert.equal(body.message, "Please enter a valid email address.");
 });
 
 test("valid contact waits for the database instead of leaking an error", async () => {
@@ -87,14 +67,17 @@ test("valid contact waits for the database instead of leaking an error", async (
         }),
     });
     assert.equal(response.status, 503);
-    assert.equal(
-        body.message,
-        "Contact submissions are temporarily unavailable.",
-    );
+    assert.equal(body.message, "Contact requests are temporarily unavailable.");
 });
 
-test("admin leads reject unauthenticated requests", async () => {
+test("removed CRM routes expose no data", async () => {
     const { response, body } = await request("/api/admin/leads");
+    assert.equal(response.status, 401);
+    assert.equal(body.message, "Authentication required.");
+});
+
+test("client project routes reject unauthenticated requests", async () => {
+    const { response, body } = await request("/api/projects");
     assert.equal(response.status, 401);
     assert.equal(body.message, "Authentication required.");
 });

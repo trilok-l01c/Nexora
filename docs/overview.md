@@ -5,18 +5,19 @@ Nexora is an IT solutions company website with a Next.js client and an Express/M
 ## Product flow
 
 ```text
-Visitor -> Contact form -> POST /api/contact -> Validate -> MongoDB
-Admin -> /admin -> Login -> Protected lead inbox -> Update status
+Public website -> Sign in/sign up -> Client company -> Client dashboard
+Client -> Add project -> Pending Review -> Staff project operations
+Client -> Project updates/team/technology -> Support ticket
 ```
 
 ## Applications
 
-- `client/`: public website, service pages, contact form, and private admin interface.
-- `server/`: REST API, MongoDB connection, lead storage, admin authentication, and security middleware.
+- `client/`: public website, authentication dialog, client portal, and admin interface.
+- `server/`: REST API, MongoDB connection, enquiry/project storage, role-aware authentication, and security middleware.
 
 ## Principles
 
-- No public user registration or public authentication.
+- Public signup creates only client accounts.
 - Company contact details remain static frontend content.
-- Leads are private and accessible only to authenticated admins.
-- MongoDB is the source of truth for contacts and admin users.
+- Projects are company-scoped and accessible only to authenticated company clients or authorized admins.
+- MongoDB is the source of truth for enquiries, users, companies, projects, and support tickets.

@@ -63,15 +63,28 @@ const projectSchema = new mongoose.Schema(
             trim: true,
             maxlength: 1200,
         },
+        requirements: {
+            type: String,
+            trim: true,
+            maxlength: 5000,
+        },
         serviceType: {
             type: String,
             required: true,
             trim: true,
             maxlength: 120,
         },
+        preferredStartDate: Date,
+        expectedBudget: {
+            type: String,
+            trim: true,
+            maxlength: 120,
+        },
         status: {
             type: String,
             enum: [
+                "Requested",
+                "Pending Review",
                 "Planning",
                 "Design",
                 "Development",
@@ -81,7 +94,7 @@ const projectSchema = new mongoose.Schema(
                 "Completed",
                 "On Hold",
             ],
-            default: "Planning",
+            default: "Pending Review",
         },
         progress: { type: Number, min: 0, max: 100, default: 0 },
         startDate: Date,
