@@ -33,7 +33,7 @@ The client may use `client/.env.local`:
 NEXT_PUBLIC_API_URL=http://localhost:4292
 ```
 
-Never commit `server/.env`, `client/.env.local`, or `server/storage/uploads/`.
+Never commit `server/.env` or `client/.env.local`.
 
 ## Environment variables
 
@@ -44,31 +44,54 @@ Never commit `server/.env`, `client/.env.local`, or `server/storage/uploads/`.
 | `CORS_ORIGIN`    | Allowed frontend origin(s), comma-separated.             |
 | `ADMIN_EMAIL`    | Admin account created during server bootstrap.           |
 | `ADMIN_PASSWORD` | Bootstrap password; stored as a bcrypt hash.             |
-| `JWT_SECRET`     | Secret for the admin session token.                      |
+| `JWT_SECRET`     | Secret for admin and client session tokens.              |
 | `JWT_EXPIRES_IN` | JWT lifetime, such as `2h`.                              |
-| `UPLOAD_DIR`     | Private attachment directory, default `storage/uploads`. |
 | `NODE_ENV`       | `development` or `production`.                           |
+
+Never commit `server/.env` or `client/.env.local`.
+
+## Architecture
+
+```text
+                 PUBLIC WEBSITE
+                       │
+              Sign In / Sign Up
+                       │
+                       ▼
+                CLIENT ACCOUNT
+                       │
+                    COMPANY
+                       │
+              ┌────────┴────────┐
+              ▼                 ▼
+           PROJECTS           SUPPORT
+              │
+       ┌──────┼──────┐
+       ▼      ▼      ▼
+     Team  Progress  Updates
+              │
+         Technologies
+```
+
+Public enquiries (`POST /api/contact`) are completely separate from the authenticated client/project system: they create a plain `Enquiry` record for the team to read and never create accounts, clients, or projects.
 
 ## API and authentication
 
-Public contact submissions use `POST /api/contact` and accept multipart form data with required `name`, `email`, `service`, and `message`; `phone`, `company`, and up to five `attachments` are optional. Each attachment may be up to 10 MB and must be a PDF, common Office document, text file, or PNG/JPEG/WebP image.
+Public contact submissions use `POST /api/contact` and accept JSON with required `name`, `email`, and `message`; `company` and `service` are optional. Enquiries are stored as-is for staff follow-up — no status workflow, attachments, or CRM behaviour.
 
 Admin-only endpoints are:
 
 - `POST /api/admin/login`
 - `POST /api/admin/logout`
-- `GET /api/admin/leads?status=new`
-- `GET /api/admin/leads/:id`
-- `PATCH /api/admin/leads/:id/status`
-- `GET /api/admin/leads/:id/attachments/:attachmentId`
 - `GET/PATCH /api/admin/home`
 - `GET/POST /api/admin/projects`
 - `PATCH /api/admin/projects/:id`
 
 Client portal endpoints are:
 
-- `POST /api/auth/login` and `POST /api/auth/logout`
+- `POST /api/auth/login`, `POST /api/auth/signup`, and `POST /api/auth/logout`
 - `GET /api/client/dashboard`
+- `GET /api/client/projects` and `POST /api/client/projects` (also exposed as `GET/POST /api/projects`)
 - `GET /api/client/projects/:projectId`
 - `POST /api/client/tickets`
 
@@ -96,7 +119,7 @@ npm --prefix client run lint
 npm --prefix client run build
 ```
 
-The server validates untrusted input, limits JSON and multipart payloads, rate-limits contact and admin-login routes, uses Helmet and configured CORS, and returns safe error messages. For production, use HTTPS, a strong secret, a managed/private MongoDB deployment, persistent private file storage or object storage, and a backup/retention policy for uploaded files. Email notifications are intentionally not enabled yet; the lead controller remains the integration point for a future `emailService`.
+The server validates untrusted input, limits JSON payload sizes, rate-limits contact and admin-login routes, uses Helmet and configured CORS, and returns safe error messages. For production, use HTTPS, a strong secret, and a managed/private MongoDB deployment with a backup/retention policy. Email notifications are intentionally not enabled yet; the enquiry controller is the natural integration point for a future `emailService`.
 
 ## Browser extension note
 

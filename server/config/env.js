@@ -16,7 +16,6 @@ export const env = {
     adminPassword: process.env.ADMIN_PASSWORD || "",
     jwtSecret: process.env.JWT_SECRET || "",
     jwtExpiresIn: process.env.JWT_EXPIRES_IN || "2h",
-    uploadDir: process.env.UPLOAD_DIR || "storage/uploads",
     nodeEnv: process.env.NODE_ENV || "development",
 };
 

@@ -8,7 +8,7 @@ npm --prefix client run lint
 npm --prefix client run build
 ```
 
-The server test suite includes request-level checks for health, enquiry validation, unavailable database handling, removed lead-route protection, protected project routes, signup validation, logout, and malformed JSON. These API tests do not require a running MongoDB instance.
+The server test suite includes request-level checks for health, enquiry validation, unavailable database handling, admin route protection, protected project routes, signup validation, logout, and malformed JSON. These API tests do not require a running MongoDB instance.
 
 ## Manual API checks
 

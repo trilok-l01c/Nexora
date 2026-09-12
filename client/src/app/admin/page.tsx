@@ -865,7 +865,7 @@ export default function AdminPage() {
                             Refresh projects
                         </button>
                     </div>
-                    <div className={styles.leads}>
+                    <div className={styles.projectList}>
                         {projects.length === 0 ? (
                             <p className={styles.empty}>
                                 No projects have been requested yet.
@@ -873,10 +873,10 @@ export default function AdminPage() {
                         ) : (
                             projects.map((project) => (
                                 <article
-                                    className={styles.lead}
+                                    className={styles.projectCard}
                                     key={project._id}
                                 >
-                                    <div className={styles.leadTop}>
+                                    <div className={styles.projectCardTop}>
                                         <strong>{project.name}</strong>
                                         <span>{project.status}</span>
                                     </div>

@@ -70,8 +70,8 @@ test("valid contact waits for the database instead of leaking an error", async (
     assert.equal(body.message, "Contact requests are temporarily unavailable.");
 });
 
-test("removed CRM routes expose no data", async () => {
-    const { response, body } = await request("/api/admin/leads");
+test("admin routes require authentication", async () => {
+    const { response, body } = await request("/api/admin/projects");
     assert.equal(response.status, 401);
     assert.equal(body.message, "Authentication required.");
 });

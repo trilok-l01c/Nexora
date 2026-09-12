@@ -287,28 +287,7 @@
     border: 1px solid var(--line);
     padding: 13px;
 }
-.filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 28px;
-}
-.filter,
-.filterActive {
-    border: 1px solid var(--line);
-    padding: 9px 11px;
-    color: var(--muted);
-    background: transparent;
-    font-size: 10px;
-    font-weight: 700;
-    text-transform: capitalize;
-}
-.filter:hover,
-.filterActive {
-    color: var(--ink);
-    background: var(--acid);
-}
-.leads {
+.projectList {
     border-top: 1px solid var(--line);
 }
 .empty {
@@ -316,76 +295,49 @@
     color: var(--muted);
     font-size: 14px;
 }
-.lead {
+.projectCard {
     padding: 25px 0;
     border-bottom: 1px solid var(--line);
 }
-.leadTop {
+.projectCardTop {
     display: flex;
     align-items: baseline;
     justify-content: space-between;
     gap: 20px;
 }
-.lead strong {
+.projectCard strong {
     font-size: 20px;
     letter-spacing: -0.04em;
 }
-.leadTop span {
+.projectCardTop span {
     color: var(--card-label);
     font:
         10px var(--font-geist-mono),
         monospace;
     text-transform: uppercase;
 }
-.lead p {
+.projectCard p {
     margin: 8px 0 0;
     color: var(--muted);
     font-size: 13px;
 }
-.lead .service {
+.projectCard .service {
     color: var(--ink);
     font-weight: 700;
 }
-.lead div {
+.projectCard div {
     max-width: 650px;
     margin-top: 14px;
     font-size: 14px;
     line-height: 1.55;
 }
-.lead small {
+.projectCard small {
     display: block;
     margin-top: 16px;
     color: var(--card-number);
     font:
         10px var(--font-geist-mono),
         monospace;
-}
-.attachments {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 14px;
-    margin-top: 16px;
-    font-size: 12px;
-}
-.attachments strong {
-    width: 100%;
-    color: var(--muted);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-.attachments a {
-    color: var(--auth-success);
-    text-decoration: underline;
-}
-.statusSelect {
-    margin-top: 15px;
-    border: 1px solid var(--line);
-    border-radius: 0;
-    padding: 8px 10px;
-    color: var(--ink);
-    background: var(--paper);
-    font-size: 11px;
 }
 @media (max-width: 600px) {
     .page {

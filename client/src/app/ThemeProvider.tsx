@@ -4,7 +4,7 @@ import {
     createContext,
     useContext,
     useEffect,
-    useState,
+    useSyncExternalStore,
     type ReactNode,
 } from "react";
 
@@ -17,25 +17,64 @@ type ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined);
 
-function getInitialTheme(): Theme {
+const STORAGE_KEY = "nexora-theme";
+
+// The theme lives outside React (localStorage / OS preference), so it is read
+// through useSyncExternalStore. The server snapshot is always "light", which
+// matches the inline <head> script in layout.tsx and keeps hydration stable;
+// React re-renders with the resolved client value after hydration.
+const themeListeners = new Set<() => void>();
+let currentTheme: Theme | null = null;
+
+function resolveTheme(): Theme {
     if (typeof window === "undefined") return "light";
-    const stored = window.localStorage.getItem("nexora-theme");
+    const stored = window.localStorage.getItem(STORAGE_KEY);
     if (stored === "light" || stored === "dark") return stored;
     return window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light";
 }
 
+function getThemeSnapshot(): Theme {
+    if (currentTheme === null) {
+        currentTheme = resolveTheme();
+    }
+    return currentTheme;
+}
+
+function getThemeServerSnapshot(): Theme {
+    return "light";
+}
+
+function subscribeToTheme(onChange: () => void) {
+    themeListeners.add(onChange);
+    return () => {
+        themeListeners.delete(onChange);
+    };
+}
+
+function setTheme(next: Theme) {
+    currentTheme = next;
+    themeListeners.forEach((listener) => listener());
+}
+
 export function ThemeProvider({ children }: { children: ReactNode }) {
-    const [theme, setTheme] = useState<Theme>(getInitialTheme);
+    const theme = useSyncExternalStore(
+        subscribeToTheme,
+        getThemeSnapshot,
+        getThemeServerSnapshot,
+    );
 
     useEffect(() => {
         document.documentElement.setAttribute("data-theme", theme);
-        window.localStorage.setItem("nexora-theme", theme);
     }, [theme]);
 
     function toggleTheme() {
-        setTheme((current) => (current === "light" ? "dark" : "light"));
+        const next: Theme = theme === "light" ? "dark" : "light";
+        // Only an explicit user choice is persisted, so the system
+        // preference keeps controlling the theme until then.
+        window.localStorage.setItem(STORAGE_KEY, next);
+        setTheme(next);
     }
 
     return (
