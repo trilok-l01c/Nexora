@@ -27,6 +27,15 @@ export default function AuthDialog() {
     function close() {
         setOpen(false);
         setMessage("");
+        // Clear the #signup hash so clicking a "Start a conversation"
+        // button again re-triggers the hashchange listener.
+        if (window.location.hash === "#signup") {
+            history.replaceState(
+                null,
+                "",
+                window.location.pathname + window.location.search,
+            );
+        }
         triggerRef.current?.focus();
     }
 
@@ -67,6 +76,21 @@ export default function AuthDialog() {
             previousActive?.focus();
         };
     }, [open]);
+
+    // "Start a conversation" buttons link to #signup; open the dialog in
+    // register mode when the page loads with that hash or when it changes.
+    useEffect(() => {
+        function openSignupFromHash() {
+            if (window.location.hash !== "#signup") return;
+            setMode("signup");
+            setOpen(true);
+        }
+        openSignupFromHash();
+        window.addEventListener("hashchange", openSignupFromHash);
+        return () => {
+            window.removeEventListener("hashchange", openSignupFromHash);
+        };
+    }, []);
 
     function update(field: keyof typeof form, value: string) {
         setForm((current) => ({ ...current, [field]: value }));

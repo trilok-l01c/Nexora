@@ -168,9 +168,6 @@ export default function Nav() {
                     )}
                 </button>
                 <AuthDialog />
-                <Link className={styles.navCta} href="/#contact">
-                    Start a project <span aria-hidden="true">↗</span>
-                </Link>
             </div>
         </nav>
     );

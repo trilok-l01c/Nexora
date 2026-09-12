@@ -35,25 +35,15 @@
     color: var(--brand-mark-text);
     font-size: 13px;
 }
-.backLink,
-.navCta {
+.backLink {
     font-size: 12px;
     font-weight: 600;
-}
-.backLink {
     margin-left: auto;
     margin-right: 38px;
     color: var(--muted);
 }
 .backLink:hover {
     color: var(--link-hover);
-}
-.navCta {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    border-bottom: 1px solid var(--ink);
-    padding: 9px 0;
 }
 .hero {
     position: relative;
@@ -239,9 +229,6 @@
     }
     .backLink {
         display: none;
-    }
-    .navCta {
-        font-size: 11px;
     }
     .hero {
         min-height: 720px;

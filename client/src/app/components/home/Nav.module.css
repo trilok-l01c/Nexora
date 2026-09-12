@@ -103,7 +103,6 @@
     line-height: 1.35;
 }
 .navLinks a,
-.navCta,
 .brand {
     transition:
         color 0.2s,
@@ -112,15 +111,6 @@
 }
 .navLinks a:hover {
     color: var(--link-hover);
-}
-.navCta {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    border-bottom: 1px solid var(--nav-cta-border);
-    padding: 9px 0;
-    font-size: 12px;
-    font-weight: 600;
 }
 .navActions {
     display: flex;
@@ -175,9 +165,6 @@
         right: 20px;
         left: 20px;
         width: auto;
-    }
-    .navCta {
-        font-size: 11px;
     }
     .navActions {
         gap: 8px;

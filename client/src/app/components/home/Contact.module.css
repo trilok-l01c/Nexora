@@ -17,97 +17,6 @@
     line-height: 0.85;
     letter-spacing: -0.09em;
 }
-.contactForm {
-    max-width: 760px;
-    margin: 0 auto 35px;
-    padding: 28px;
-    text-align: left;
-    border: 1px solid var(--contact-border);
-    background: var(--contact-form-bg);
-}
-.formGrid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-.formGrid label {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    color: var(--muted);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-.fieldLabel {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0;
-}
-.fieldLabel span {
-    color: var(--card-label);
-}
-.formWide {
-    grid-column: 1 / -1;
-}
-.formGrid input,
-.formGrid select,
-.formGrid textarea {
-    width: 100%;
-    border: 1px solid var(--contact-input-border);
-    border-radius: 0;
-    padding: 12px;
-    color: var(--ink);
-    background: var(--contact-input-bg);
-    font:
-        13px var(--font-geist-sans),
-        sans-serif;
-    outline: none;
-}
-.formGrid input:focus,
-.formGrid select:focus,
-.formGrid textarea:focus {
-    border-color: var(--link-hover);
-    box-shadow: 0 0 0 2px rgba(120, 156, 0, 0.15);
-}
-.formGrid textarea {
-    resize: vertical;
-}
-.fileInput {
-    padding: 10px !important;
-}
-.fileHint {
-    color: var(--muted);
-    font-size: 10px;
-    font-weight: 400;
-    letter-spacing: 0;
-    text-transform: none;
-}
-.formFooter {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-    margin-top: 24px;
-}
-.formStatus {
-    min-height: 18px;
-    margin: 0;
-    color: var(--muted);
-    font-size: 11px;
-    line-height: 1.4;
-}
-.formStatus[data-status="success"] {
-    color: var(--auth-success);
-}
-.formStatus[data-status="error"] {
-    color: var(--auth-error);
-}
-.contactButton:disabled {
-    cursor: wait;
-    opacity: 0.6;
-}
 .contact h2 em {
     color: var(--hero-emphasis);
     font-style: normal;
@@ -136,20 +45,5 @@
     }
     .contact h2 {
         font-size: clamp(58px, 17vw, 95px);
-    }
-    .contactForm {
-        padding: 20px;
-    }
-    .formGrid {
-        display: block;
-    }
-    .formGrid label {
-        margin-bottom: 18px;
-    }
-    .formFooter {
-        display: block;
-    }
-    .formStatus {
-        margin-bottom: 15px;
     }
 }

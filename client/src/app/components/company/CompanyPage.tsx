@@ -43,7 +43,7 @@ export default function CompanyPage({
                     <p className={styles.eyebrow}>{eyebrow} / Nexora</p>
                     <h1>{title}</h1>
                     <p className={styles.intro}>{description}</p>
-                    <Link className={styles.primaryButton} href="/#contact">
+                    <Link className={styles.primaryButton} href="#signup">
                         Start a conversation <span aria-hidden="true">↗</span>
                     </Link>
                 </div>

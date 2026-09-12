@@ -46,7 +46,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
                     <p className={styles.intro}>{service.description}</p>
                     <a
                         className={styles.primaryButton}
-                        href="mailto:hello@nexora.studio"
+                        href="#signup"
                     >
                         Start a conversation <span aria-hidden="true">↗</span>
                     </a>
