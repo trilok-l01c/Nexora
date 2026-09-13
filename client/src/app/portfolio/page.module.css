@@ -88,18 +88,25 @@
     flex-direction: column;
     border: 1px solid var(--line);
     background: transparent;
+    box-shadow: 6px 6px 0 var(--signal-shadow);
     transition:
         border-color 0.2s,
-        transform 0.2s;
+        transform 0.2s,
+        box-shadow 0.2s;
 }
 
 .card:hover {
     border-color: var(--card-label);
     transform: translateY(-3px);
+    box-shadow: 8px 8px 0 var(--signal-shadow);
 }
 
 .cardFeatured {
     box-shadow: 10px 10px 0 var(--signal-shadow);
+}
+
+.cardFeatured:hover {
+    box-shadow: 12px 12px 0 var(--signal-shadow);
 }
 
 .cardMedia {

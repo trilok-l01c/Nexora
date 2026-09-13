@@ -841,14 +841,37 @@ export default function AdminPage() {
                                 </button>
                             </div>
                             {homeContent.ticker.map((item, index) => (
-                                <Field
+                                <div
                                     key={`ticker-${index}`}
-                                    label={`Item ${index + 1}`}
-                                    value={item}
-                                    onChange={(value) =>
-                                        updateListItem("ticker", index, value)
-                                    }
-                                />
+                                    className={styles.tickerItem}
+                                >
+                                    <Field
+                                        label={`Item ${index + 1}`}
+                                        value={item}
+                                        onChange={(value) =>
+                                            updateListItem(
+                                                "ticker",
+                                                index,
+                                                value,
+                                            )
+                                        }
+                                    />
+                                    <button
+                                        type="button"
+                                        className={styles.tickerRemove}
+                                        onClick={() =>
+                                            updateHomeContent(
+                                                "ticker",
+                                                homeContent.ticker.filter(
+                                                    (_, i) => i !== index,
+                                                ),
+                                            )
+                                        }
+                                        aria-label={`Remove item ${index + 1}`}
+                                    >
+                                        −
+                                    </button>
+                                </div>
                             ))}
                         </div>
                     </div>

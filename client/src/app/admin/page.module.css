@@ -334,6 +334,28 @@
 .tickerEditor .editorField + .editorField {
     margin-top: 12px;
 }
+.tickerItem {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.tickerItem:last-child {
+    margin-bottom: 0;
+}
+.tickerRemove {
+    border: 0;
+    padding: 0;
+    color: var(--auth-error);
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    background: transparent;
+}
+.tickerRemove:hover {
+    opacity: 0.7;
+}
 .statEditor {
     display: grid;
     gap: 10px;
@@ -593,6 +615,89 @@
 .updateActions button:hover {
     color: var(--secondary-button-active-text);
     background: var(--secondary-button-hover-bg);
+}
+.imageUploadRow {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.imageUploadControls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.imageUploadButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--secondary-button-border);
+    padding: 6px 12px;
+    color: var(--secondary-button-text);
+    background: var(--secondary-button-bg);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        color 0.15s ease,
+        background 0.15s ease;
+}
+.imageUploadButton:hover {
+    color: var(--secondary-button-active-text);
+    background: var(--secondary-button-hover-bg);
+}
+.imageUploadButton:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.imageUploadStatus {
+    font-size: 11px;
+    color: var(--muted);
+}
+.imageUploadStatus[data-status="error"] {
+    color: var(--auth-error);
+}
+.imageUploadStatus[data-status="success"] {
+    color: var(--accent);
+}
+.imagePreview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 4px;
+}
+.imagePreviewItem {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    border: 1px solid var(--line);
+    overflow: hidden;
+}
+.imagePreviewItem img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.imagePreviewRemove {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 18px;
+    height: 18px;
+    border: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.7);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+}
+.imagePreviewRemove:hover {
+    background: var(--auth-error);
 }
 @media (max-width: 600px) {
     .headerActions {

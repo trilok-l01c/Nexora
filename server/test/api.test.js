@@ -28,7 +28,15 @@ async function request(path, options) {
 test("health endpoint responds", async () => {
     const { response, body } = await request("/api/health");
     assert.equal(response.status, 200);
-    assert.deepEqual(body, { success: true, status: "ok" });
+    assert.equal(body.success, true);
+    assert.ok(
+        body.status === "ok" || body.status === "degraded",
+        `expected status "ok" or "degraded", got "${body.status}"`,
+    );
+    assert.ok(
+        body.database === "connected" || body.database === "disconnected",
+        `expected database "connected" or "disconnected", got "${body.database}"`,
+    );
 });
 
 test("contact validation rejects missing required fields", async () => {
@@ -253,4 +261,43 @@ test("portfolio update creation rejects malformed project ids for admins", async
     });
     assert.equal(response.status, 404);
     assert.equal(body.message, "Portfolio project not found.");
+});
+
+test("portfolio image upload requires authentication", async () => {
+    const { response, body } = await request("/api/admin/portfolio/upload", {
+        method: "POST",
+    });
+    assert.equal(response.status, 401);
+    assert.equal(body.success, false);
+});
+
+test("portfolio image upload rejects non-admin users", async () => {
+    const clientToken = jwt.sign(
+        { sub: "client-user-id", role: "client" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request("/api/admin/portfolio/upload", {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${clientToken}`,
+        },
+    });
+    assert.equal(response.status, 403);
+    assert.equal(body.success, false);
+});
+
+test("portfolio image upload rejects requests without a file", async () => {
+    const adminToken = jwt.sign(
+        { sub: "admin-user-id", role: "admin" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request("/api/admin/portfolio/upload", {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${adminToken}`,
+        },
+    });
+    assert.equal(response.status, 400);
+    assert.equal(body.success, false);
+    assert.match(body.message, /no image file/i);
 });

@@ -1,6 +1,12 @@
 "use client";
 
-import { FormEvent, useCallback, useEffect, useState } from "react";
+import {
+    FormEvent,
+    useCallback,
+    useEffect,
+    useRef,
+    useState,
+} from "react";
 import styles from "./page.module.css";
 import {
     PORTFOLIO_CATEGORIES,
@@ -12,6 +18,12 @@ import {
 } from "../portfolioTypes";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
+
+type UploadStatus =
+    | { state: "idle" }
+    | { state: "uploading" }
+    | { state: "success"; url: string }
+    | { state: "error"; message: string };
 
 type ProjectFormState = {
     title: string;
@@ -90,6 +102,150 @@ function splitList(text: string) {
         .split(/\r?\n|,/)
         .map((item) => item.trim())
         .filter(Boolean);
+}
+
+// Upload an image file to the server. Returns the public URL on success.
+async function uploadImage(
+    file: File,
+    onUploading: () => void,
+): Promise<string> {
+    onUploading();
+    const formData = new FormData();
+    formData.append("image", file);
+    const response = await fetch(`${apiUrl}/api/admin/portfolio/upload`, {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) {
+        throw new Error(result.message || "Upload failed. Try again.");
+    }
+    return result.data.imageUrl as string;
+}
+
+// Reusable image upload component for cover and gallery images.
+function ImageUpload({
+    label,
+    multiple,
+    value,
+    onChange,
+}: {
+    label: string;
+    multiple: boolean;
+    value: string; // newline-separated URLs
+    onChange: (value: string) => void;
+}) {
+    const [status, setStatus] = useState<UploadStatus>({ state: "idle" });
+    const inputRef = useRef<HTMLInputElement>(null);
+    const urls = splitList(value);
+
+    function setStatusIdle() {
+        setStatus({ state: "idle" });
+    }
+
+    async function handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+        const files = event.target.files;
+        if (!files || files.length === 0) return;
+        setStatus({ state: "uploading" });
+        try {
+            const uploadedUrls: string[] = [];
+            for (const file of Array.from(files)) {
+                const url = await uploadImage(file, () => {
+                    setStatus({ state: "uploading" });
+                });
+                uploadedUrls.push(url);
+            }
+            const updatedValue = [...urls, ...uploadedUrls].join("\n");
+            onChange(updatedValue);
+            setStatus({
+                state: "success",
+                url: uploadedUrls.join(", "),
+            });
+            setTimeout(setStatusIdle, 3000);
+        } catch (error) {
+            setStatus({
+                state: "error",
+                message:
+                    error instanceof Error
+                        ? error.message
+                        : "Upload failed.",
+            });
+        } finally {
+            if (inputRef.current) inputRef.current.value = "";
+        }
+    }
+
+    function removeUrl(index: number) {
+        const updated = urls.filter((_, i) => i !== index);
+        onChange(updated.join("\n"));
+    }
+
+    const statusMessage =
+        status.state === "uploading"
+            ? "Uploading…"
+            : status.state === "success"
+              ? `Uploaded: ${status.url}`
+              : status.state === "error"
+                ? status.message
+                : null;
+
+    const statusAttr =
+        status.state === "error"
+            ? "error"
+            : status.state === "success"
+              ? "success"
+              : undefined;
+
+    return (
+        <div className={styles.imageUploadRow}>
+            {urls.length > 0 && (
+                <div className={styles.imagePreview}>
+                    {urls.map((url, index) => (
+                        <div className={styles.imagePreviewItem} key={`${url}-${index}`}>
+                            <img src={url} alt={`Uploaded ${index + 1}`} />
+                            <button
+                                type="button"
+                                className={styles.imagePreviewRemove}
+                                onClick={() => removeUrl(index)}
+                                aria-label="Remove image"
+                            >
+                                ×
+                            </button>
+                        </div>
+                    ))}
+                </div>
+            )}
+            <div className={styles.imageUploadControls}>
+                <input
+                    ref={inputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,image/gif"
+                    multiple={multiple}
+                    onChange={handleFileChange}
+                    disabled={status.state === "uploading"}
+                    style={{ display: "none" }}
+                    aria-label={label}
+                />
+                <button
+                    type="button"
+                    className={styles.imageUploadButton}
+                    onClick={() => inputRef.current?.click()}
+                    disabled={status.state === "uploading"}
+                >
+                    {multiple ? "Upload images" : "Upload image"}
+                </button>
+                {statusMessage && (
+                    <span
+                        className={styles.imageUploadStatus}
+                        data-status={statusAttr}
+                    >
+                        {statusMessage}
+                    </span>
+                )}
+            </div>
+        </div>
+    );
 }
 
 function toDateInputValue(value?: string) {
@@ -612,7 +768,15 @@ export default function PortfolioManager() {
                     </div>
                     <div className={styles.editorGrid}>
                         <label className={styles.editorField}>
-                            <span>Cover image URL (optional)</span>
+                            <span>Cover image (optional)</span>
+                            <ImageUpload
+                                label="Upload cover image"
+                                multiple={false}
+                                value={projectValues.coverImage}
+                                onChange={(url) =>
+                                    setProjectField("coverImage", url)
+                                }
+                            />
                             <input
                                 type="url"
                                 value={projectValues.coverImage}
@@ -622,13 +786,21 @@ export default function PortfolioManager() {
                                         event.target.value,
                                     )
                                 }
-                                placeholder="https://"
+                                placeholder="Or paste image URL"
                             />
                         </label>
                         <label className={styles.editorField}>
-                            <span>Additional images (one URL per line)</span>
+                            <span>Additional images (optional)</span>
+                            <ImageUpload
+                                label="Upload additional images"
+                                multiple={true}
+                                value={projectValues.images}
+                                onChange={(value) =>
+                                    setProjectField("images", value)
+                                }
+                            />
                             <textarea
-                                rows={3}
+                                rows={2}
                                 value={projectValues.images}
                                 onChange={(event) =>
                                     setProjectField(
@@ -636,7 +808,7 @@ export default function PortfolioManager() {
                                         event.target.value,
                                     )
                                 }
-                                placeholder={"https://...\nhttps://..."}
+                                placeholder={"Or paste URLs (one per line)"}
                             />
                         </label>
                     </div>
@@ -879,8 +1051,19 @@ export default function PortfolioManager() {
                                                 className={styles.editorField}
                                             >
                                                 <span>
-                                                    Images (one URL per line)
+                                                    Update images (optional)
                                                 </span>
+                                                <ImageUpload
+                                                    label="Upload update images"
+                                                    multiple={true}
+                                                    value={updateValues.images}
+                                                    onChange={(value) =>
+                                                        setUpdateField(
+                                                            "images",
+                                                            value,
+                                                        )
+                                                    }
+                                                />
                                                 <textarea
                                                     rows={2}
                                                     value={updateValues.images}
@@ -889,6 +1072,9 @@ export default function PortfolioManager() {
                                                             "images",
                                                             event.target.value,
                                                         )
+                                                    }
+                                                    placeholder={
+                                                        "Or paste URLs (one per line)"
                                                     }
                                                 />
                                             </label>
