@@ -26,8 +26,8 @@
     gap: 40px;
     align-items: center;
     padding: 18px 23px;
-    background: var(--button-bg);
-    color: var(--button-text);
+    background: var(--primary-button-bg);
+    color: var(--primary-button-text);
     font-size: 12px;
     font-weight: 600;
     transition:
@@ -36,7 +36,7 @@
         transform 0.2s;
 }
 .contactButton:hover {
-    background: var(--button-hover-bg);
+    background: var(--primary-button-hover-bg);
     transform: translateY(-2px);
 }
 @media (max-width: 760px) {

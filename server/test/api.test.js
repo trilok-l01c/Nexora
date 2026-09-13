@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { after, before, test } from "node:test";
+import jwt from "jsonwebtoken";
 import app from "../app.js";
+import { env } from "../config/env.js";
 
 let server;
 let baseUrl;
@@ -144,4 +146,111 @@ test("malformed JSON returns a safe client error", async () => {
     });
     assert.equal(response.status, 400);
     assert.equal(body.message, "Malformed JSON request body.");
+});
+
+test("public portfolio list waits for the database instead of leaking an error", async () => {
+    const { response, body } = await request("/api/portfolio");
+    assert.equal(response.status, 503);
+    assert.equal(body.success, false);
+    assert.equal(body.message, "The portfolio is temporarily unavailable.");
+});
+
+test("portfolio detail rejects malformed project ids", async () => {
+    const { response, body } = await request("/api/portfolio/not-an-id");
+    assert.equal(response.status, 404);
+    assert.equal(body.success, false);
+    assert.equal(body.message, "Portfolio project not found.");
+});
+
+test("admin portfolio routes require authentication", async () => {
+    const jsonHeaders = { "Content-Type": "application/json" };
+    const attempts = await Promise.all([
+        request("/api/admin/portfolio", {
+            method: "POST",
+            headers: jsonHeaders,
+            body: JSON.stringify({ title: "Sneaky project" }),
+        }),
+        request("/api/admin/portfolio/665f0c0e1d4b3a2b8c9d0e11", {
+            method: "PATCH",
+            headers: jsonHeaders,
+            body: JSON.stringify({ title: "Changed" }),
+        }),
+        request("/api/admin/portfolio/665f0c0e1d4b3a2b8c9d0e11", {
+            method: "DELETE",
+        }),
+        request("/api/admin/portfolio/665f0c0e1d4b3a2b8c9d0e11/updates", {
+            method: "POST",
+            headers: jsonHeaders,
+            body: JSON.stringify({ title: "Sneaky update" }),
+        }),
+        request(
+            "/api/admin/portfolio/665f0c0e1d4b3a2b8c9d0e11/updates/665f0c0e1d4b3a2b8c9d0e22",
+            { method: "DELETE" },
+        ),
+    ]);
+    for (const { response, body } of attempts) {
+        assert.equal(response.status, 401);
+        assert.equal(body.message, "Authentication required.");
+    }
+});
+
+test("client accounts cannot manage portfolio projects", async () => {
+    const clientToken = jwt.sign(
+        { sub: "client-user-id", role: "client" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request("/api/admin/portfolio", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${clientToken}`,
+        },
+        body: JSON.stringify({ title: "Sneaky project" }),
+    });
+    assert.equal(response.status, 403);
+    assert.equal(body.success, false);
+    assert.equal(body.message, "Admin access required.");
+});
+
+test("admin portfolio creation accepts admin tokens and waits for the database", async () => {
+    const adminToken = jwt.sign(
+        { sub: "admin-user-id", role: "admin" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request("/api/admin/portfolio", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${adminToken}`,
+        },
+        body: JSON.stringify({
+            title: "AI Content Optimizer",
+            shortDescription: "Internal demo project.",
+            category: "AI & Automation",
+            status: "Published",
+        }),
+    });
+    assert.equal(response.status, 503);
+    assert.equal(body.success, false);
+    assert.equal(
+        body.message,
+        "Portfolio management is temporarily unavailable.",
+    );
+});
+
+test("portfolio update creation rejects malformed project ids for admins", async () => {
+    const adminToken = jwt.sign(
+        { sub: "admin-user-id", role: "admin" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request("/api/admin/portfolio/not-an-id/updates", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${adminToken}`,
+        },
+        body: JSON.stringify({ title: "Launch" }),
+    });
+    assert.equal(response.status, 404);
+    assert.equal(body.message, "Portfolio project not found.");
 });

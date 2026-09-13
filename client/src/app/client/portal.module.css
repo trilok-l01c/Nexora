@@ -314,6 +314,23 @@ html[data-theme="dark"] .portal {
     min-height: 90px;
     resize: vertical;
 }
+.field input::placeholder,
+.field textarea::placeholder {
+    color: var(--portal-muted);
+    opacity: 1;
+}
+/* Browser autofill forces its own light background, which would stay
+   light in dark mode without this override. */
+.field input:-webkit-autofill,
+.field textarea:-webkit-autofill,
+.field input:-webkit-autofill:hover,
+.field textarea:-webkit-autofill:hover,
+.field input:-webkit-autofill:focus,
+.field textarea:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--portal-ink);
+    caret-color: var(--portal-ink);
+    box-shadow: 0 0 0 1000px var(--portal-input-bg) inset;
+}
 .button {
     border: 0;
     padding: 12px 16px;

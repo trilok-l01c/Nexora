@@ -93,6 +93,19 @@
     border-color: var(--link-hover);
     box-shadow: 0 0 0 2px rgba(120, 156, 0, 0.16);
 }
+.field input::placeholder {
+    color: var(--auth-muted);
+    opacity: 1;
+}
+/* Browser autofill forces its own light background on the transparent
+   input, which would stay light in dark mode without this override. */
+.field input:-webkit-autofill,
+.field input:-webkit-autofill:hover,
+.field input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--ink);
+    caret-color: var(--ink);
+    box-shadow: 0 0 0 1000px var(--auth-dialog-bg) inset;
+}
 .passwordWrap {
     position: relative;
 }
@@ -131,18 +144,23 @@
     width: 100%;
     border: 0;
     padding: 14px;
-    color: var(--button-text);
-    background: var(--button-bg);
+    color: var(--primary-button-text);
+    background: var(--primary-button-bg);
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
 }
 .submit:hover {
-    background: var(--button-hover-bg);
+    background: var(--primary-button-hover-bg);
 }
 .submit:disabled {
     cursor: wait;
     opacity: 0.6;
+}
+.submit:focus-visible,
+.trigger:focus-visible {
+    outline: 2px solid var(--link-hover);
+    outline-offset: 2px;
 }
 .switchPrompt {
     margin-top: 20px;

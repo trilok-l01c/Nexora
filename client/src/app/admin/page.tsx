@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { defaultHomeContent, type HomeContent } from "../homeContent";
+import PortfolioManager from "./PortfolioManager";
 import styles from "./page.module.css";
 
 type Project = {
@@ -942,6 +943,7 @@ export default function AdminPage() {
                         )}
                     </div>
                 </section>
+                <PortfolioManager />
             </section>
         </main>
     );

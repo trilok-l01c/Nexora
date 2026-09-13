@@ -31,8 +31,8 @@
     width: 27px;
     height: 27px;
     border-radius: 50%;
-    background: var(--ink);
-    color: var(--acid);
+    background: var(--brand-mark-bg);
+    color: var(--brand-mark-text);
     font-size: 13px;
 }
 .kicker {
@@ -86,24 +86,42 @@
     border-color: var(--link-hover);
     box-shadow: 0 0 0 2px rgba(120, 156, 0, 0.15);
 }
+.loginPanel input::placeholder {
+    color: var(--muted);
+    opacity: 1;
+}
+/* Browser autofill forces its own light background on the transparent
+   input, which would stay light in dark mode without this override. */
+.loginPanel input:-webkit-autofill,
+.loginPanel input:-webkit-autofill:hover,
+.loginPanel input:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--ink);
+    caret-color: var(--ink);
+    box-shadow: 0 0 0 1000px var(--paper) inset;
+}
 .loginPanel button,
 .dashboard button {
     border: 0;
     padding: 15px 18px;
-    color: var(--acid);
-    background: var(--ink);
+    color: var(--primary-button-text);
+    background: var(--primary-button-bg);
     font-size: 12px;
     font-weight: 700;
     cursor: pointer;
 }
 .loginPanel button:hover,
 .dashboard button:hover {
-    background: var(--button-hover);
+    background: var(--primary-button-hover-bg);
 }
 .loginPanel button:disabled,
 .dashboard button:disabled {
     cursor: wait;
     opacity: 0.6;
+}
+.loginPanel button:focus-visible,
+.dashboard button:focus-visible {
+    outline: 2px solid var(--link-hover);
+    outline-offset: 2px;
 }
 .message {
     min-height: 20px;
@@ -178,23 +196,41 @@
     gap: 6px;
     margin-bottom: 20px;
 }
-.tab,
-.tabActive,
-.addButton,
-.removeButton {
-    border: 1px solid var(--line);
+.dashboard .tab,
+.dashboard .tabActive,
+.dashboard .addButton,
+.dashboard .removeButton {
+    border: 1px solid var(--secondary-button-border);
     padding: 9px 12px;
-    color: var(--muted);
-    background: transparent;
+    color: var(--secondary-button-text);
+    background: var(--secondary-button-bg);
     font-size: 11px;
     font-weight: 700;
     cursor: pointer;
 }
-.tabActive,
-.tab:hover,
-.addButton:hover {
-    color: var(--ink);
-    background: var(--acid);
+.dashboard .tabActive,
+.dashboard .tab:hover,
+.dashboard .addButton:hover {
+    color: var(--secondary-button-active-text);
+    background: var(--secondary-button-hover-bg);
+}
+.dashboard .removeButton:hover {
+    border-color: var(--auth-error);
+    color: var(--auth-error);
+    background: var(--secondary-button-hover-bg);
+}
+.submitButton {
+    border: 1px solid var(--primary-button-bg);
+    padding: 9px 12px;
+    color: var(--primary-button-text);
+    background: var(--primary-button-bg);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.submitButton:hover {
+    border-color: var(--primary-button-hover-bg);
+    background: var(--primary-button-hover-bg);
 }
 .editorBody {
     border-top: 1px solid var(--line);
@@ -218,6 +254,7 @@
     margin-bottom: 7px;
 }
 .editorField input,
+.editorField select,
 .editorField textarea {
     display: block;
     width: 100%;
@@ -237,10 +274,26 @@
     resize: vertical;
 }
 .editorField input:focus,
+.editorField select:focus,
 .editorField textarea:focus {
     border-color: var(--link-hover);
     outline: none;
     box-shadow: 0 0 0 2px rgba(120, 156, 0, 0.15);
+}
+.editorField input::placeholder,
+.editorField textarea::placeholder {
+    color: var(--muted);
+    opacity: 1;
+}
+.editorField input:-webkit-autofill,
+.editorField textarea:-webkit-autofill,
+.editorField input:-webkit-autofill:hover,
+.editorField textarea:-webkit-autofill:hover,
+.editorField input:-webkit-autofill:focus,
+.editorField textarea:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--ink);
+    caret-color: var(--ink);
+    box-shadow: 0 0 0 1000px var(--paper) inset;
 }
 .editorList {
     display: grid;
@@ -363,3 +416,195 @@
         font-size: clamp(52px, 17vw, 85px);
     }
 }
+
+/* Portfolio management */
+.headerActions {
+    display: flex;
+    gap: 8px;
+}
+.headerActions button {
+    border: 1px solid var(--secondary-button-border);
+    padding: 10px 14px;
+    color: var(--secondary-button-text);
+    background: var(--secondary-button-bg);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.headerActions button:hover {
+    color: var(--secondary-button-active-text);
+    background: var(--secondary-button-hover-bg);
+}
+.statusChip {
+    border: 1px solid var(--line);
+    padding: 4px 8px;
+    color: var(--muted);
+    font:
+        700 9px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.statusChip[data-status="Published"] {
+    color: var(--auth-success);
+    border-color: var(--auth-success);
+}
+.statusChip[data-status="Archived"] {
+    color: var(--auth-error);
+    border-color: var(--auth-error);
+}
+.projectMetaLine {
+    margin: 12px 0 0;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.projectCard .imageNote {
+    margin-top: 8px;
+}
+.cardActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+}
+.cardActions button {
+    border: 1px solid var(--secondary-button-border);
+    padding: 8px 12px;
+    color: var(--secondary-button-text);
+    background: var(--secondary-button-bg);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.cardActions button:hover {
+    color: var(--secondary-button-active-text);
+    background: var(--secondary-button-hover-bg);
+}
+.cardActions .removeButton:hover,
+.updateActions .removeButton:hover {
+    color: var(--auth-error);
+    border-color: var(--auth-error);
+    background: transparent;
+}
+.checkboxField {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--muted);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.checkboxField input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--link-hover);
+}
+.checkboxField span {
+    letter-spacing: 0;
+    text-transform: none;
+}
+.portfolioForm {
+    display: grid;
+    gap: 14px;
+    border: 1px solid var(--line);
+    padding: 18px;
+    margin-bottom: 20px;
+}
+.updatesPanel {
+    margin-top: 16px;
+    border: 1px solid var(--line);
+    padding: 16px;
+}
+.updatesPanelHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+.updatesPanelHeader strong {
+    color: var(--card-label);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+.updateItem {
+    border-top: 1px solid var(--line);
+    padding: 14px 0;
+}
+.updateItemTop {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+}
+.updateItemTop strong {
+    font-size: 14px;
+}
+.updateItemTop time {
+    color: var(--muted);
+    font:
+        10px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.updateItem > p {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.5;
+}
+.chipRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+}
+.chip {
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    color: var(--muted);
+    font:
+        600 10px var(--font-geist-mono),
+        monospace;
+}
+.updateActions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+}
+.updateActions button {
+    border: 1px solid var(--secondary-button-border);
+    padding: 6px 10px;
+    color: var(--secondary-button-text);
+    background: var(--secondary-button-bg);
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.updateActions button:hover {
+    color: var(--secondary-button-active-text);
+    background: var(--secondary-button-hover-bg);
+}
+@media (max-width: 600px) {
+    .headerActions {
+        margin-top: 16px;
+    }
+    .portfolioForm,
+    .updatesPanel {
+        padding: 14px;
+    }
+    .updateItemTop {
+        flex-direction: column;
+        gap: 4px;
+    }
+}
+

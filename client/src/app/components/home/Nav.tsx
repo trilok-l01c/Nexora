@@ -118,6 +118,7 @@ export default function Nav() {
                     </div>
                 </div>
                 <Link href="/#approach">Approach</Link>
+                <Link href="/portfolio">Portfolio</Link>
                 <Link href="/clients">Clients</Link>
                 <Link href="/alliances">Alliances</Link>
             </div>

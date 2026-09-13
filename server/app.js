@@ -10,6 +10,7 @@ import contactRoutes from "./routes/contactRoutes.js";
 import homeRoutes from "./routes/homeRoutes.js";
 import clientRoutes from "./routes/clientRoutes.js";
 import projectRoutes from "./routes/projectRoutes.js";
+import portfolioRoutes from "./routes/portfolioRoutes.js";
 
 const app = express();
 
@@ -17,7 +18,7 @@ app.use(helmet());
 app.use(
     cors({
         origin: env.corsOrigin.split(",").map((origin) => origin.trim()),
-        methods: ["GET", "POST", "PATCH"],
+        methods: ["GET", "POST", "PATCH", "DELETE"],
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true,
     }),
@@ -55,6 +56,7 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api/home", homeRoutes);
+app.use("/api/portfolio", portfolioRoutes);
 app.use("/api/auth", loginLimiter, authRoutes);
 app.use("/api/admin/login", loginLimiter);
 app.use("/api/admin", adminRoutes);

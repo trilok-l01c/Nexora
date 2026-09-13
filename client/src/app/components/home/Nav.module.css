@@ -86,7 +86,7 @@
 }
 .dropdownMenu a:hover {
     background: var(--acid);
-    color: var(--ink);
+    color: var(--acid-text);
 }
 .dropdownMenu a span,
 .dropdownMenu a small {

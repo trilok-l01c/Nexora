@@ -280,6 +280,7 @@
 }
 .contact {
     padding: 145px 32px 160px;
+    color: var(--signal-orb-text);
     text-align: center;
     background: var(--acid);
 }
