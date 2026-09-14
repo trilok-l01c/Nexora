@@ -43,17 +43,16 @@ html[data-theme="dark"] .portal {
     --portal-button-hover: #8aa51f;
     --portal-milestone-border: #3a4038;
 }
-.shell {
-    display: grid;
-    grid-template-columns: 230px minmax(0, 1fr);
-    min-height: 100vh;
-}
-.sidebar {
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
     display: flex;
-    flex-direction: column;
-    gap: 36px;
-    border-right: 1px solid var(--portal-line);
-    padding: 34px 24px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 16px clamp(24px, 5vw, 48px);
+    border-bottom: 1px solid var(--portal-line);
     background: var(--portal-card);
 }
 .brand {
@@ -73,86 +72,78 @@ html[data-theme="dark"] .portal {
     background: var(--portal-green);
     font-size: 14px;
 }
-.nav {
-    display: grid;
-    gap: 7px;
-}
-.nav a,
-.nav button {
+.navLinks {
     display: flex;
-    width: 100%;
+    align-items: center;
+    gap: 26px;
+}
+.navLinks a,
+.navLinks button {
     border: 0;
-    padding: 11px 12px;
+    padding: 0;
     color: var(--portal-muted);
     background: transparent;
     font: inherit;
     font-size: 13px;
-    text-align: left;
     cursor: pointer;
 }
-.nav a:hover,
-.nav button:hover,
-.nav .active {
+.navLinks a:hover,
+.navLinks button:hover {
     color: var(--portal-green);
-    background: var(--portal-hover);
+}
+.navLinks .active {
+    color: var(--portal-green);
+    font-weight: 600;
 }
 .logout {
-    margin-top: auto;
+    padding: 0;
+    color: var(--portal-muted);
+}
+.logout:hover {
+    color: var(--portal-error);
 }
 .main {
     width: min(1240px, 100%);
-    padding: 48px clamp(24px, 5vw, 72px) 80px;
+    margin: 0 auto;
+    padding: 24px clamp(24px, 5vw, 72px) 80px;
 }
 
 /* Mobile navigation */
-.mobileHeader {
-    display: none;
-}
 .mobileMenuButton {
-    display: none;
-}
-.mobileNav {
     display: none;
 }
 
 @media (max-width: 860px) {
-    .shell {
-        grid-template-columns: 1fr;
+    .navbar {
+        padding: 14px 20px;
     }
-    .sidebar {
+    .navLinks {
         display: none;
     }
-    .mobileHeader {
+    .navLinksOpen {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
+        position: absolute;
+        inset: 100% 0 auto;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 20px;
         border-bottom: 1px solid var(--portal-line);
-        padding: 18px 24px;
         background: var(--portal-card);
     }
     .mobileMenuButton {
         display: grid;
         place-items: center;
-        width: 40px;
-        height: 40px;
+        width: 38px;
+        height: 38px;
         border: 1px solid var(--portal-line);
         color: var(--portal-ink);
         background: transparent;
-        font-size: 18px;
+        font-size: 16px;
         cursor: pointer;
     }
-    .mobileNav {
-        display: grid;
-        gap: 7px;
-        padding: 16px 24px;
-        border-bottom: 1px solid var(--portal-line);
-        background: var(--portal-card);
-    }
-    .mobileNav .logout {
-        margin-top: 12px;
-    }
     .main {
-        padding: 32px 20px 60px;
+        padding: 18px 20px 60px;
     }
 }
 .topbar {
@@ -586,6 +577,9 @@ html[data-theme="dark"] .portal {
     border-top: 1px solid var(--portal-line);
     padding: 19px 0;
 }
+.updateList {
+    border-bottom: 1px solid var(--portal-line);
+}
 .updateMeta {
     display: flex;
     justify-content: space-between;
@@ -668,25 +662,6 @@ html[data-theme="dark"] .portal {
 }
 
 @media (max-width: 860px) {
-    .shell {
-        grid-template-columns: 1fr;
-    }
-    .sidebar {
-        gap: 20px;
-        border-right: 0;
-        border-bottom: 1px solid var(--portal-line);
-        padding: 18px 24px;
-    }
-    .nav {
-        display: flex;
-        flex-wrap: wrap;
-    }
-    .logout {
-        margin: 0;
-    }
-    .main {
-        padding-top: 34px;
-    }
     .lowerGrid,
     .detailGrid {
         grid-template-columns: 1fr;

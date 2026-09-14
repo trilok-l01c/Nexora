@@ -1,7 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import styles from "./portal.module.css";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
@@ -27,10 +28,15 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
     const [menuOpen, setMenuOpen] = useState(false);
+    const previousPathname = useRef(pathname);
+    const isLoginPage = pathname === "/client/login";
 
     // Close mobile menu on route change.
     useEffect(() => {
-        setMenuOpen(false);
+        if (previousPathname.current !== pathname) {
+            previousPathname.current = pathname;
+            setMenuOpen(false);
+        }
     }, [pathname]);
 
     async function handleLogout() {
@@ -48,79 +54,73 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
         return pathname.startsWith(href);
     }
 
+    // The main site Nav is fixed (height 88px / 72px mobile) and the global
+    // stylesheet offsets it with body { padding-top }. On /client routes that
+    // Nav is not rendered (ConditionalNav returns null), so the leftover top
+    // padding would push the client navbar down. Zero it while mounted and
+    // restore it when leaving the client portal.
+    useEffect(() => {
+        const previous = document.body.style.paddingTop;
+        document.body.style.paddingTop = "0px";
+        return () => {
+            document.body.style.paddingTop = previous;
+        };
+    }, []);
+
+    // The sign-in page has its own centered card; it does not need the navbar.
+    if (isLoginPage) {
+        return <div className={styles.portal}>{children}</div>;
+    }
+
     return (
         <div className={styles.portal}>
-            <div className={styles.shell}>
-                {/* Desktop sidebar */}
-                <aside className={styles.sidebar}>
-                    <div className={styles.brand}>
-                        <span className={styles.brandMark}>N</span> Nexora
-                    </div>
-                    <nav className={styles.nav} aria-label="Client sections">
-                        {navItems.map((item) => (
-                            <a
-                                key={item.href}
-                                href={item.href}
-                                className={
-                                    isActive(item.href) ? styles.active : ""
-                                }
-                            >
-                                {item.label}
-                            </a>
-                        ))}
-                    </nav>
+            {/* Top navbar (hidden on the sign-in page) */}
+            <header className={styles.navbar}>
+                <Link
+                    href="/client/dashboard"
+                    className={styles.brand}
+                    aria-label="Nexora client dashboard"
+                >
+                    <span className={styles.brandMark}>N</span> Nexora
+                </Link>
+                <nav
+                    className={
+                        menuOpen
+                            ? `${styles.navLinks} ${styles.navLinksOpen}`
+                            : styles.navLinks
+                    }
+                    aria-label="Client sections"
+                >
+                    {navItems.map((item) => (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            className={
+                                isActive(item.href) ? styles.active : ""
+                            }
+                        >
+                            {item.label}
+                        </Link>
+                    ))}
                     <button
                         className={styles.logout}
                         onClick={handleLogout}
                     >
                         Log out
                     </button>
-                </aside>
+                </nav>
+                <button
+                    type="button"
+                    className={styles.mobileMenuButton}
+                    onClick={() => setMenuOpen((open) => !open)}
+                    aria-expanded={menuOpen}
+                    aria-label="Toggle navigation menu"
+                >
+                    {menuOpen ? "✕" : "☰"}
+                </button>
+            </header>
 
-                {/* Mobile header */}
-                <header className={styles.mobileHeader}>
-                    <div className={styles.brand}>
-                        <span className={styles.brandMark}>N</span> Nexora
-                    </div>
-                    <button
-                        type="button"
-                        className={styles.mobileMenuButton}
-                        onClick={() => setMenuOpen((open) => !open)}
-                        aria-expanded={menuOpen}
-                        aria-label="Toggle navigation menu"
-                    >
-                        {menuOpen ? "✕" : "☰"}
-                    </button>
-                </header>
-
-                {/* Mobile nav overlay */}
-                {menuOpen && (
-                    <nav
-                        className={styles.mobileNav}
-                        aria-label="Client sections mobile"
-                    >
-                        {navItems.map((item) => (
-                            <a
-                                key={item.href}
-                                href={item.href}
-                                className={
-                                    isActive(item.href) ? styles.active : ""
-                                }
-                            >
-                                {item.label}
-                            </a>
-                        ))}
-                        <button
-                            className={styles.logout}
-                            onClick={handleLogout}
-                        >
-                            Log out
-                        </button>
-                    </nav>
-                )}
-
-                <main className={styles.main}>{children}</main>
-            </div>
+            <main className={styles.main}>{children}</main>
         </div>
     );
 }

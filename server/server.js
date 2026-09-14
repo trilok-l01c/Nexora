@@ -1,7 +1,10 @@
 import app from "./app.js";
 import { connectDatabase } from "./config/database.js";
-import { env } from "./config/env.js";
+import { assertProductionEnv, env } from "./config/env.js";
 import { ensureAdminUser } from "./services/adminBootstrap.js";
+
+// Fail fast at boot when production env vars are missing or unsafe.
+assertProductionEnv();
 
 const databaseReady = await connectDatabase();
 if (databaseReady) {

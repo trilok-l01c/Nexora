@@ -19,4 +19,26 @@ export const env = {
     nodeEnv: process.env.NODE_ENV || "development",
 };
 
+export function assertProductionEnv() {
+    if (env.nodeEnv !== "production") return;
+    const missing = [
+        "MONGODB_URI",
+        "JWT_SECRET",
+        "ADMIN_EMAIL",
+        "ADMIN_PASSWORD",
+        "CORS_ORIGIN",
+    ].filter((name) => !process.env[name]);
+    if (missing.length > 0) {
+        throw new Error(
+            `Missing required production environment variables: ${missing.join(", ")}`,
+        );
+    }
+    if ((process.env.JWT_SECRET || "").length < 32) {
+        throw new Error("JWT_SECRET must be at least 32 characters in production.");
+    }
+    if ((process.env.CORS_ORIGIN || "").includes("localhost")) {
+        throw new Error("CORS_ORIGIN must not use localhost in production.");
+    }
+}
+
 export { required };

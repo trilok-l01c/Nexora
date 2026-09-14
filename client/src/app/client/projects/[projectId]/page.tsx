@@ -73,45 +73,23 @@ export default function ProjectDetails() {
     }, [params.projectId, router]);
     if (!project && !error)
         return (
-            <main className={styles.portal}>
-                <div className={styles.main}>
-                    <p className={styles.eyebrow}>Project</p>
-                    <h1 className={styles.title}>Loading project...</h1>
-                </div>
-            </main>
+            <>
+                <p className={styles.eyebrow}>Project</p>
+                <h1 className={styles.title}>Loading project...</h1>
+            </>
         );
     if (error)
         return (
-            <main className={styles.portal}>
-                <div className={styles.main}>
-                    <p className={`${styles.message} ${styles.error}`}>
-                        {error}
-                    </p>
-                    <Link className={styles.back} href="/client/dashboard">
-                        ← Back to dashboard
-                    </Link>
-                </div>
-            </main>
+            <>
+                <p className={`${styles.message} ${styles.error}`}>{error}</p>
+                <Link className={styles.back} href="/client/dashboard">
+                    ← Back to dashboard
+                </Link>
+            </>
         );
     return (
-        <main className={styles.portal}>
-            <div className={styles.shell}>
-                <aside className={styles.sidebar}>
-                    <Link className={styles.brand} href="/client/dashboard">
-                        <span className={styles.brandMark}>N</span> Nexora
-                    </Link>
-                    <nav className={styles.nav}>
-                        <Link href="/client/dashboard">Dashboard</Link>
-                        <Link className={styles.active} href="#overview">
-                            Project overview
-                        </Link>
-                        <Link href="#updates">Updates</Link>
-                        <Link href="#team">Project team</Link>
-                        <Link href="#technology">Technology</Link>
-                    </nav>
-                </aside>
-                <div className={styles.main}>
-                    <Link className={styles.back} href="/client/dashboard">
+        <>
+            <Link className={styles.back} href="/client/dashboard">
                         ← Back to dashboard
                     </Link>
                     <header className={styles.detailHeader} id="overview">
@@ -342,8 +320,6 @@ export default function ProjectDetails() {
                             </section>
                         </aside>
                     </div>
-                </div>
-            </div>
-        </main>
-    );
-}
+                </>
+            );
+        }

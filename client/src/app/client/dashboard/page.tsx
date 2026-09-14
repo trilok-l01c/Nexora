@@ -84,14 +84,6 @@ export default function ClientDashboard() {
             );
     }, [router]);
 
-    async function logout() {
-        await fetch(`${apiUrl}/api/auth/logout`, {
-            method: "POST",
-            credentials: "include",
-        }).catch(() => undefined);
-        router.replace("/client/login");
-    }
-
     async function submitTicket(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         setSubmitting(true);
@@ -130,25 +122,19 @@ export default function ClientDashboard() {
 
     if (!data && !error)
         return (
-            <main className={styles.portal}>
-                <div className={styles.main}>
-                    <p className={styles.eyebrow}>Client portal</p>
-                    <h1 className={styles.title}>Loading your workspace...</h1>
-                </div>
-            </main>
+            <>
+                <p className={styles.eyebrow}>Client portal</p>
+                <h1 className={styles.title}>Loading your workspace...</h1>
+            </>
         );
     if (error)
         return (
-            <main className={styles.portal}>
-                <div className={styles.main}>
-                    <p className={`${styles.message} ${styles.error}`}>
-                        {error}
-                    </p>
-                    <Link className={styles.button} href="/client/login">
-                        Return to sign in
-                    </Link>
-                </div>
-            </main>
+            <>
+                <p className={`${styles.message} ${styles.error}`}>{error}</p>
+                <Link className={styles.button} href="/client/login">
+                    Return to sign in
+                </Link>
+            </>
         );
 
     const projects = data?.projects || [];
@@ -160,304 +146,265 @@ export default function ClientDashboard() {
         projects.find((project) => project.status !== "Completed")?.status ||
         "All projects complete";
     return (
-        <main className={styles.portal}>
-            <div className={styles.shell}>
-                <aside className={styles.sidebar}>
-                    <Link className={styles.brand} href="/client/dashboard">
-                        <span className={styles.brandMark}>N</span> Nexora
-                    </Link>
-                    <nav className={styles.nav}>
-                        <Link className={styles.active} href="#dashboard">
-                            Dashboard
-                        </Link>
-                        <Link href="#projects">Projects</Link>
-                        <Link href="#support">Support</Link>
-                        <Link href="#account">Account</Link>
-                    </nav>
-                    <button className={styles.nav} onClick={logout}>
-                        Log out
-                    </button>
-                </aside>
-                <div className={styles.main} id="dashboard">
-                    <header className={styles.topbar}>
+        <>
+            <div id="dashboard">
+                <header className={styles.topbar}>
+                    <div>
+                        <p className={styles.eyebrow}>Client workspace</p>
+                        <h1 className={styles.title}>
+                            Good morning, {data?.company?.name || "there"}
+                        </h1>
+                        <p className={styles.subtle}>
+                            A clear view of everything Nexora is moving forward
+                            for you.
+                        </p>
+                    </div>
+                    <time className={styles.date}>
+                        {date(new Date().toISOString())}
+                    </time>
+                </header>
+                <section
+                    className={styles.overview}
+                    aria-label="Project overview"
+                >
+                    <div className={styles.overviewCell}>
+                        <span className={styles.label}>Current status</span>
+                        <strong>{current}</strong>
+                    </div>
+                    <div className={styles.overviewCell}>
+                        <span className={styles.label}>Active projects</span>
+                        <strong>{active}</strong>
+                    </div>
+                    <div className={styles.overviewCell}>
+                        <span className={styles.label}>Completed</span>
+                        <strong>{completed}</strong>
+                    </div>
+                    <div className={styles.overviewCell}>
+                        <span className={styles.label}>Recent update</span>
+                        <strong>
+                            {data?.activity[0]
+                                ? date(data.activity[0].createdAt)
+                                : "None yet"}
+                        </strong>
+                    </div>
+                </section>
+                <section id="projects">
+                    <div className={styles.sectionHeader}>
                         <div>
-                            <p className={styles.eyebrow}>Client workspace</p>
-                            <h1 className={styles.title}>
-                                Good morning, {data?.company?.name || "there"}
-                            </h1>
-                            <p className={styles.subtle}>
-                                A clear view of everything Nexora is moving
-                                forward for you.
+                            <p className={styles.eyebrow}>Portfolio</p>
+                            <h2 className={styles.sectionTitle}>My projects</h2>
+                        </div>
+                        <ProjectDialog />
+                    </div>
+                    {projects.length === 0 ? (
+                        <div className={styles.emptyProjectState}>
+                            <p className={styles.empty}>
+                                No projects yet. Start your next project with
+                                Nexora.
                             </p>
-                        </div>
-                        <time className={styles.date}>
-                            {date(new Date().toISOString())}
-                        </time>
-                    </header>
-                    <section
-                        className={styles.overview}
-                        aria-label="Project overview"
-                    >
-                        <div className={styles.overviewCell}>
-                            <span className={styles.label}>Current status</span>
-                            <strong>{current}</strong>
-                        </div>
-                        <div className={styles.overviewCell}>
-                            <span className={styles.label}>
-                                Active projects
-                            </span>
-                            <strong>{active}</strong>
-                        </div>
-                        <div className={styles.overviewCell}>
-                            <span className={styles.label}>Completed</span>
-                            <strong>{completed}</strong>
-                        </div>
-                        <div className={styles.overviewCell}>
-                            <span className={styles.label}>Recent update</span>
-                            <strong>
-                                {data?.activity[0]
-                                    ? date(data.activity[0].createdAt)
-                                    : "None yet"}
-                            </strong>
-                        </div>
-                    </section>
-                    <section id="projects">
-                        <div className={styles.sectionHeader}>
-                            <div>
-                                <p className={styles.eyebrow}>Portfolio</p>
-                                <h2 className={styles.sectionTitle}>
-                                    My projects
-                                </h2>
-                            </div>
                             <ProjectDialog />
                         </div>
-                        {projects.length === 0 ? (
-                            <div className={styles.emptyProjectState}>
-                                <p className={styles.empty}>
-                                    No projects yet. Start your next project
-                                    with Nexora.
-                                </p>
-                                <ProjectDialog />
-                            </div>
-                        ) : (
-                            <div className={styles.projectGrid}>
-                                {projects.map((project) => (
-                                    <Link
-                                        className={styles.projectCard}
-                                        href={`/client/projects/${project._id}`}
-                                        key={project._id}
-                                    >
-                                        <div className={styles.projectTop}>
-                                            <div>
-                                                <h3
-                                                    className={
-                                                        styles.projectName
-                                                    }
-                                                >
-                                                    {project.name}
-                                                </h3>
-                                                <p className={styles.subtle}>
-                                                    {project.serviceType}
-                                                </p>
-                                            </div>
-                                            <span className={styles.badge}>
-                                                {project.status}
-                                            </span>
+                    ) : (
+                        <div className={styles.projectGrid}>
+                            {projects.map((project) => (
+                                <Link
+                                    className={styles.projectCard}
+                                    href={`/client/projects/${project._id}`}
+                                    key={project._id}
+                                >
+                                    <div className={styles.projectTop}>
+                                        <div>
+                                            <h3 className={styles.projectName}>
+                                                {project.name}
+                                            </h3>
+                                            <p className={styles.subtle}>
+                                                {project.serviceType}
+                                            </p>
                                         </div>
-                                        <p className={styles.progressMeta}>
-                                            <span>Progress</span>
-                                            <strong>{project.progress}%</strong>
-                                        </p>
-                                        <div className={styles.progressTrack}>
-                                            <div
-                                                className={styles.progressBar}
-                                                style={{
-                                                    width: `${project.progress}%`,
-                                                }}
-                                            />
-                                        </div>
-                                        <div className={styles.projectFacts}>
-                                            <div>
-                                                <span className={styles.label}>
-                                                    Started
-                                                </span>
-                                                <span
-                                                    className={styles.factValue}
-                                                >
-                                                    {date(project.startDate)}
-                                                </span>
-                                            </div>
-                                            <div>
-                                                <span className={styles.label}>
-                                                    Expected
-                                                </span>
-                                                <span
-                                                    className={styles.factValue}
-                                                >
-                                                    {date(
-                                                        project.expectedEndDate,
-                                                    )}
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <p className={styles.techLine}>
-                                            {project.technologies
-                                                ?.flatMap(
-                                                    (group) => group.items,
-                                                )
-                                                .join(" · ") ||
-                                                "Technology stack to be confirmed"}
-                                        </p>
-                                    </Link>
-                                ))}
-                            </div>
-                        )}
-                    </section>
-                    <div className={styles.lowerGrid}>
-                        <section>
-                            <div className={styles.sectionHeader}>
-                                <div>
-                                    <p className={styles.eyebrow}>Signal</p>
-                                    <h2 className={styles.sectionTitle}>
-                                        Recent activity
-                                    </h2>
-                                </div>
-                            </div>
-                            <div className={styles.activity}>
-                                {data?.activity.length ? (
-                                    data.activity.map((item) => (
+                                        <span className={styles.badge}>
+                                            {project.status}
+                                        </span>
+                                    </div>
+                                    <p className={styles.progressMeta}>
+                                        <span>Progress</span>
+                                        <strong>{project.progress}%</strong>
+                                    </p>
+                                    <div className={styles.progressTrack}>
                                         <div
-                                            className={styles.activityItem}
-                                            key={item._id}
-                                        >
-                                            <time>{date(item.createdAt)}</time>
-                                            <span>
-                                                <strong>{item.text}</strong>
-                                                <br />
-                                                <span className={styles.subtle}>
-                                                    {item.projectName} ·{" "}
-                                                    {item.actor}
-                                                </span>
+                                            className={styles.progressBar}
+                                            style={{
+                                                width: `${project.progress}%`,
+                                            }}
+                                        />
+                                    </div>
+                                    <div className={styles.projectFacts}>
+                                        <div>
+                                            <span className={styles.label}>
+                                                Started
+                                            </span>
+                                            <span className={styles.factValue}>
+                                                {date(project.startDate)}
                                             </span>
                                         </div>
-                                    ))
-                                ) : (
-                                    <p className={styles.empty}>
-                                        No project activity yet.
+                                        <div>
+                                            <span className={styles.label}>
+                                                Expected
+                                            </span>
+                                            <span className={styles.factValue}>
+                                                {date(project.expectedEndDate)}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <p className={styles.techLine}>
+                                        {project.technologies
+                                            ?.flatMap((group) => group.items)
+                                            .join(" · ") ||
+                                            "Technology stack to be confirmed"}
                                     </p>
-                                )}
+                                </Link>
+                            ))}
+                        </div>
+                    )}
+                </section>
+                <div className={styles.lowerGrid}>
+                    <section>
+                        <div className={styles.sectionHeader}>
+                            <div>
+                                <p className={styles.eyebrow}>Signal</p>
+                                <h2 className={styles.sectionTitle}>
+                                    Recent activity
+                                </h2>
                             </div>
-                        </section>
-                        <section id="support">
-                            <div className={styles.sectionHeader}>
-                                <div>
-                                    <p className={styles.eyebrow}>Help desk</p>
-                                    <h2 className={styles.sectionTitle}>
-                                        Need a hand?
-                                    </h2>
-                                </div>
+                        </div>
+                        <div className={styles.activity}>
+                            {data?.activity.length ? (
+                                data.activity.map((item) => (
+                                    <div
+                                        className={styles.activityItem}
+                                        key={item._id}
+                                    >
+                                        <time>{date(item.createdAt)}</time>
+                                        <span>
+                                            <strong>{item.text}</strong>
+                                            <br />
+                                            <span className={styles.subtle}>
+                                                {item.projectName} ·{" "}
+                                                {item.actor}
+                                            </span>
+                                        </span>
+                                    </div>
+                                ))
+                            ) : (
+                                <p className={styles.empty}>
+                                    No project activity yet.
+                                </p>
+                            )}
+                        </div>
+                    </section>
+                    <section id="support">
+                        <div className={styles.sectionHeader}>
+                            <div>
+                                <p className={styles.eyebrow}>Help desk</p>
+                                <h2 className={styles.sectionTitle}>
+                                    Need a hand?
+                                </h2>
                             </div>
-                            <div className={styles.ticketPanel}>
-                                <h3>Create a support request</h3>
-                                <form onSubmit={submitTicket}>
-                                    <label className={styles.field}>
-                                        Subject
-                                        <input
-                                            value={ticket.subject}
-                                            onChange={(event) =>
-                                                setTicket({
-                                                    ...ticket,
-                                                    subject: event.target.value,
-                                                })
-                                            }
-                                            required
-                                            maxLength={160}
-                                        />
-                                    </label>
-                                    <label className={styles.field}>
-                                        Related project
-                                        <select
-                                            value={ticket.projectId}
-                                            onChange={(event) =>
-                                                setTicket({
-                                                    ...ticket,
-                                                    projectId:
-                                                        event.target.value,
-                                                })
-                                            }
-                                        >
-                                            <option value="">
-                                                General question
+                        </div>
+                        <div className={styles.ticketPanel}>
+                            <h3>Create a support request</h3>
+                            <form onSubmit={submitTicket}>
+                                <label className={styles.field}>
+                                    Subject
+                                    <input
+                                        value={ticket.subject}
+                                        onChange={(event) =>
+                                            setTicket({
+                                                ...ticket,
+                                                subject: event.target.value,
+                                            })
+                                        }
+                                        required
+                                        maxLength={160}
+                                    />
+                                </label>
+                                <label className={styles.field}>
+                                    Related project
+                                    <select
+                                        value={ticket.projectId}
+                                        onChange={(event) =>
+                                            setTicket({
+                                                ...ticket,
+                                                projectId: event.target.value,
+                                            })
+                                        }
+                                    >
+                                        <option value="">
+                                            General question
+                                        </option>
+                                        {projects.map((project) => (
+                                            <option
+                                                value={project._id}
+                                                key={project._id}
+                                            >
+                                                {project.name}
                                             </option>
-                                            {projects.map((project) => (
-                                                <option
-                                                    value={project._id}
-                                                    key={project._id}
-                                                >
-                                                    {project.name}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </label>
-                                    <label className={styles.field}>
-                                        Priority
-                                        <select
-                                            value={ticket.priority}
-                                            onChange={(event) =>
-                                                setTicket({
-                                                    ...ticket,
-                                                    priority:
-                                                        event.target.value,
-                                                })
-                                            }
-                                        >
-                                            {[
-                                                "Low",
-                                                "Normal",
-                                                "High",
-                                                "Urgent",
-                                            ].map((priority) => (
-                                                <option key={priority}>
-                                                    {priority}
-                                                </option>
-                                            ))}
-                                        </select>
-                                    </label>
-                                    <label className={styles.field}>
-                                        Description
-                                        <textarea
-                                            value={ticket.description}
-                                            onChange={(event) =>
-                                                setTicket({
-                                                    ...ticket,
-                                                    description:
-                                                        event.target.value,
-                                                })
-                                            }
-                                            required
-                                            maxLength={2000}
-                                        />
-                                    </label>
-                                    <p
-                                        className={styles.message}
-                                        aria-live="polite"
+                                        ))}
+                                    </select>
+                                </label>
+                                <label className={styles.field}>
+                                    Priority
+                                    <select
+                                        value={ticket.priority}
+                                        onChange={(event) =>
+                                            setTicket({
+                                                ...ticket,
+                                                priority: event.target.value,
+                                            })
+                                        }
                                     >
-                                        {ticketMessage}
-                                    </p>
-                                    <button
-                                        className={styles.button}
-                                        disabled={submitting}
-                                    >
-                                        {submitting
-                                            ? "Sending..."
-                                            : "Send request"}
-                                    </button>
-                                </form>
-                            </div>
-                        </section>
-                    </div>
+                                        {[
+                                            "Low",
+                                            "Normal",
+                                            "High",
+                                            "Urgent",
+                                        ].map((priority) => (
+                                            <option key={priority}>
+                                                {priority}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </label>
+                                <label className={styles.field}>
+                                    Description
+                                    <textarea
+                                        value={ticket.description}
+                                        onChange={(event) =>
+                                            setTicket({
+                                                ...ticket,
+                                                description: event.target.value,
+                                            })
+                                        }
+                                        required
+                                        maxLength={2000}
+                                    />
+                                </label>
+                                <p
+                                    className={styles.message}
+                                    aria-live="polite"
+                                >
+                                    {ticketMessage}
+                                </p>
+                                <button
+                                    className={styles.button}
+                                    disabled={submitting}
+                                >
+                                    {submitting ? "Sending..." : "Send request"}
+                                </button>
+                            </form>
+                        </div>
+                    </section>
                 </div>
             </div>
-        </main>
+        </>
     );
 }
