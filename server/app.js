@@ -65,6 +65,12 @@ const loginLimiter = rateLimit({
     limit: 5,
     standardHeaders: "draft-8",
     legacyHeaders: false,
+    // Brute-force protection only applies to credential endpoints. The
+    // session check runs on every page load and logout must always succeed,
+    // so both are exempt — otherwise five ordinary page views (or a couple
+    // of logins) would leave a signed-in user unable to check or end their
+    // own session for 15 minutes.
+    skip: (req) => req.path === "/session" || req.path === "/logout",
     message: {
         success: false,
         message: "Too many login attempts. Please try again later.",

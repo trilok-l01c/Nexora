@@ -78,7 +78,7 @@ export default function ClientAccount() {
     async function save(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const n = name.trim(); const p = phone.trim();
-        if (n.length < 2 || n.length > 120) { setErrMsg("Please enter your full name (2 to 120 characters)."); return; }
+        if (n.length < 2 || n.length > 120) { setErrMsg("Name must be at least 2 characters."); return; }
         if (p && !/^[+()\-.\s\d]{6,32}$/.test(p)) { setErrMsg("Please enter a valid phone number."); return; }
         setSaving(true); setErrMsg(""); setOkMsg("");
         try {
@@ -118,16 +118,16 @@ export default function ClientAccount() {
             {loading ? (<p className={styles.subtle}>Loading...</p>)
             : error ? (<p className={styles.error}>{error}</p>)
             : editing ? (
-                <form className={styles.accountCard} onSubmit={save}>
+                <form className={styles.accountCard} onSubmit={save} noValidate>
                     <h2 className={styles.sectionTitle}>Edit profile</h2>
                     <label className={styles.field}>Full name
-                        <input value={name} onChange={(e) => setName(e.target.value)} required minLength={2} maxLength={120} autoComplete="name" />
+                        <input name="name" value={name} onChange={(e) => setName(e.target.value)} required minLength={2} maxLength={120} autoComplete="name" />
                     </label>
                     <label className={styles.field}>Phone number
-                        <input value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={32} autoComplete="tel" />
+                        <input name="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} maxLength={32} autoComplete="tel" />
                     </label>
                     <label className={styles.field}>Email (cannot be changed)
-                        <input value={data?.user?.email ?? ""} disabled />
+                        <input name="email" type="email" value={data?.user?.email ?? ""} disabled readOnly />
                     </label>
                     {errMsg && <p className={styles.error}>{errMsg}</p>}
                     <div className={styles.accountFormActions}>
