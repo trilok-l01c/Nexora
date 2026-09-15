@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useClientAuth } from "./ClientAuthContext";
+import { useDrawerGestures } from "../useDrawerGestures";
 import styles from "./portal.module.css";
 
 type NavItem = {
@@ -50,6 +51,15 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
             280,
         );
     }
+
+    // Swipe right from the left screen edge opens the drawer; a leftward
+    // swipe on the open drawer closes it. Handlers attach to the drawer root
+    // below; the open swipe is watched at the document level by the hook.
+    const drawerGestures = useDrawerGestures({
+        isOpen: drawerOpen,
+        onOpen: openDrawer,
+        onClose: closeDrawer,
+    });
 
     useEffect(() => {
         if (!drawerVisible) return;
@@ -141,7 +151,7 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
 
                 {/* Mobile drawer */}
                 {!isLoginPage && drawerVisible && (
-                    <div className={styles.drawerRoot}>
+                    <div className={styles.drawerRoot} {...drawerGestures}>
                         <div
                             className={`${styles.drawerBackdrop} ${drawerOpen ? styles.drawerBackdropOpen : ""}`}
                             onClick={closeDrawer}

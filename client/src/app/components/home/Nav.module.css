@@ -142,6 +142,12 @@
 .menuButton {
     display: none;
 }
+/* The drawer markup only styles correctly inside the mobile media query;
+   if a drawer was left open while the viewport grows past 760px it must not
+   leak into the desktop layout. */
+.drawerRoot {
+    display: none;
+}
 .themeToggle {
     display: grid;
     place-items: center;
@@ -234,6 +240,7 @@
         position: fixed;
         inset: 0;
         z-index: 1500;
+        display: block;
         overflow: hidden;
     }
     .backdrop {

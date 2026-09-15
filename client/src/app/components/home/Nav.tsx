@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { serviceGroups } from "../../services";
 import { useTheme } from "../../ThemeProvider";
 import { useClientAuth } from "../../client/ClientAuthContext";
+import { useDrawerGestures } from "../../useDrawerGestures";
 import AuthDialog from "../auth/AuthDialog";
 import styles from "./Nav.module.css";
 
@@ -80,6 +81,15 @@ export default function Nav() {
         setDrawerOpen(false);
         window.setTimeout(() => setDrawerVisible(false), 280);
     }
+
+    // Swipe right from the left screen edge opens the drawer; a leftward
+    // swipe on the open drawer closes it. Handlers attach to the drawer root
+    // below; the open swipe is watched at the document level by the hook.
+    const drawerGestures = useDrawerGestures({
+        isOpen: drawerOpen,
+        onOpen: openDrawer,
+        onClose: closeDrawer,
+    });
 
     useEffect(() => {
         if (!drawerVisible) return;
@@ -348,7 +358,7 @@ export default function Nav() {
                 </div>
             </nav>
         {drawerVisible && (
-            <div className={styles.drawerRoot}>
+            <div className={styles.drawerRoot} {...drawerGestures}>
                 <div
                     className={`${styles.backdrop} ${drawerOpen ? styles.backdropOpen : ""}`}
                     onClick={closeDrawer}

@@ -2,8 +2,6 @@
     min-height: 66px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 40px;
     padding: 12px 30px;
     background: var(--acid);
     color: var(--ticker-text);
@@ -22,22 +20,47 @@
 .ticker span {
     white-space: nowrap;
 }
+.tickerTrack {
+    display: flex;
+    width: max-content;
+    animation: tickerScroll 30s linear infinite;
+    will-change: transform;
+}
+.tickerGroup {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 40px;
+    padding-right: 40px;
+}
+@keyframes tickerScroll {
+    /* The track holds two identical copies, so translating it from -50% to 0
+       moves exactly one copy per loop: the content travels left -> right and
+       the wrap point is invisible. */
+    from {
+        transform: translateX(-50%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
 @media (max-width: 760px) {
     .ticker {
-        justify-content: flex-start;
-        gap: 21px;
         transform: rotate(-1.2deg) scale(1);
         overflow: hidden;
         white-space: nowrap;
     }
-    .ticker span:nth-of-type(n + 3),
-    .ticker b:nth-of-type(n + 3) {
-        display: none;
+    .tickerGroup {
+        gap: 21px;
+        padding-right: 21px;
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
     .ticker {
         transform: none;
+    }
+    .tickerTrack {
+        animation: none;
     }
 }

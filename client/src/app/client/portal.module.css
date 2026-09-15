@@ -138,6 +138,11 @@ html[data-theme="dark"] .portal {
 .mobileMenuButton {
     display: none;
 }
+/* Drawer markup is styled only inside the mobile media query; hide it from
+   the desktop layout if it was left open while the viewport grows. */
+.drawerRoot {
+    display: none;
+}
 .shell {
     display: grid;
     grid-template-columns: 240px minmax(0, 1fr);
