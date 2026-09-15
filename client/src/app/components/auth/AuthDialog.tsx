@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useClientAuth } from "../../client/ClientAuthContext";
 import styles from "./AuthDialog.module.css";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
@@ -9,6 +10,7 @@ type Mode = "signin" | "signup";
 
 export default function AuthDialog() {
     const router = useRouter();
+    const { refresh } = useClientAuth();
     const [mode, setMode] = useState<Mode>("signin");
     const [open, setOpen] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
@@ -120,6 +122,10 @@ export default function AuthDialog() {
                         "Authentication failed. Please try again.",
                 );
             close();
+            // Re-read the session so the shared auth context (and every
+            // navigation surface that depends on it) reflects the new sign-in
+            // before the redirect happens.
+            await refresh().catch(() => undefined);
             router.push(
                 result.data?.user?.role === "admin"
                     ? "/admin"

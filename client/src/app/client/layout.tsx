@@ -1,10 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useClientAuth } from "./ClientAuthContext";
 import styles from "./portal.module.css";
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
 
 type NavItem = {
     label: string;
@@ -26,22 +26,54 @@ const navItems: NavItem[] = [
 export default function ClientLayout({ children }: { children: ReactNode }) {
     const pathname = usePathname();
     const router = useRouter();
-    const [menuOpen, setMenuOpen] = useState(false);
-    const previousPathname = useRef(pathname);
+    const { logout } = useClientAuth();
+    const [drawer, setDrawer] = useState({ open: false, visible: false });
+    const menuButtonRef = useRef<HTMLButtonElement>(null);
+    const drawerRef = useRef<HTMLDivElement>(null);
+    const isLoginPage = pathname === "/client/login";
+    const drawerOpen = drawer.open;
+    const drawerVisible = drawer.visible;
 
-    // Close mobile menu on route change.
+    function openDrawer() {
+        setDrawer({ visible: true, open: false });
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() =>
+                setDrawer({ visible: true, open: true }),
+            );
+        });
+    }
+
+    function closeDrawer() {
+        setDrawer((current) => ({ ...current, open: false }));
+        window.setTimeout(
+            () => setDrawer((current) => ({ ...current, visible: false })),
+            280,
+        );
+    }
+
     useEffect(() => {
-        if (previousPathname.current !== pathname) {
-            previousPathname.current = pathname;
-            setMenuOpen(false);
+        if (!drawerVisible) return;
+        function handleKeyDown(event: KeyboardEvent) {
+            if (event.key === "Escape") closeDrawer();
         }
-    }, [pathname]);
+        document.addEventListener("keydown", handleKeyDown);
+        const previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        const menuButton = menuButtonRef.current;
+        const timer = window.setTimeout(() => {
+            drawerRef.current?.querySelector<HTMLElement>("a, button")?.focus();
+        }, 60);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+            document.body.style.overflow = previousOverflow;
+            window.clearTimeout(timer);
+            menuButton?.focus();
+        };
+    }, [drawerVisible]);
 
     async function handleLogout() {
-        await fetch(`${apiUrl}/api/auth/logout`, {
-            method: "POST",
-            credentials: "include",
-        }).catch(() => undefined);
+        closeDrawer();
+        await logout();
         router.replace("/client/login");
     }
 
@@ -55,72 +87,118 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
     return (
         <div className={styles.portal}>
             <div className={styles.shell}>
-                {/* Desktop sidebar */}
-                <aside className={styles.sidebar}>
-                    <div className={styles.brand}>
-                        <span className={styles.brandMark}>N</span> Nexora
-                    </div>
-                    <nav className={styles.nav} aria-label="Client sections">
-                        {navItems.map((item) => (
-                            <a
-                                key={item.href}
-                                href={item.href}
-                                className={
-                                    isActive(item.href) ? styles.active : ""
-                                }
-                            >
-                                {item.label}
-                            </a>
-                        ))}
-                    </nav>
-                    <button
-                        className={styles.logout}
-                        onClick={handleLogout}
-                    >
-                        Log out
-                    </button>
-                </aside>
-
-                {/* Mobile header */}
-                <header className={styles.mobileHeader}>
-                    <div className={styles.brand}>
-                        <span className={styles.brandMark}>N</span> Nexora
-                    </div>
-                    <button
-                        type="button"
-                        className={styles.mobileMenuButton}
-                        onClick={() => setMenuOpen((open) => !open)}
-                        aria-expanded={menuOpen}
-                        aria-label="Toggle navigation menu"
-                    >
-                        {menuOpen ? "✕" : "☰"}
-                    </button>
-                </header>
-
-                {/* Mobile nav overlay */}
-                {menuOpen && (
-                    <nav
-                        className={styles.mobileNav}
-                        aria-label="Client sections mobile"
-                    >
-                        {navItems.map((item) => (
-                            <a
-                                key={item.href}
-                                href={item.href}
-                                className={
-                                    isActive(item.href) ? styles.active : ""
-                                }
-                            >
-                                {item.label}
-                            </a>
-                        ))}
+                {!isLoginPage && (
+                    <aside className={styles.sidebar}>
+                        <div className={styles.brand}>
+                            <span className={styles.brandMark}>N</span> Nexora
+                        </div>
+                        <nav className={styles.nav} aria-label="Client sections">
+                            {navItems.map((item) => (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={
+                                        isActive(item.href) ? styles.active : ""
+                                    }
+                                >
+                                    {item.label}
+                                </Link>
+                            ))}
+                        </nav>
                         <button
+                            type="button"
                             className={styles.logout}
                             onClick={handleLogout}
                         >
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                <polyline points="16 17 21 12 16 7" />
+                                <line x1="21" y1="12" x2="9" y2="12" />
+                            </svg>
                             Log out
                         </button>
-                    </nav>
+                    </aside>
+                )}
+
+                {!isLoginPage && (
+                    <header className={styles.mobileHeader}>
+                        <div className={styles.brand}>
+                            <span className={styles.brandMark}>N</span> Nexora
+                        </div>
+                        <button
+                            ref={menuButtonRef}
+                            type="button"
+                            className={styles.mobileMenuButton}
+                            onClick={openDrawer}
+                            aria-expanded={drawerVisible}
+                            aria-controls="client-drawer"
+                            aria-label="Open navigation menu"
+                        >
+                            <span aria-hidden="true">☰</span>
+                        </button>
+                    </header>
+                )}
+
+                {/* Mobile drawer */}
+                {!isLoginPage && drawerVisible && (
+                    <div className={styles.drawerRoot}>
+                        <div
+                            className={`${styles.drawerBackdrop} ${drawerOpen ? styles.drawerBackdropOpen : ""}`}
+                            onClick={closeDrawer}
+                            aria-hidden="true"
+                        />
+                        <div
+                            ref={drawerRef}
+                            id="client-drawer"
+                            role="dialog"
+                            aria-modal="true"
+                            aria-label="Client navigation"
+                            className={`${styles.drawerPanel} ${drawerOpen ? styles.drawerPanelOpen : ""}`}
+                        >
+                            <div className={styles.drawerHeader}>
+                                <span className={styles.brand}>
+                                    <span className={styles.brandMark}>N</span>
+                                    Nexora
+                                </span>
+                                <button
+                                    type="button"
+                                    className={styles.drawerClose}
+                                    onClick={closeDrawer}
+                                    aria-label="Close navigation menu"
+                                >
+                                    <span aria-hidden="true">✕</span>
+                                </button>
+                            </div>
+                            <nav className={styles.drawerNav} aria-label="Client sections mobile">
+                                {navItems.map((item) => (
+                                    <Link
+                                        key={item.href}
+                                        href={item.href}
+                                        onClick={closeDrawer}
+                                        className={
+                                            isActive(item.href) ? styles.active : ""
+                                        }
+                                    >
+                                        {item.label}
+                                    </Link>
+                                ))}
+                            </nav>
+                            <div className={styles.drawerFooter}>
+                                <button
+                                    type="button"
+                                    className={`${styles.logout} ${styles.drawerLogout}`}
+                                    onClick={handleLogout}
+                                >
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                                        <polyline points="16 17 21 12 16 7" />
+                                        <line x1="21" y1="12" x2="9" y2="12" />
+                                    </svg>
+                                    Log out
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 )}
 
                 <main className={styles.main}>{children}</main>

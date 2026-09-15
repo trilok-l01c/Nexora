@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ConditionalNav from "./ConditionalNav";
 import { ThemeProvider } from "./ThemeProvider";
+import { ClientAuthProvider } from "./client/ClientAuthContext";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -81,8 +82,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </head>
             <body>
                 <ThemeProvider>
-                    <ConditionalNav />
-                    {children}
+                    <ClientAuthProvider>
+                        <ConditionalNav />
+                        {children}
+                    </ClientAuthProvider>
                 </ThemeProvider>
             </body>
         </html>

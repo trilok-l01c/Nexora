@@ -12,20 +12,32 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
     transform: rotate(-1.2deg) scale(1.02);
+    max-width: 100%;
+    overflow: hidden;
 }
 .ticker b {
     color: var(--ticker-star);
     font-size: 16px;
 }
+.ticker span {
+    white-space: nowrap;
+}
 @media (max-width: 760px) {
     .ticker {
         justify-content: flex-start;
         gap: 21px;
+        transform: rotate(-1.2deg) scale(1);
         overflow: hidden;
         white-space: nowrap;
     }
     .ticker span:nth-of-type(n + 3),
     .ticker b:nth-of-type(n + 3) {
         display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ticker {
+        transform: none;
     }
 }

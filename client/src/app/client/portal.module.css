@@ -80,7 +80,8 @@ html[data-theme="dark"] .portal {
 .navLinks a,
 .navLinks button {
     border: 0;
-    padding: 0;
+    border-radius: 8px;
+    padding: 8px 10px;
     color: var(--portal-muted);
     background: transparent;
     font: inherit;
@@ -90,17 +91,42 @@ html[data-theme="dark"] .portal {
 .navLinks a:hover,
 .navLinks button:hover {
     color: var(--portal-green);
+    background: var(--portal-hover);
+}
+.navLinks a:focus-visible,
+.navLinks button:focus-visible,
+.mobileMenuButton:focus-visible,
+.drawerClose:focus-visible,
+.drawerNav a:focus-visible,
+.drawerLogout:focus-visible {
+    outline: 2px solid var(--portal-green);
+    outline-offset: 2px;
 }
 .navLinks .active {
     color: var(--portal-green);
     font-weight: 600;
+    background: var(--portal-badge-bg);
 }
 .logout {
-    padding: 0;
-    color: var(--portal-muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid var(--portal-line);
+    border-radius: 12px;
+    padding: 11px 14px;
+    color: var(--portal-ink);
+    background: var(--portal-card);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
 }
 .logout:hover {
+    border-color: var(--portal-error);
     color: var(--portal-error);
+}
+.logout:active {
+    transform: scale(0.98);
 }
 .main {
     width: min(1240px, 100%);
@@ -112,38 +138,199 @@ html[data-theme="dark"] .portal {
 .mobileMenuButton {
     display: none;
 }
+.shell {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    min-height: 100vh;
+}
+.sidebar {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 24px 20px;
+    border-right: 1px solid var(--portal-line);
+    background: var(--portal-card);
+}
+.sidebar .nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.sidebar .nav a {
+    border-radius: 10px;
+    padding: 11px 12px;
+    color: var(--portal-muted);
+    font-size: 14px;
+    font-weight: 600;
+}
+.sidebar .nav a:hover {
+    color: var(--portal-green);
+    background: var(--portal-hover);
+}
+.sidebar .nav .active {
+    color: var(--portal-green);
+    background: var(--portal-badge-bg);
+}
+.sidebar .logout {
+    margin-top: auto;
+}
+.mobileHeader {
+    display: none;
+}
 
 @media (max-width: 860px) {
+    .shell {
+        display: block;
+        min-height: 100vh;
+    }
+    .sidebar {
+        display: none;
+    }
+    .mobileHeader {
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--portal-line);
+        background: var(--portal-card);
+    }
     .navbar {
         padding: 14px 20px;
     }
     .navLinks {
         display: none;
     }
-    .navLinksOpen {
-        display: flex;
-        position: absolute;
-        inset: 100% 0 auto;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 20px;
-        padding: 20px;
-        border-bottom: 1px solid var(--portal-line);
-        background: var(--portal-card);
-    }
     .mobileMenuButton {
         display: grid;
         place-items: center;
-        width: 38px;
-        height: 38px;
+        width: 44px;
+        height: 44px;
         border: 1px solid var(--portal-line);
+        border-radius: 50%;
         color: var(--portal-ink);
         background: transparent;
-        font-size: 16px;
+        font-size: 17px;
         cursor: pointer;
+    }
+    .mobileMenuButton:hover {
+        background: var(--portal-hover);
+        color: var(--portal-green);
+    }
+    .mobileMenuButton:active {
+        transform: scale(0.96);
     }
     .main {
         padding: 18px 20px 60px;
+    }
+    .drawerRoot {
+        position: fixed;
+        inset: 0;
+        z-index: 1500;
+        display: block;
+        overflow: hidden;
+    }
+    .drawerBackdrop {
+        position: absolute;
+        inset: 0;
+        display: block;
+        background: rgba(15, 20, 18, 0.45);
+        opacity: 0;
+        transition: opacity 0.25s ease;
+    }
+    .drawerBackdropOpen {
+        opacity: 1;
+    }
+    .drawerPanel {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        width: min(340px, 88vw);
+        flex-direction: column;
+        border-left: 1px solid var(--portal-line);
+        background: var(--portal-card);
+        color: var(--portal-ink);
+        transform: translateX(100%);
+        transition: transform 0.28s cubic-bezier(0.32, 0.72, 0.35, 1);
+        will-change: transform;
+    }
+    .drawerPanelOpen {
+        transform: translateX(0);
+    }
+    .drawerHeader {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--portal-line);
+    }
+    .drawerClose {
+        display: grid;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        border: 1px solid var(--portal-line);
+        border-radius: 50%;
+        background: transparent;
+        color: inherit;
+        font-size: 16px;
+        cursor: pointer;
+    }
+    .drawerClose:hover {
+        color: var(--portal-green);
+        background: var(--portal-hover);
+    }
+    .drawerClose:active {
+        transform: scale(0.96);
+    }
+    .drawerNav {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        padding: 14px 16px 24px;
+        overflow-y: auto;
+    }
+    .drawerNav a {
+        min-height: 48px;
+        display: flex;
+        align-items: center;
+        border-radius: 10px;
+        padding: 12px;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--portal-ink);
+    }
+    .drawerNav a:hover {
+        background: var(--portal-hover);
+        color: var(--portal-green);
+    }
+    .drawerNav .active {
+        background: var(--portal-badge-bg);
+        color: var(--portal-green);
+    }
+    .drawerFooter {
+        margin-top: auto;
+        padding: 16px;
+        border-top: 1px solid var(--portal-line);
+    }
+    .drawerLogout {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .drawerBackdrop,
+    .drawerPanel {
+        transition: none;
     }
 }
 .topbar {
@@ -402,6 +589,95 @@ html[data-theme="dark"] .portal {
 .button:disabled {
     opacity: 0.55;
     cursor: wait;
+}
+.button:hover {
+    background: var(--portal-button-hover);
+}
+.button:focus-visible,
+.addProjectButton:focus-visible,
+.secondaryButton:focus-visible,
+.accountEditButton:focus-visible,
+.logout:focus-visible {
+    outline: 2px solid var(--portal-green);
+    outline-offset: 2px;
+}
+.button:active,
+.addProjectButton:active {
+    transform: scale(0.98);
+}
+.secondaryButton {
+    border: 1px solid var(--portal-line);
+    padding: 12px 16px;
+    color: var(--portal-ink);
+    background: transparent;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.secondaryButton:hover {
+    background: var(--portal-hover);
+}
+.accountEditButton {
+    border: 1px solid var(--portal-green);
+    border-radius: 12px;
+    padding: 11px 16px;
+    color: var(--portal-button-text);
+    background: var(--portal-green);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.accountEditButton:hover {
+    background: var(--portal-button-hover);
+}
+.accountEditButton:active {
+    transform: scale(0.98);
+}
+.accountGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    margin-top: 24px;
+}
+.accountCard {
+    border: 1px solid var(--portal-line);
+    border-radius: 14px;
+    padding: 20px;
+    background: var(--portal-card);
+}
+.accountCard + .accountCard {
+    margin-top: 16px;
+}
+.accountGrid + .accountCard {
+    margin-top: 16px;
+}
+.accountList {
+    display: grid;
+    gap: 12px;
+    margin-top: 14px;
+}
+.accountList div {
+    display: grid;
+    gap: 3px;
+}
+.accountList dt {
+    color: var(--portal-muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.accountList dd {
+    margin: 0;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+.accountFormActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
 }
 .addProjectButton {
     border: 1px solid var(--portal-green);
@@ -669,13 +945,10 @@ html[data-theme="dark"] .portal {
     }
 }
 @media (max-width: 620px) {
-    .overview {
-        grid-template-columns: repeat(2, 1fr);
+    .topbar {
+        display: grid;
+        gap: 14px;
     }
-    .overviewCell:first-child {
-        grid-column: 1 / -1;
-    }
-    .topbar,
     .detailHeader {
         display: block;
     }
@@ -692,6 +965,16 @@ html[data-theme="dark"] .portal {
     .sectionHeader {
         align-items: start;
         flex-direction: column;
+    }
+    .accountGrid {
+        grid-template-columns: 1fr;
+    }
+    .accountFormActions {
+        flex-direction: column-reverse;
+    }
+    .accountFormActions .button,
+    .accountFormActions .secondaryButton {
+        width: 100%;
     }
     .projectFormGrid {
         grid-template-columns: 1fr;

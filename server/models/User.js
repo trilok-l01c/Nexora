@@ -25,6 +25,11 @@ const userSchema = new mongoose.Schema(
             trim: true,
             maxlength: 120,
         },
+        phone: {
+            type: String,
+            trim: true,
+            maxlength: 32,
+        },
         companyId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Company",

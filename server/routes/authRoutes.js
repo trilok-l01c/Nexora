@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+    getSession,
     loginClient,
     logout,
     signupClient,
@@ -12,5 +13,6 @@ const router = Router();
 router.post("/login", validateLogin, loginClient);
 router.post("/signup", validateSignup, signupClient);
 router.post("/logout", logout);
+router.get("/session", getSession);
 
 export default router;

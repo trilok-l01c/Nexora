@@ -12,6 +12,9 @@
     color: var(--auth-trigger-hover-text);
     background: var(--auth-trigger-hover-bg);
 }
+.trigger:active {
+    transform: scale(0.97);
+}
 .backdrop {
     position: fixed;
     inset: 0;

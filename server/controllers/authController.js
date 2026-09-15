@@ -91,6 +91,53 @@ export function logout(req, res) {
         .json({ success: true, message: "Logout successful." });
 }
 
+function sessionFromRequest(req) {
+    const cookieHeader = req.headers.cookie || "";
+    const cookies = cookieHeader.split(";").map((part) => part.trim());
+    for (const name of ["nexora_client_token", "nexora_admin_token"]) {
+        const match = cookies
+            .find((part) => part.startsWith(`${name}=`))
+            ?.split("=")[1];
+        if (!match) continue;
+        try {
+            const payload = jwt.verify(
+                decodeURIComponent(match),
+                env.jwtSecret,
+            );
+            if (
+                typeof payload === "object" &&
+                payload &&
+                typeof payload.sub === "string" &&
+                typeof payload.role === "string"
+            ) {
+                return {
+                    id: payload.sub,
+                    email: payload.email,
+                    role: payload.role,
+                    companyId: payload.companyId,
+                };
+            }
+        } catch {
+            // Expired/invalid token: treated as signed out below.
+        }
+    }
+    return null;
+}
+
+export function getSession(req, res) {
+    if (!env.jwtSecret) {
+        return res.status(503).json({
+            success: false,
+            message: "Authentication is temporarily unavailable.",
+        });
+    }
+    const user = sessionFromRequest(req);
+    return res.status(200).json({
+        success: true,
+        data: { authenticated: Boolean(user), user: user ?? null },
+    });
+}
+
 export function loginAdmin(req, res, next) {
     return login(req, res, next, ["admin", "staff"]);
 }

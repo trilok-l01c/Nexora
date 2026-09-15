@@ -2,12 +2,14 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useClientAuth } from "../ClientAuthContext";
 import styles from "../portal.module.css";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
 
 export default function ClientLogin() {
     const router = useRouter();
+    const { refresh } = useClientAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
@@ -27,6 +29,9 @@ export default function ClientLogin() {
             const result = await response.json();
             if (!response.ok)
                 throw new Error(result.message || "Unable to sign in.");
+            // Keep the shared session state in sync before leaving this page so
+            // the portal navigation renders the signed-in layout immediately.
+            await refresh().catch(() => undefined);
             router.replace("/client/dashboard");
         } catch (error) {
             setMessage(

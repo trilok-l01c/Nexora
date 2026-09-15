@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { defaultHomeContent, type HomeContent } from "../homeContent";
+import { useClientAuth } from "../client/ClientAuthContext";
 import PortfolioManager from "./PortfolioManager";
 import styles from "./page.module.css";
 
@@ -52,6 +53,7 @@ function Field({
 }
 
 export default function AdminPage() {
+    const { refresh } = useClientAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [authenticated, setAuthenticated] = useState(false);
@@ -176,6 +178,9 @@ export default function AdminPage() {
             await loadProjects();
             await loadHomeContent();
             setAuthenticated(true);
+            // Re-read the shared session so the site navigation shows the
+            // signed-in (admin) state instead of a stale "Sign In" button.
+            await refresh().catch(() => undefined);
         } catch (error) {
             setMessage(
                 error instanceof Error ? error.message : "Login failed.",
@@ -193,6 +198,9 @@ export default function AdminPage() {
         setAuthenticated(false);
         setProjects([]);
         setPassword("");
+        // Same server endpoint clears the admin cookie, so drop the client-side
+        // session state as well and let the navigation re-render as signed out.
+        void refresh();
     }
 
     if (!authenticated) {

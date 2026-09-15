@@ -232,8 +232,8 @@
         display: none;
     }
     .hero {
-        min-height: 720px;
-        padding: 65px 20px 100px;
+        min-height: auto;
+        padding: 56px 20px 48px;
     }
     .heroMeta {
         gap: 20px;
@@ -242,17 +242,23 @@
         text-align: right;
     }
     .heroContent {
-        padding-top: 105px;
+        padding-top: 40px;
     }
     .hero h1 {
-        font-size: clamp(58px, 17vw, 92px);
+        font-size: clamp(48px, 15vw, 72px);
+        overflow-wrap: anywhere;
     }
+    /* The decorative signal circle sits absolutely on wider screens; on mobile
+       it moves into normal flow below the copy so it can never cover the
+       headline, intro text, or the primary button. */
     .signal {
-        right: 20px;
-        bottom: 68px;
-        width: 170px;
-        height: 170px;
-        padding: 20px;
+        position: static;
+        width: min(240px, 72vw);
+        height: auto;
+        min-height: 0;
+        aspect-ratio: 1;
+        margin-top: 36px;
+        padding: 22px;
     }
     .signal strong {
         margin: 8px 0 0;

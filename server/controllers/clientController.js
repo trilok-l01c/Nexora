@@ -3,6 +3,7 @@ import { isDatabaseReady } from "../config/database.js";
 import { Company } from "../models/Company.js";
 import { Project } from "../models/Project.js";
 import { Ticket } from "../models/Ticket.js";
+import { User } from "../models/User.js";
 
 const publicMemberFields = "name professionalTitle professionalBio avatarUrl";
 const projectPopulate = [
@@ -58,6 +59,77 @@ export async function getDashboard(req, res, next) {
         return res.json({
             success: true,
             data: { company, projects, activity, tickets },
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function getAccount(req, res, next) {
+    if (!isDatabaseReady()) {
+        return res.status(503).json({
+            success: false,
+            message: "Your account details are temporarily unavailable.",
+        });
+    }
+    try {
+        const [user, company] = await Promise.all([
+            User.findById(req.user.sub)
+                .select("name email phone role companyId createdAt")
+                .lean(),
+            Company.findById(req.user.companyId)
+                .select("name createdAt")
+                .lean(),
+        ]);
+        if (!user) {
+            return res
+                .status(404)
+                .json({ success: false, message: "Account not found." });
+        }
+        return res.json({ success: true, data: { user, company } });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function updateAccount(req, res, next) {
+    const { name, phone } = req.body || {};
+    if (typeof name !== "string" || name.trim().length < 2 || name.trim().length > 120) {
+        return res
+            .status(400)
+            .json({ success: false, message: "Please enter your full name." });
+    }
+    const trimmedPhone = typeof phone === "string" ? phone.trim() : "";
+    if (trimmedPhone && !/^[+()\-.\s\d]{6,32}$/.test(trimmedPhone)) {
+        return res
+            .status(400)
+            .json({ success: false, message: "Please enter a valid phone number." });
+    }
+    if (!isDatabaseReady()) {
+        return res.status(503).json({
+            success: false,
+            message: "Your account details are temporarily unavailable.",
+        });
+    }
+    try {
+        const user = await User.findOneAndUpdate(
+            { _id: req.user.sub, companyId: req.user.companyId },
+            { name: name.trim(), phone: trimmedPhone },
+            {
+                new: true,
+                runValidators: true,
+                select: "name email phone role companyId createdAt",
+            },
+        ).lean();
+        if (!user) {
+            return res
+                .status(404)
+                .json({ success: false, message: "Account not found." });
+        }
+        return res.json({
+            success: true,
+            message: "Profile updated.",
+            data: { user },
         });
     } catch (error) {
         next(error);
