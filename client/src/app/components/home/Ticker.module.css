@@ -2,6 +2,7 @@
     min-height: 66px;
     display: flex;
     align-items: center;
+    justify-content: center;
     padding: 12px 30px;
     background: var(--acid);
     color: var(--ticker-text);
@@ -23,15 +24,17 @@
 .tickerTrack {
     display: flex;
     width: max-content;
-    animation: tickerScroll 30s linear infinite;
-    will-change: transform;
 }
 .tickerGroup {
     display: flex;
     flex: none;
     align-items: center;
     gap: 40px;
-    padding-right: 40px;
+}
+/* Desktop shows the four items once, centered: the duplicate copy that the
+   mobile scroll needs is hidden here. */
+.tickerGroup + .tickerGroup {
+    display: none;
 }
 @keyframes tickerScroll {
     /* The track holds two identical copies, so translating it from -50% to 0
@@ -49,10 +52,21 @@
         transform: rotate(-1.2deg) scale(1);
         overflow: hidden;
         white-space: nowrap;
+        /* The scroll needs a fixed left origin, so undo the centering. */
+        justify-content: flex-start;
     }
     .tickerGroup {
         gap: 21px;
+        /* Trailing padding spaces the end of one copy from the start of the
+           next; desktop omits it so the static strip centers exactly. */
         padding-right: 21px;
+    }
+    .tickerGroup + .tickerGroup {
+        display: flex;
+    }
+    .tickerTrack {
+        animation: tickerScroll 30s linear infinite;
+        will-change: transform;
     }
 }
 

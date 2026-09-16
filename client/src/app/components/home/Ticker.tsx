@@ -6,9 +6,10 @@ export default function Ticker({
 }: {
     items?: string[];
 }) {
-    // The item list is rendered twice so the marquee can wrap seamlessly;
-    // the whole strip is aria-hidden, so the duplicate stays invisible to
-    // assistive technology.
+    // Static and centered on desktop. On mobile the strip scrolls, so the
+    // item list is rendered twice for a seamless wrap; the duplicate is
+    // hidden on desktop and the whole strip stays invisible to assistive
+    // technology.
     const strip = items.map((item) => (
         <span key={item}>
             {item} <b>✳</b>
