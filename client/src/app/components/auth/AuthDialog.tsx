@@ -155,6 +155,16 @@ export default function AuthDialog() {
             >
                 Sign In
             </button>
+            <button
+                className={`${styles.trigger} ${styles.triggerRegister}`}
+                type="button"
+                onClick={() => {
+                    setMode("signup");
+                    setOpen(true);
+                }}
+            >
+                Register
+            </button>
             {open && (
                 <div
                     className={styles.backdrop}

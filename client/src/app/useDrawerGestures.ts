@@ -3,8 +3,8 @@
 // Lightweight touch-gesture support for the mobile side drawers, built on
 // plain browser touch events — no gesture library.
 //
-// - Swipe right from the left screen edge (closed drawer) opens it.
-// - Swipe left on the open drawer or its backdrop closes it.
+// - Swipe left from the right screen edge (closed drawer) opens it.
+// - Swipe right on the open drawer or its backdrop closes it.
 //
 // A swipe only counts when the horizontal distance passes a generous
 // threshold AND exceeds the vertical distance, so normal vertical scrolling
@@ -17,7 +17,7 @@ import {
     type TouchEvent as ReactTouchEvent,
 } from "react";
 
-const EDGE_ZONE_PX = 28; // only swipes starting this close to the left edge can open
+const EDGE_ZONE_PX = 28; // only swipes starting this close to the right edge can open
 const OPEN_THRESHOLD_PX = 56; // horizontal distance required to open
 const CLOSE_THRESHOLD_PX = 64; // horizontal distance required to close
 
@@ -45,12 +45,12 @@ export function useDrawerGestures(options: {
     });
 
     // Opening gesture: watched at the document level while the drawer is
-    // closed. Only touches starting within the left edge zone participate.
+    // closed. Only touches starting within the right edge zone participate.
     useEffect(() => {
         function handleTouchStart(event: TouchEvent) {
             if (latest.current.isOpen || event.touches.length !== 1) return;
             const touch = event.touches[0];
-            if (touch.clientX > EDGE_ZONE_PX) return;
+            if (window.innerWidth - touch.clientX > EDGE_ZONE_PX) return;
             start.current = { x: touch.clientX, y: touch.clientY };
         }
         function handleTouchMove(event: TouchEvent) {
@@ -61,7 +61,7 @@ export function useDrawerGestures(options: {
             const touch = event.touches[0];
             const dx = touch.clientX - origin.x;
             const dy = touch.clientY - origin.y;
-            if (dx > OPEN_THRESHOLD_PX && Math.abs(dx) > Math.abs(dy)) {
+            if (dx < -OPEN_THRESHOLD_PX && Math.abs(dx) > Math.abs(dy)) {
                 start.current = null;
                 latest.current.onOpen();
             }
@@ -90,7 +90,7 @@ export function useDrawerGestures(options: {
     }, []);
 
     // Closing gesture: attached to the open drawer (or its backdrop, which
-    // contains it). A leftward swipe beyond the threshold closes the drawer.
+    // contains it). A rightward swipe beyond the threshold closes the drawer.
     // These handlers are re-created every render, so they can read the
     // current props directly.
     function handleTouchStart(event: ReactTouchEvent) {
@@ -105,7 +105,7 @@ export function useDrawerGestures(options: {
         const touch = event.touches[0];
         const dx = touch.clientX - origin.x;
         const dy = touch.clientY - origin.y;
-        if (dx < -CLOSE_THRESHOLD_PX && Math.abs(dx) > Math.abs(dy)) {
+        if (dx > CLOSE_THRESHOLD_PX && Math.abs(dx) > Math.abs(dy)) {
             start.current = null;
             onClose();
         }

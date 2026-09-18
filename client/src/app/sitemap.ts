@@ -33,6 +33,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
             priority: 0.8,
         },
         {
+            url: `${baseUrl}/approach`,
+            lastModified: now,
+            changeFrequency: "monthly",
+            priority: 0.6,
+        },
+        {
             url: `${baseUrl}/alliances`,
             lastModified: now,
             changeFrequency: "monthly",

@@ -11,7 +11,7 @@ import AuthDialog from "../auth/AuthDialog";
 import styles from "./Nav.module.css";
 
 const publicLinks = [
-    { label: "Approach", href: "/#approach" },
+    { label: "Approach", href: "/approach" },
     { label: "Portfolio", href: "/portfolio" },
     { label: "Clients", href: "/clients" },
     { label: "Alliances", href: "/alliances" },
@@ -82,7 +82,7 @@ export default function Nav() {
         window.setTimeout(() => setDrawerVisible(false), 280);
     }
 
-    // Swipe right from the left screen edge opens the drawer; a leftward
+    // Swipe left from the right screen edge opens the drawer; a rightward
     // swipe on the open drawer closes it. Handlers attach to the drawer root
     // below; the open swipe is watched at the document level by the hook.
     const drawerGestures = useDrawerGestures({
@@ -470,13 +470,24 @@ export default function Nav() {
                                 Log out
                             </button>
                         ) : (
-                            <Link
-                                href="/client/login"
-                                onClick={closeDrawer}
-                                className={styles.drawerSignIn}
-                            >
-                                Sign In
-                            </Link>
+                            <>
+                                <Link
+                                    href="/client/login"
+                                    onClick={closeDrawer}
+                                    className={styles.drawerSignIn}
+                                >
+                                    Sign In
+                                </Link>
+                                {/* Opens the shared auth dialog in register
+                                    mode via the existing #signup hash hook. */}
+                                <a
+                                    href="#signup"
+                                    onClick={closeDrawer}
+                                    className={styles.drawerRegister}
+                                >
+                                    Register
+                                </a>
+                            </>
                         )}
                     </nav>
                 </div>

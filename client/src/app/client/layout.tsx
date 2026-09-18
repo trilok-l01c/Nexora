@@ -52,7 +52,7 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
         );
     }
 
-    // Swipe right from the left screen edge opens the drawer; a leftward
+    // Swipe left from the right screen edge opens the drawer; a rightward
     // swipe on the open drawer closes it. Handlers attach to the drawer root
     // below; the open swipe is watched at the document level by the hook.
     const drawerGestures = useDrawerGestures({

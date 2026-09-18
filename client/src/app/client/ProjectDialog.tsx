@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { allServices } from "../services";
 import styles from "./portal.module.css";
@@ -30,6 +30,26 @@ export default function ProjectDialog() {
     const [form, setForm] = useState<ProjectForm>(initialForm);
     const [message, setMessage] = useState("");
     const [submitting, setSubmitting] = useState(false);
+    const closeButtonRef = useRef<HTMLButtonElement>(null);
+
+    // Escape closes the dialog (matching the auth dialog), and focus moves
+    // to the close button on open so keyboard users start inside the modal.
+    // Re-binding on `submitting` keeps the guard inside close() accurate.
+    useEffect(() => {
+        if (!open) return;
+        function handleKeyDown(event: KeyboardEvent) {
+            if (event.key === "Escape") close();
+        }
+        document.addEventListener("keydown", handleKeyDown);
+        const timer = window.setTimeout(() => {
+            closeButtonRef.current?.focus();
+        }, 30);
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+            window.clearTimeout(timer);
+        };
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- close() is stable per render; re-binding on submitting keeps its guard current
+    }, [open, submitting]);
 
     function update(field: keyof ProjectForm, value: string) {
         setForm((current) => ({ ...current, [field]: value }));
@@ -101,6 +121,7 @@ export default function ProjectDialog() {
                         aria-labelledby="project-request-title"
                     >
                         <button
+                            ref={closeButtonRef}
                             className={styles.portalModalClose}
                             type="button"
                             onClick={close}

@@ -15,6 +15,22 @@
 .trigger:active {
     transform: scale(0.97);
 }
+/* Register is the filled counterpart of the Sign In trigger; it reuses the
+   primary-button tokens so light and dark themes stay consistent. Defined
+   after .trigger:hover so the filled styles win when hovering. */
+.triggerRegister {
+    border-color: var(--primary-button-bg);
+    color: var(--primary-button-text);
+    background: var(--primary-button-bg);
+}
+.triggerRegister:hover {
+    border-color: var(--primary-button-hover-bg);
+    color: var(--primary-button-text);
+    background: var(--primary-button-hover-bg);
+}
+.triggerRegister:active {
+    transform: scale(0.97);
+}
 .backdrop {
     position: fixed;
     inset: 0;
@@ -161,7 +177,8 @@
     opacity: 0.6;
 }
 .submit:focus-visible,
-.trigger:focus-visible {
+.trigger:focus-visible,
+.close:focus-visible {
     outline: 2px solid var(--link-hover);
     outline-offset: 2px;
 }

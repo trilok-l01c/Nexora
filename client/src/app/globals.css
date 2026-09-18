@@ -208,6 +208,16 @@ html[data-theme="dark"] {
 
 html {
     height: 100%;
+    /* Always render the vertical scrollbar: locking the body scroll while a
+       drawer or modal is open must not unmount the scrollbar and snap the
+       whole page sideways on open and back on close. */
+    overflow-y: scroll;
+    /* Disable browser-level overscroll gestures (right-edge swipe forward
+       navigation, pull-to-refresh, page rubber-banding). The mobile drawer
+       lives at the right screen edge and is opened with an edge swipe —
+       without this the browser claims the gesture and the page visibly
+       bounces at the right edge instead of the drawer opening. */
+    overscroll-behavior: none;
 }
 
 html,
