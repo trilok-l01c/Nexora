@@ -11,10 +11,8 @@ import AuthDialog from "../auth/AuthDialog";
 import styles from "./Nav.module.css";
 
 const publicLinks = [
-    { label: "Approach", href: "/approach" },
     { label: "Portfolio", href: "/portfolio" },
     { label: "Clients", href: "/clients" },
-    { label: "Alliances", href: "/alliances" },
 ];
 
 export default function Nav() {
@@ -135,8 +133,8 @@ export default function Nav() {
         router.push("/");
     }
 
-    // Marks the drawer entry for the page the visitor is actually on. Hash links
-    // (e.g. `/#approach`) are never marked, since they are not separate pages.
+    // Marks the drawer entry for the page the visitor is actually on. Hash
+    // links are never marked, since they are not separate pages.
     function isCurrentPath(href: string) {
         if (href.includes("#")) return false;
         if (href === "/") return pathname === "/";

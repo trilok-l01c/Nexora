@@ -14,20 +14,6 @@ const defaultContent = {
         "Digital momentum",
         "Human-first technology",
     ],
-    approach: {
-        meta: "Small team. Big range.",
-        metaSecondLine: "Always in your corner.",
-        title: "Good technology",
-        titleSecondLine: "should feel like",
-        titleEmphasis: "good energy.",
-        text: "We bring strategy, design, engineering, and intelligence into one room. No handoffs into the void. No mystery timelines. Just thoughtful work that keeps moving.",
-        linkLabel: "Meet your new tech partner",
-    },
-    stats: [
-        { value: "12+", label: "industries", detail: "served" },
-        { value: "4.9★", label: "partner", detail: "rating" },
-        { value: "∞", label: "ways to", detail: "move forward" },
-    ],
 };
 
 function contentOrDefault(content) {

@@ -1,12 +1,12 @@
 # Nexora
 
-Nexora is an IT solutions company website with a Next.js frontend, Express API, MongoDB enquiry and project storage, a private admin workspace, and a company-scoped client portal. The primary workflow is public website -> authentication -> company/client -> projects -> team, progress, technology, updates, and support.
+Nexora is an IT solutions company website with a Next.js frontend, Express API, MongoDB lead and project storage, a private admin workspace, and a company-scoped client portal. The primary workflow is public website -> enquiry/lead -> follow-up -> converted client -> company -> projects -> team, progress, technology, updates, and support.
 
 ## Stack and structure
 
 - `client/`: Next.js App Router frontend and admin interface.
 - `server/`: Express API, Mongoose models, validation, authentication, and services.
-- MongoDB stores general enquiries, users, companies, projects, project updates, and support tickets.
+- MongoDB stores leads, users, companies, projects, project updates, and support tickets.
 
 ## Quick start
 
@@ -73,11 +73,11 @@ Never commit `server/.env` or `client/.env.local`.
          Technologies
 ```
 
-Public enquiries (`POST /api/contact`) are completely separate from the authenticated client/project system: they create a plain `Enquiry` record for the team to read and never create accounts, clients, or projects.
+Public enquiries (`POST /api/contact`) are completely separate from the authenticated client/project system: they create a `Lead` record (source `website`, status `new`) for the team to follow up on and never create accounts, clients, or projects. Leads become clients only through the explicit admin conversion workflow.
 
 ## API and authentication
 
-Public contact submissions use `POST /api/contact` and accept JSON with required `name`, `email`, and `message`; `company` and `service` are optional. Enquiries are stored as-is for staff follow-up — no status workflow, attachments, or CRM behaviour.
+Public contact submissions use `POST /api/contact` and accept JSON with required `name`, `email`, `service`, and `message`; `phone` and `company` are optional. Submissions are stored as leads with a status lifecycle for staff follow-up.
 
 Admin-only endpoints are:
 
@@ -86,6 +86,11 @@ Admin-only endpoints are:
 - `GET/PATCH /api/admin/home`
 - `GET/POST /api/admin/projects`
 - `PATCH /api/admin/projects/:id`
+- `GET /api/admin/leads` and `GET /api/admin/leads/:id` (optional `?status=` filter)
+- `PATCH /api/admin/leads/:id` (contact details)
+- `PATCH /api/admin/leads/:id/status` (lifecycle transitions)
+- `POST /api/admin/leads/:id/notes` and `PATCH /api/admin/leads/:id/notes/:noteId` (relationship history)
+- `POST /api/admin/leads/:id/convert` (explicit lead -> client conversion)
 
 Client portal endpoints are:
 
@@ -109,7 +114,11 @@ Admin login uses a short-lived JWT in an HttpOnly cookie. The public website inc
 
 New client requests are created as `Pending Review` with `0%` progress. Staff controls status, progress, dates, team, milestones, technologies, and updates through authenticated admin project operations. Client reads and support tickets are always scoped to the authenticated user's company.
 
-The former lead inbox, lead status lifecycle, lead attachments, and lead conversion workflow have been removed. Public contact is now a lightweight general enquiry stored as `Enquiry`; it is not a CRM lead and has no admin lead API or attachment system.
+## Lead workflow
+
+The lead lifecycle is `new -> contacted -> in_progress`, with `completed` as the converted-to-client state and `rejected` as the lost state (terminal). Transitions are validated server-side, every status change, admin note, and conversion is appended to an embedded relationship timeline, and `completed` is only reachable through the conversion workflow so it always means a real client account exists. Submitting a public enquiry never creates a client account.
+
+Conversion is an explicit admin action (`POST /api/admin/leads/:id/convert`): it reuses an existing company with the same name (or creates one, same as client signup), creates a `client` user with an admin-supplied initial password, stamps the lead with the company/user references and `completed` status, and records the conversion on the timeline. Duplicate emails return `409`. Existing client accounts, company relationships, and project authorization are untouched by lead operations.
 
 ## Testing and production notes
 
@@ -119,7 +128,7 @@ npm --prefix client run lint
 npm --prefix client run build
 ```
 
-The server validates untrusted input, limits JSON payload sizes, rate-limits contact and admin-login routes, uses Helmet and configured CORS, and returns safe error messages. For production, use HTTPS, a strong secret, and a managed/private MongoDB deployment with a backup/retention policy. Email notifications are intentionally not enabled yet; the enquiry controller is the natural integration point for a future `emailService`.
+The server validates untrusted input, limits JSON payload sizes, rate-limits contact and admin-login routes, uses Helmet and configured CORS, and returns safe error messages. For production, use HTTPS, a strong secret, and a managed/private MongoDB deployment with a backup/retention policy. Email notifications are intentionally not enabled yet; the lead controller is the natural integration point for a future `emailService`.
 
 ## Browser extension note
 

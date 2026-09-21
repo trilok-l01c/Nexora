@@ -235,25 +235,25 @@
 }
 
 .updates .kicker {
-    color: var(--approach-kicker);
+    color: var(--section-dark-kicker);
 }
 
 .updateList {
     margin-top: 55px;
-    border-top: 1px solid var(--approach-border);
+    border-top: 1px solid var(--section-dark-border);
 }
 
 .updateItem {
     display: grid;
     grid-template-columns: 150px 1fr;
     gap: 30px;
-    border-bottom: 1px solid var(--approach-border);
+    border-bottom: 1px solid var(--section-dark-border);
     padding: 28px 0;
 }
 
 .updateItem time {
     padding-top: 5px;
-    color: var(--approach-text);
+    color: var(--section-dark-muted);
     font:
         10px var(--font-geist-mono),
         monospace;
@@ -269,14 +269,14 @@
 
 .updateItem p {
     margin: 0;
-    color: var(--approach-text);
+    color: var(--section-dark-muted);
     font-size: 14px;
     line-height: 1.6;
 }
 
 .updates .chip {
-    border-color: var(--approach-border);
-    color: var(--approach-text);
+    border-color: var(--section-dark-border);
+    color: var(--section-dark-muted);
 }
 
 .updateImages {
@@ -290,7 +290,7 @@
     display: block;
     width: 130px;
     height: 86px;
-    border: 1px solid var(--approach-border);
+    border: 1px solid var(--section-dark-border);
     object-fit: cover;
 }
 
@@ -308,7 +308,7 @@
 
 .updatesEmpty {
     margin: 45px 0 0;
-    color: var(--approach-text);
+    color: var(--section-dark-muted);
     font-size: 14px;
 }
 

@@ -3,6 +3,11 @@ import { after, before, test } from "node:test";
 import jwt from "jsonwebtoken";
 import app from "../app.js";
 import { env } from "../config/env.js";
+import {
+    allowedTransitions,
+    statusLabels,
+    validStatuses,
+} from "../middleware/validateLeadStatus.js";
 
 let server;
 let baseUrl;
@@ -300,4 +305,308 @@ test("portfolio image upload rejects requests without a file", async () => {
     assert.equal(response.status, 400);
     assert.equal(body.success, false);
     assert.match(body.message, /no image file/i);
+});
+
+test("admin lead list requires authentication", async () => {
+    const { response, body } = await request("/api/admin/leads");
+    assert.equal(response.status, 401);
+    assert.equal(body.message, "Authentication required.");
+});
+
+test("client sessions cannot access admin lead endpoints", async () => {
+    const clientToken = jwt.sign(
+        { sub: "client-user-id", role: "client", companyId: "company-id" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request("/api/admin/leads", {
+        headers: { Authorization: `Bearer ${clientToken}` },
+    });
+    assert.equal(response.status, 403);
+    assert.equal(body.message, "Admin access required.");
+});
+
+test("lead status endpoint rejects unknown statuses", async () => {
+    const adminToken = jwt.sign(
+        { sub: "admin-user-id", role: "admin" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request(
+        "/api/admin/leads/000000000000000000000000/status",
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${adminToken}`,
+            },
+            body: JSON.stringify({ status: "qualified" }),
+        },
+    );
+    assert.equal(response.status, 400);
+    assert.equal(body.success, false);
+    assert.equal(body.message, "Invalid lead status.");
+});
+
+test("lead contact update rejects invalid emails", async () => {
+    const adminToken = jwt.sign(
+        { sub: "admin-user-id", role: "admin" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request(
+        "/api/admin/leads/000000000000000000000000",
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${adminToken}`,
+            },
+            body: JSON.stringify({ email: "not-an-email" }),
+        },
+    );
+    assert.equal(response.status, 400);
+    assert.equal(body.message, "Please enter a valid email address.");
+});
+
+test("lead contact update rejects empty change sets", async () => {
+    const adminToken = jwt.sign(
+        { sub: "admin-user-id", role: "admin" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request(
+        "/api/admin/leads/000000000000000000000000",
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${adminToken}`,
+            },
+            body: JSON.stringify({}),
+        },
+    );
+    assert.equal(response.status, 400);
+    assert.equal(body.message, "No lead changes were provided.");
+});
+
+test("lead note endpoint rejects empty notes", async () => {
+    const adminToken = jwt.sign(
+        { sub: "admin-user-id", role: "admin" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request(
+        "/api/admin/leads/000000000000000000000000/notes",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${adminToken}`,
+            },
+            body: JSON.stringify({ text: "   " }),
+        },
+    );
+    assert.equal(response.status, 400);
+    assert.equal(body.message, "Note text is required.");
+});
+
+test("lead conversion rejects short passwords", async () => {
+    const adminToken = jwt.sign(
+        { sub: "admin-user-id", role: "admin" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request(
+        "/api/admin/leads/000000000000000000000000/convert",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${adminToken}`,
+            },
+            body: JSON.stringify({
+                companyName: "Example Ltd",
+                clientName: "Test Client",
+                email: "client@example.com",
+                password: "short",
+            }),
+        },
+    );
+    assert.equal(response.status, 400);
+    assert.equal(body.message, "Password must be at least 8 characters.");
+});
+
+test("lead conversion requires a company name", async () => {
+    const adminToken = jwt.sign(
+        { sub: "admin-user-id", role: "admin" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request(
+        "/api/admin/leads/000000000000000000000000/convert",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${adminToken}`,
+            },
+            body: JSON.stringify({
+                clientName: "Test Client",
+                email: "client@example.com",
+                password: "password123",
+            }),
+        },
+    );
+    assert.equal(response.status, 400);
+    assert.equal(body.message, "Company name is required.");
+});
+
+test("lead list waits for the database instead of leaking an error", async () => {
+    const adminToken = jwt.sign(
+        { sub: "admin-user-id", role: "admin" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request("/api/admin/leads", {
+        headers: { Authorization: `Bearer ${adminToken}` },
+    });
+    assert.equal(response.status, 503);
+    assert.equal(body.message, "Lead records are temporarily unavailable.");
+});
+
+test("contact validation requires a service", async () => {
+    const { response, body } = await request("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            name: "Client",
+            email: "client@example.com",
+            message: "Project details",
+        }),
+    });
+    assert.equal(response.status, 400);
+    assert.equal(body.message, "Please select a service.");
+});
+
+test("lead contact update rejects invalid phone numbers", async () => {
+    const adminToken = jwt.sign(
+        { sub: "admin-user-id", role: "admin" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request(
+        "/api/admin/leads/000000000000000000000000",
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${adminToken}`,
+            },
+            body: JSON.stringify({ phone: "call-me-maybe" }),
+        },
+    );
+    assert.equal(response.status, 400);
+    assert.equal(body.message, "Please enter a valid phone number.");
+});
+
+test("lead contact update rejects unknown sources", async () => {
+    const adminToken = jwt.sign(
+        { sub: "admin-user-id", role: "admin" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request(
+        "/api/admin/leads/000000000000000000000000",
+        {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${adminToken}`,
+            },
+            body: JSON.stringify({ source: "cold-call" }),
+        },
+    );
+    assert.equal(response.status, 400);
+    assert.equal(body.message, "Invalid lead source.");
+});
+
+test("lead note endpoint rejects oversized notes", async () => {
+    const adminToken = jwt.sign(
+        { sub: "admin-user-id", role: "admin" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request(
+        "/api/admin/leads/000000000000000000000000/notes",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${adminToken}`,
+            },
+            body: JSON.stringify({ text: "x".repeat(2001) }),
+        },
+    );
+    assert.equal(response.status, 400);
+    assert.equal(body.message, "Note is too long.");
+});
+
+test("lead conversion rejects invalid client names", async () => {
+    const adminToken = jwt.sign(
+        { sub: "admin-user-id", role: "admin" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request(
+        "/api/admin/leads/000000000000000000000000/convert",
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${adminToken}`,
+            },
+            body: JSON.stringify({
+                companyName: "Acme",
+                clientName: "A",
+                email: "client@example.com",
+                password: "password123",
+            }),
+        },
+    );
+    assert.equal(response.status, 400);
+    assert.equal(body.message, "Please enter the client's full name.");
+});
+
+test("lead lifecycle keeps the converted state out of manual transitions", () => {
+    // `completed` means a client account exists, so it must only ever be set by
+    // the conversion workflow — never by a status change, which would mark a
+    // lead as converted without provisioning any account.
+    for (const [from, targets] of Object.entries(allowedTransitions)) {
+        if (from === "completed") continue;
+        assert.equal(
+            targets.has("completed"),
+            false,
+            `${from} must not transition to completed`,
+        );
+    }
+    assert.deepEqual([...allowedTransitions.completed], ["completed"]);
+    assert.deepEqual([...allowedTransitions.rejected], ["rejected"]);
+    assert.deepEqual([...allowedTransitions.new], [
+        "new",
+        "contacted",
+        "rejected",
+    ]);
+    assert.deepEqual([...allowedTransitions.contacted], [
+        "contacted",
+        "in_progress",
+        "rejected",
+    ]);
+    assert.deepEqual([...allowedTransitions.in_progress], [
+        "in_progress",
+        "rejected",
+    ]);
+});
+
+test("every lead status has a lifecycle rule and a timeline label", () => {
+    for (const status of validStatuses) {
+        assert.ok(
+            allowedTransitions[status] instanceof Set,
+            `missing lifecycle rule for ${status}`,
+        );
+        assert.equal(
+            typeof statusLabels[status],
+            "string",
+            `missing status label for ${status}`,
+        );
+    }
+    assert.equal(statusLabels.completed, "Converted to client");
 });

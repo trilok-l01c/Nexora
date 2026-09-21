@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Approach from "./components/home/Approach";
 import Contact from "./components/home/Contact";
 import Footer from "./components/home/Footer";
 import Hero from "./components/home/Hero";
@@ -28,10 +27,6 @@ export default function Home() {
                             ...defaultHomeContent.hero,
                             ...result.data.hero,
                         },
-                        approach: {
-                            ...defaultHomeContent.approach,
-                            ...result.data.approach,
-                        },
                         ticker: result.data.ticker || defaultHomeContent.ticker,
                         solutions:
                             result.data.solutions ||
@@ -39,7 +34,6 @@ export default function Home() {
                         industries:
                             result.data.industries ||
                             defaultHomeContent.industries,
-                        stats: result.data.stats || defaultHomeContent.stats,
                     });
                 }
             })
@@ -52,7 +46,6 @@ export default function Home() {
             <Ticker items={content.ticker} />
             <Solutions cards={content.solutions} />
             <Industries industries={content.industries} />
-            <Approach content={content.approach} stats={content.stats} />
             <Contact />
             <Footer />
         </main>

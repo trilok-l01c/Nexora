@@ -12,6 +12,9 @@
     --button-hover-bg: #4e5b13;
     --section-dark-bg: #111310;
     --section-dark-text: #f1f0eb;
+    --section-dark-kicker: #7e8878;
+    --section-dark-muted: #9aa197;
+    --section-dark-border: #343a30;
     --brand-mark-bg: #111310;
     --brand-mark-text: #d8f55a;
     --nav-cta-border: #111310;
@@ -59,9 +62,6 @@
     --project-summary: #c0c8bc;
     --capability-text: #c0c8bc;
     --capability-border: #343a30;
-    --approach-kicker: #7e8878;
-    --approach-text: #9aa197;
-    --approach-border: #343a30;
     --ticker-text: #4c5a11;
     --ticker-star: #8aab18;
     --auth-dialog-bg: #f8f7f2;
@@ -116,6 +116,9 @@ html[data-theme="dark"] {
     --button-hover-bg: #8aa51f;
     --section-dark-bg: #111310;
     --section-dark-text: #f1f0eb;
+    --section-dark-kicker: #8a9187;
+    --section-dark-muted: #9aa197;
+    --section-dark-border: #2a2e28;
     --brand-mark-bg: #111310;
     --brand-mark-text: #d8f55a;
     --nav-cta-border: #e8e8e2;
@@ -163,9 +166,6 @@ html[data-theme="dark"] {
     --project-summary: #b8c0b4;
     --capability-text: #b8c0b4;
     --capability-border: #2a2e28;
-    --approach-kicker: #8a9187;
-    --approach-text: #9aa197;
-    --approach-border: #2a2e28;
     --ticker-text: #1a1d1a;
     --ticker-star: #4c5a11;
     --auth-dialog-bg: #1a1d1a;

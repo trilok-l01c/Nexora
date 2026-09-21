@@ -12,6 +12,19 @@ import {
     updateProject,
 } from "../controllers/projectController.js";
 import {
+    addLeadNote,
+    convertLead,
+    getLead,
+    listLeads,
+    updateLead,
+    updateLeadNote,
+    updateLeadStatus,
+} from "../controllers/leadController.js";
+import { validateLeadConversion } from "../middleware/validateLeadConversion.js";
+import { validateLeadNote } from "../middleware/validateLeadNote.js";
+import { validateLeadStatus } from "../middleware/validateLeadStatus.js";
+import { validateLeadUpdate } from "../middleware/validateLeadUpdate.js";
+import {
     createPortfolioProject,
     createPortfolioUpdate,
     deletePortfolioProject,
@@ -32,6 +45,13 @@ router.patch("/home", updateHomeContent);
 router.get("/projects", listProjects);
 router.post("/projects", createProject);
 router.patch("/projects/:id", updateProject);
+router.get("/leads", listLeads);
+router.get("/leads/:id", getLead);
+router.patch("/leads/:id", validateLeadUpdate, updateLead);
+router.patch("/leads/:id/status", validateLeadStatus, updateLeadStatus);
+router.post("/leads/:id/notes", validateLeadNote, addLeadNote);
+router.patch("/leads/:id/notes/:noteId", validateLeadNote, updateLeadNote);
+router.post("/leads/:id/convert", validateLeadConversion, convertLead);
 router.get("/portfolio", listAdminPortfolioProjects);
 router.post("/portfolio", createPortfolioProject);
 router.patch("/portfolio/:id", updatePortfolioProject);

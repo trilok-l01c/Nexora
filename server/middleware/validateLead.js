@@ -1,7 +1,8 @@
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const phonePattern = /^[+\d][\d\s().-]{6,29}$/;
 
-export function validateEnquiry(req, res, next) {
-    const { name, email, company, service, message } = req.body || {};
+export function validateLead(req, res, next) {
+    const { name, email, phone, company, service, message } = req.body || {};
     if (typeof name !== "string" || !name.trim()) {
         return res.status(400).json({ success: false, message: "Name is required." });
     }
@@ -11,20 +12,27 @@ export function validateEnquiry(req, res, next) {
     if (typeof message !== "string" || !message.trim()) {
         return res.status(400).json({ success: false, message: "Message is required." });
     }
-    if (company !== undefined && (typeof company !== "string" || company.length > 160)) {
+    if (typeof service !== "string" || !service.trim()) {
+        return res.status(400).json({ success: false, message: "Please select a service." });
+    }
+    if (phone !== undefined && phone !== "" && (typeof phone !== "string" || !phonePattern.test(phone.trim()))) {
+        return res.status(400).json({ success: false, message: "Please enter a valid phone number." });
+    }
+    if (company !== undefined && (typeof company !== "string" || company.length > 120)) {
         return res.status(400).json({ success: false, message: "Company information is invalid." });
     }
-    if (service !== undefined && (typeof service !== "string" || service.length > 120)) {
+    if (service.length > 120) {
         return res.status(400).json({ success: false, message: "Service information is invalid." });
     }
     if (message.length > 5000) {
         return res.status(400).json({ success: false, message: "Message is too long." });
     }
-    req.enquiryInput = {
+    req.leadInput = {
         name: name.trim(),
         email: email.trim().toLowerCase(),
-        company: typeof company === "string" ? company.trim() : undefined,
-        service: typeof service === "string" ? service.trim() : undefined,
+        phone: typeof phone === "string" && phone.trim() ? phone.trim() : undefined,
+        company: typeof company === "string" && company.trim() ? company.trim() : undefined,
+        service: service.trim(),
         message: message.trim(),
     };
     next();
