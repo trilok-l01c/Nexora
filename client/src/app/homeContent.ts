@@ -24,16 +24,6 @@ export type HomeContent = {
         text: string;
         outcomes: string;
     }[];
-    approach: {
-        meta: string;
-        metaSecondLine: string;
-        title: string;
-        titleSecondLine: string;
-        titleEmphasis: string;
-        text: string;
-        linkLabel: string;
-    };
-    stats: { value: string; label: string; detail: string }[];
 };
 
 export const defaultHomeContent: HomeContent = {
@@ -45,10 +35,13 @@ export const defaultHomeContent: HomeContent = {
         text: "Nexora turns ambitious ideas into intelligent digital products, from the first line of code to the last meaningful interaction.",
     },
     ticker: [
-        "Full-stack development",
-        "Intelligent systems",
-        "Digital momentum",
-        "Human-first technology",
+        "website developement",
+        "App development",
+        "Data Analysis",
+        "AI agents",
+        "WORKFLOWS",
+        "automations",
+        "UI/UX",
     ],
     solutions: [
         {
@@ -135,19 +128,5 @@ export const defaultHomeContent: HomeContent = {
             text: "Connect teams, assets, and data so operational leaders can respond faster and plan with a clearer view of what is happening.",
             outcomes: "Tracking tools · Performance dashboards · Cloud systems",
         },
-    ],
-    approach: {
-        meta: "Small team. Big range.",
-        metaSecondLine: "Always in your corner.",
-        title: "Good technology",
-        titleSecondLine: "should feel like",
-        titleEmphasis: "good energy.",
-        text: "We bring strategy, design, engineering, and intelligence into one room. No handoffs into the void. No mystery timelines. Just thoughtful work that keeps moving.",
-        linkLabel: "Meet your new tech partner",
-    },
-    stats: [
-        { value: "12+", label: "industries", detail: "served" },
-        { value: "4.9★", label: "partner", detail: "rating" },
-        { value: "∞", label: "ways to", detail: "move forward" },
     ],
 };

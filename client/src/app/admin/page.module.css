@@ -713,3 +713,389 @@
     }
 }
 
+/* Lead inbox */
+.leadSection {
+    margin-top: 60px;
+}
+.leadHeading {
+    margin: 0 0 28px;
+    font-size: clamp(38px, 6vw, 64px);
+    line-height: 0.9;
+    letter-spacing: -0.06em;
+}
+.leadHeading em {
+    color: var(--hero-emphasis);
+    font-style: normal;
+}
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 28px;
+}
+.filter,
+.filterActive {
+    border: 1px solid var(--line);
+    padding: 9px 11px;
+    color: var(--muted);
+    background: transparent;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: capitalize;
+}
+.filter:hover,
+.filterActive {
+    color: var(--ink);
+    background: var(--acid);
+}
+.leads {
+    border-top: 1px solid var(--line);
+}
+.empty {
+    padding: 25px 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+.lead {
+    padding: 25px 0;
+    border-bottom: 1px solid var(--line);
+}
+.leadTop {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+}
+.lead strong {
+    font-size: 20px;
+    letter-spacing: -0.04em;
+}
+.leadTop span {
+    color: var(--card-top-accent);
+    font:
+        10px var(--font-geist-mono),
+        monospace;
+    text-transform: uppercase;
+}
+.lead p {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+.lead .service {
+    color: var(--ink);
+    font-weight: 700;
+}
+.lead div {
+    max-width: 650px;
+    margin-top: 14px;
+    font-size: 14px;
+    line-height: 1.55;
+}
+.lead small {
+    display: block;
+    margin-top: 16px;
+    color: var(--card-number);
+    font:
+        10px var(--font-geist-mono),
+        monospace;
+}
+.leadOpen {
+    margin-top: 14px;
+    border: 1px solid var(--secondary-button-border);
+    padding: 8px 12px;
+    color: var(--secondary-button-text);
+    background: var(--secondary-button-bg);
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.leadOpen:hover {
+    color: var(--secondary-button-active-text);
+    background: var(--secondary-button-hover-bg);
+}
+.leadDetail {
+    margin-bottom: 28px;
+    border: 1px solid var(--line);
+    padding: 22px;
+    background: var(--contact-form-bg);
+}
+.leadDetailHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+}
+.leadDetailHeader strong {
+    font-size: 22px;
+    letter-spacing: -0.04em;
+}
+.leadStatusChip {
+    border: 1px solid var(--line);
+    padding: 3px 8px;
+    color: var(--card-top-accent);
+    font:
+        600 10px var(--font-geist-mono),
+        monospace;
+    text-transform: uppercase;
+}
+.leadStatusChip[data-status="completed"] {
+    color: var(--auth-success);
+}
+.leadStatusChip[data-status="rejected"] {
+    color: var(--auth-error);
+}
+.leadClose {
+    border: 0;
+    padding: 4px 0;
+    color: var(--muted);
+    background: transparent;
+    font-size: 11px;
+    cursor: pointer;
+}
+.leadClose:hover {
+    color: var(--ink);
+}
+.leadMeta {
+    margin: 8px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+.leadMessage {
+    min-height: 18px;
+    margin: 14px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+.convertedBanner {
+    margin-top: 14px;
+    border: 1px solid var(--auth-success);
+    padding: 12px 14px;
+    color: var(--auth-success);
+    font-size: 12px;
+}
+.leadGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+}
+.leadField {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.leadField input,
+.noteForm textarea,
+.noteEditor textarea,
+.statusSelect select {
+    border: 1px solid var(--contact-input-border);
+    border-radius: 0;
+    padding: 10px;
+    color: var(--ink);
+    background: var(--contact-input-bg);
+    font:
+        13px var(--font-geist-sans),
+        sans-serif;
+    outline: none;
+}
+.leadField input:focus,
+.noteForm textarea:focus,
+.noteEditor textarea:focus,
+.statusSelect select:focus {
+    border-color: var(--link-hover);
+    box-shadow: 0 0 0 2px rgba(120, 156, 0, 0.15);
+}
+.leadActions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 16px;
+    margin-top: 16px;
+}
+.statusSelect {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+.leadRequirement {
+    margin-top: 18px;
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+}
+.leadRequirement strong,
+.leadTimeline > strong {
+    color: var(--card-label);
+    font:
+        600 10px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+.leadRequirement p {
+    max-width: 650px;
+    margin: 10px 0 0;
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.55;
+}
+.leadRequirement small {
+    display: block;
+    margin-top: 10px;
+    color: var(--card-number);
+    font:
+        10px var(--font-geist-mono),
+        monospace;
+}
+.leadTimeline {
+    margin-top: 18px;
+    border-top: 1px solid var(--line);
+    padding-top: 16px;
+}
+.timelineItem {
+    margin-top: 14px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 12px;
+}
+.timelineTop {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+}
+.timelineType {
+    color: var(--card-top-accent);
+    font:
+        600 10px var(--font-geist-mono),
+        monospace;
+    text-transform: uppercase;
+}
+.timelineType[data-type="status"] {
+    color: var(--muted);
+}
+.timelineType[data-type="converted"] {
+    color: var(--auth-success);
+}
+.timelineTop time {
+    color: var(--card-number);
+    font:
+        10px var(--font-geist-mono),
+        monospace;
+    white-space: nowrap;
+}
+.timelineItem p {
+    margin: 8px 0 0;
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+}
+.timelineItem small {
+    display: block;
+    margin-top: 6px;
+    color: var(--card-number);
+    font-size: 11px;
+}
+.noteEditButton {
+    margin-top: 8px;
+    border: 0;
+    padding: 0;
+    color: var(--muted);
+    background: transparent;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+.noteEditButton:hover {
+    color: var(--ink);
+}
+.timelineEmpty {
+    margin: 12px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+}
+.noteEditor {
+    margin-top: 10px;
+}
+.noteEditor textarea {
+    width: 100%;
+    resize: vertical;
+}
+.noteForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 16px;
+}
+.noteForm textarea {
+    width: 100%;
+    resize: vertical;
+}
+.noteForm button {
+    justify-self: start;
+    border: 1px solid var(--secondary-button-border);
+    padding: 9px 12px;
+    color: var(--secondary-button-text);
+    background: var(--secondary-button-bg);
+    font-size: 10px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.noteForm button:hover {
+    color: var(--secondary-button-active-text);
+    background: var(--secondary-button-hover-bg);
+}
+.convertPanel {
+    margin-top: 22px;
+    border-top: 1px solid var(--line);
+    padding-top: 18px;
+}
+.convertPanel > button {
+    margin-top: 16px;
+    border: 0;
+    padding: 13px 16px;
+    color: var(--primary-button-text);
+    background: var(--primary-button-bg);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.convertPanel > button:hover {
+    background: var(--primary-button-hover-bg);
+}
+.convertHint {
+    margin: 10px 0 0;
+    max-width: 560px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.5;
+}
+@media (max-width: 600px) {
+    .leadDetail {
+        padding: 16px;
+    }
+    .leadGrid {
+        grid-template-columns: 1fr;
+    }
+    .leadTop {
+        flex-direction: column;
+        gap: 6px;
+    }
+    .leadActions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+

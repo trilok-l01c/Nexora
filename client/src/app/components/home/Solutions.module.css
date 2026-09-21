@@ -26,6 +26,18 @@
 .sectionIntro h2 span {
     color: var(--hero-emphasis);
 }
+/* Animated accent sweep on the emphasis word, with the flat accent colour as
+   the fallback where background-clip: text is unsupported. */
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+    .sectionIntro h2 span {
+        background-image: var(--accent-gradient);
+        background-size: 200% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: nxGradientPan 8s linear infinite;
+    }
+}
 .solutionGrid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -33,9 +45,34 @@
 }
 .solutionCard {
     position: relative;
+    /* Creates a stacking context so the hover wash below can sit at z-index -1
+       (above the card background, beneath the card content) without escaping
+       behind the page. */
+    isolation: isolate;
     min-height: 320px;
     padding: 28px 28px 30px;
     border-bottom: 1px solid var(--line);
+    transition: box-shadow 0.35s var(--ease-out);
+}
+/* Cyan/violet wash that fades up under the card on hover. Absolutely
+   positioned, so it never becomes a grid item in the featured layout. */
+.solutionCard::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: 0;
+    background: var(--accent-gradient-soft);
+    transition: opacity 0.35s var(--ease-out);
+}
+.solutionCard:hover::before,
+.solutionCard:focus-within::before {
+    opacity: 1;
+}
+.solutionCard:hover,
+.solutionCard:focus-within {
+    box-shadow: inset 0 0 0 1px var(--signal-inner-border);
 }
 .solutionCard:nth-child(odd) {
     border-right: 1px solid var(--line);
@@ -87,7 +124,12 @@
     color: var(--link-hover);
 }
 .cardLink span {
+    display: inline-block;
     font-size: 16px;
+    transition: transform 0.25s var(--ease-out);
+}
+.cardLink:hover span {
+    transform: translate(3px, -3px);
 }
 .cardPattern {
     position: absolute;
@@ -114,6 +156,34 @@
 .cardPattern span:nth-child(4) {
     height: 72px;
     opacity: 0.3;
+}
+/* The bars rise once the card has revealed, so the motion reads as part of
+   the card's entrance instead of finishing while it is still hidden. */
+.solutionCard[data-reveal="in"] .cardPattern span {
+    transform-origin: bottom;
+    animation: nxGrowY 0.8s var(--ease-out) both;
+}
+.solutionCard[data-reveal="in"] .cardPattern span:nth-child(2) {
+    animation-delay: 0.08s;
+}
+.solutionCard[data-reveal="in"] .cardPattern span:nth-child(3) {
+    animation-delay: 0.16s;
+}
+.solutionCard[data-reveal="in"] .cardPattern span:nth-child(4) {
+    animation-delay: 0.24s;
+}
+@media (prefers-reduced-motion: reduce) {
+    .sectionIntro h2 span,
+    .solutionCard[data-reveal="in"] .cardPattern span {
+        animation: none;
+    }
+    .solutionCard:hover,
+    .solutionCard:focus-within {
+        box-shadow: none;
+    }
+    .cardLink:hover span {
+        transform: none;
+    }
 }
 @media (max-width: 760px) {
     .solutions {

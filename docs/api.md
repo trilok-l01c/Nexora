@@ -10,7 +10,7 @@ All responses use JSON and errors follow `{ "success": false, "message": "Readab
 
 ### `POST /api/contact`
 
-Creates a general enquiry. Required fields are `name`, `email`, and `message`; `company` and `service` are optional. This is not a CRM lead and has no status or attachment workflow.
+Creates a lead for the Nexora team to follow up on. Required fields are `name`, `email`, `service`, and `message`; `phone` and `company` are optional. The lead is stored with `source: "website"` and `status: "new"` and never creates accounts, clients, or projects.
 
 ```bash
 curl -X POST http://localhost:4292/api/contact \
@@ -44,6 +44,17 @@ All admin endpoints require the admin session cookie or Bearer JWT.
 - `PATCH /api/admin/projects/:id` updates staff-controlled status, progress, dates, team, technologies, milestones, and updates. Company ownership and client request fields are not changed here.
 - `GET/PATCH /api/admin/home` manages editable homepage content.
 - `POST /api/admin/logout` clears the admin session.
+
+## Admin lead endpoints
+
+All lead endpoints require the admin session cookie or Bearer JWT; client sessions are rejected with `403`.
+
+- `GET /api/admin/leads` lists leads, newest first. Optional `?status=new|contacted|in_progress|completed|rejected` filter; an unknown status returns `400`.
+- `GET /api/admin/leads/:id` returns one lead including its relationship timeline. Unknown or malformed ids return `404`.
+- `PATCH /api/admin/leads/:id` updates contact details (`name`, `email`, `phone`, `company`, `service`) and optionally re-classifies `source` (`website`, `manual`, `referral`, `other`). Only provided fields are applied.
+- `PATCH /api/admin/leads/:id/status` moves the lead through the lifecycle. Allowed transitions: `new -> contacted|rejected`, `contacted -> in_progress|rejected`, `in_progress -> rejected`; `rejected` is terminal. `completed` ("converted to client") is not settable here — only the conversion endpoint can produce it, so a mis-click can never fake a conversion. Illegal moves return `400`. Each change is appended to the timeline.
+- `POST /api/admin/leads/:id/notes` appends an internal note (`text`, max 2000 chars). `PATCH /api/admin/leads/:id/notes/:noteId` edits a staff note; automatic timeline entries cannot be edited.
+- `POST /api/admin/leads/:id/convert` converts the lead into a client. Body: `companyName`, `clientName`, `email`, `phone` (optional), `password` (min 8 chars, initial portal password shared with the client outside this system). It reuses an existing company with the same name (case-insensitive) or creates one, creates a `client` user with the given password, sets the lead to `completed`, and stamps `convertedCompanyId`, `convertedUserId`, and `convertedAt`. Responses: `200` with the lead, company, and user; `409` when the email is already registered or the lead was already converted.
 
 ## Client project and support endpoints
 

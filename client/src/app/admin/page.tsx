@@ -18,9 +18,64 @@ type Project = {
     createdAt: string;
 };
 
+type LeadNote = {
+    _id: string;
+    text: string;
+    type: "note" | "status" | "converted";
+    authorName?: string;
+    createdAt: string;
+};
+
+type Lead = {
+    _id: string;
+    name: string;
+    email: string;
+    phone?: string;
+    company?: string;
+    service: string;
+    message: string;
+    source: string;
+    status: "new" | "contacted" | "in_progress" | "completed" | "rejected";
+    notes?: LeadNote[];
+    convertedCompanyId?: string;
+    convertedUserId?: string;
+    convertedAt?: string;
+    createdAt: string;
+    updatedAt: string;
+};
+
+type LeadStatus = "all" | Lead["status"];
+
+const leadStatuses: Exclude<LeadStatus, "all">[] = [
+    "new",
+    "contacted",
+    "in_progress",
+    "completed",
+    "rejected",
+];
+
+const leadStatusLabels: Record<Lead["status"], string> = {
+    new: "New",
+    contacted: "Contacted",
+    in_progress: "In progress",
+    completed: "Converted",
+    rejected: "Lost",
+};
+
+// Statuses staff can set by hand. `completed` is intentionally absent: it means
+// "converted to client" and is only reachable through the conversion form
+// below, which provisions the portal account. It stays in `leadStatuses` so the
+// filter row can still list converted leads.
+const manualLeadStatuses: Exclude<LeadStatus, "all" | "completed">[] = [
+    "new",
+    "contacted",
+    "in_progress",
+    "rejected",
+];
+
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
 
-type ContentSection = "hero" | "solutions" | "industries" | "approach";
+type ContentSection = "hero" | "solutions" | "industries";
 
 function Field({
     label,
@@ -64,6 +119,240 @@ export default function AdminPage() {
         useState<HomeContent>(defaultHomeContent);
     const [contentSection, setContentSection] =
         useState<ContentSection>("hero");
+    const [leads, setLeads] = useState<Lead[]>([]);
+    const [statusFilter, setStatusFilter] = useState<LeadStatus>("all");
+    const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
+    const [leadMessage, setLeadMessage] = useState("");
+    const [leadForm, setLeadForm] = useState({
+        name: "",
+        email: "",
+        phone: "",
+        company: "",
+        service: "",
+    });
+    const [noteText, setNoteText] = useState("");
+    const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+    const [editingNoteText, setEditingNoteText] = useState("");
+    const [conversion, setConversion] = useState({
+        companyName: "",
+        clientName: "",
+        email: "",
+        phone: "",
+        password: "",
+    });
+
+    function openLead(lead: Lead) {
+        setSelectedLead(lead);
+        setLeadForm({
+            name: lead.name,
+            email: lead.email,
+            phone: lead.phone || "",
+            company: lead.company || "",
+            service: lead.service,
+        });
+        setConversion({
+            companyName: lead.company || "",
+            clientName: lead.name,
+            email: lead.email,
+            phone: lead.phone || "",
+            password: "",
+        });
+        setNoteText("");
+        setEditingNoteId(null);
+        setLeadMessage("");
+    }
+
+    function applyLeadResult(lead: Lead) {
+        setSelectedLead(lead);
+        setLeadForm({
+            name: lead.name,
+            email: lead.email,
+            phone: lead.phone || "",
+            company: lead.company || "",
+            service: lead.service,
+        });
+    }
+
+    async function loadLeads(filter: LeadStatus = statusFilter) {
+        const query = filter === "all" ? "" : `?status=${filter}`;
+        const response = await fetch(`${apiUrl}/api/admin/leads${query}`, {
+            credentials: "include",
+        });
+        const result = await response.json();
+        if (!response.ok)
+            throw new Error(result.message || "Could not load leads.");
+        setLeads(result.data);
+    }
+
+    async function filterLeads(status: LeadStatus) {
+        setStatusFilter(status);
+        try {
+            await loadLeads(status);
+        } catch (error) {
+            setLeadMessage(
+                error instanceof Error ? error.message : "Could not load leads.",
+            );
+        }
+    }
+
+    async function saveLeadChanges() {
+        if (!selectedLead) return;
+        setLeadMessage("");
+        const body: Record<string, string> = {};
+        if (leadForm.name !== selectedLead.name) body.name = leadForm.name;
+        if (leadForm.email !== selectedLead.email) body.email = leadForm.email;
+        if (leadForm.phone !== (selectedLead.phone || ""))
+            body.phone = leadForm.phone;
+        if (leadForm.company !== (selectedLead.company || ""))
+            body.company = leadForm.company;
+        if (leadForm.service !== selectedLead.service)
+            body.service = leadForm.service;
+        if (Object.keys(body).length === 0) {
+            setLeadMessage("No contact changes to save.");
+            return;
+        }
+        try {
+            const response = await fetch(
+                `${apiUrl}/api/admin/leads/${selectedLead._id}`,
+                {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify(body),
+                },
+            );
+            const result = await response.json();
+            if (!response.ok)
+                throw new Error(result.message || "Could not update lead.");
+            applyLeadResult(result.data);
+            setLeadMessage("Lead details saved.");
+            await loadLeads();
+        } catch (error) {
+            setLeadMessage(
+                error instanceof Error ? error.message : "Could not update lead.",
+            );
+        }
+    }
+
+    async function changeLeadStatus(status: Lead["status"]) {
+        if (!selectedLead) return;
+        setLeadMessage("");
+        try {
+            const response = await fetch(
+                `${apiUrl}/api/admin/leads/${selectedLead._id}/status`,
+                {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ status }),
+                },
+            );
+            const result = await response.json();
+            if (!response.ok)
+                throw new Error(
+                    result.message || "Could not update lead status.",
+                );
+            applyLeadResult(result.data);
+            setLeadMessage("Lead status updated.");
+            await loadLeads();
+        } catch (error) {
+            setLeadMessage(
+                error instanceof Error
+                    ? error.message
+                    : "Could not update lead status.",
+            );
+        }
+    }
+
+    async function submitNote(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        if (!selectedLead) return;
+        setLeadMessage("");
+        try {
+            const response = await fetch(
+                `${apiUrl}/api/admin/leads/${selectedLead._id}/notes`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ text: noteText }),
+                },
+            );
+            const result = await response.json();
+            if (!response.ok)
+                throw new Error(result.message || "Could not add note.");
+            applyLeadResult(result.data);
+            setNoteText("");
+            setLeadMessage("Note added.");
+            await loadLeads();
+        } catch (error) {
+            setLeadMessage(
+                error instanceof Error ? error.message : "Could not add note.",
+            );
+        }
+    }
+
+    async function saveNoteEdit(noteId: string) {
+        if (!selectedLead) return;
+        setLeadMessage("");
+        try {
+            const response = await fetch(
+                `${apiUrl}/api/admin/leads/${selectedLead._id}/notes/${noteId}`,
+                {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify({ text: editingNoteText }),
+                },
+            );
+            const result = await response.json();
+            if (!response.ok)
+                throw new Error(result.message || "Could not update note.");
+            applyLeadResult(result.data);
+            setEditingNoteId(null);
+            setLeadMessage("Note updated.");
+            await loadLeads();
+        } catch (error) {
+            setLeadMessage(
+                error instanceof Error ? error.message : "Could not update note.",
+            );
+        }
+    }
+
+    async function submitConversion(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        if (!selectedLead) return;
+        setLeadMessage("");
+        try {
+            const response = await fetch(
+                `${apiUrl}/api/admin/leads/${selectedLead._id}/convert`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    credentials: "include",
+                    body: JSON.stringify(conversion),
+                },
+            );
+            const result = await response.json();
+            if (!response.ok)
+                throw new Error(
+                    result.message || "Could not convert this lead.",
+                );
+            applyLeadResult(result.data.lead);
+            setConversion((current) => ({ ...current, password: "" }));
+            setLeadMessage(
+                `${result.message} Portal account: ${result.data.user.email} (${result.data.company.name}). Share the password with the client securely.`,
+            );
+            await loadLeads();
+        } catch (error) {
+            setLeadMessage(
+                error instanceof Error
+                    ? error.message
+                    : "Could not convert this lead.",
+            );
+        }
+    }
+
 
     async function loadProjects() {
         const response = await fetch(`${apiUrl}/api/admin/projects`, {
@@ -106,11 +395,6 @@ export default function AdminPage() {
             ...defaultHomeContent,
             ...result.data,
             hero: { ...defaultHomeContent.hero, ...result.data.hero },
-            approach: {
-                ...defaultHomeContent.approach,
-                ...result.data.approach,
-            },
-            stats: result.data.stats || defaultHomeContent.stats,
             ticker: result.data.ticker || defaultHomeContent.ticker,
             solutions: result.data.solutions || defaultHomeContent.solutions,
             industries: result.data.industries || defaultHomeContent.industries,
@@ -153,7 +437,7 @@ export default function AdminPage() {
     }
 
     function updateListItem<
-        K extends "ticker" | "solutions" | "industries" | "stats",
+        K extends "ticker" | "solutions" | "industries",
     >(section: K, index: number, value: HomeContent[K][number]) {
         const next = [...homeContent[section]];
         next[index] = value;
@@ -177,6 +461,12 @@ export default function AdminPage() {
                 throw new Error(result.message || "Login failed.");
             await loadProjects();
             await loadHomeContent();
+            try {
+                await loadLeads();
+            } catch {
+                // The lead inbox surfaces its own retry error; login should
+                // not fail because of it.
+            }
             setAuthenticated(true);
             // Re-read the shared session so the site navigation shows the
             // signed-in (admin) state instead of a stale "Sign In" button.
@@ -197,6 +487,8 @@ export default function AdminPage() {
         }).catch(() => undefined);
         setAuthenticated(false);
         setProjects([]);
+        setLeads([]);
+        setSelectedLead(null);
         setPassword("");
         // Same server endpoint clears the admin cookie, so drop the client-side
         // session state as well and let the navigation re-render as signed out.
@@ -273,6 +565,478 @@ export default function AdminPage() {
                     <br />
                     <em>moving.</em>
                 </h1>
+                <section
+                    className={styles.leadSection}
+                    aria-label="Lead inbox"
+                >
+                    <p className={styles.editorKicker}>Lead inbox</p>
+                    <h2 className={styles.leadHeading}>
+                        People ready
+                        <br />
+                        <em>to move.</em>
+                    </h2>
+                    <div
+                        className={styles.filters}
+                        aria-label="Filter leads by status"
+                    >
+                        {(["all", ...leadStatuses] as LeadStatus[]).map(
+                            (status) => (
+                                <button
+                                    className={
+                                        statusFilter === status
+                                            ? styles.filterActive
+                                            : styles.filter
+                                    }
+                                    key={status}
+                                    type="button"
+                                    onClick={() => filterLeads(status)}
+                                >
+                                    {status === "all"
+                                        ? "All"
+                                        : leadStatusLabels[status]}
+                                </button>
+                            ),
+                        )}
+                    </div>
+                    {selectedLead && (
+                        <div className={styles.leadDetail}>
+                            <div className={styles.leadDetailHeader}>
+                                <strong>{selectedLead.name}</strong>
+                                <span
+                                    className={styles.leadStatusChip}
+                                    data-status={selectedLead.status}
+                                >
+                                    {leadStatusLabels[selectedLead.status]}
+                                </span>
+                                <button
+                                    type="button"
+                                    className={styles.leadClose}
+                                    onClick={() => {
+                                        setSelectedLead(null);
+                                        setLeadMessage("");
+                                    }}
+                                >
+                                    Close
+                                </button>
+                            </div>
+                            <p className={styles.leadMeta}>
+                                {selectedLead.email}
+                                {selectedLead.company
+                                    ? ` · ${selectedLead.company}`
+                                    : ""}
+                                {selectedLead.phone
+                                    ? ` · ${selectedLead.phone}`
+                                    : ""}
+                            </p>
+                            {selectedLead.convertedAt ? (
+                                <div className={styles.convertedBanner}>
+                                    Converted to client on{" "}
+                                    {new Date(
+                                        selectedLead.convertedAt,
+                                    ).toLocaleString()}
+                                    . This client can now sign in to the
+                                    portal.
+                                </div>
+                            ) : null}
+                            <p className={styles.leadMessage} aria-live="polite">
+                                {leadMessage}
+                            </p>
+                            <div className={styles.leadGrid}>
+                                <label className={styles.leadField}>
+                                    <span>Name</span>
+                                    <input
+                                        value={leadForm.name}
+                                        onChange={(event) =>
+                                            setLeadForm((current) => ({
+                                                ...current,
+                                                name: event.target.value,
+                                            }))
+                                        }
+                                        maxLength={100}
+                                    />
+                                </label>
+                                <label className={styles.leadField}>
+                                    <span>Email</span>
+                                    <input
+                                        type="email"
+                                        value={leadForm.email}
+                                        onChange={(event) =>
+                                            setLeadForm((current) => ({
+                                                ...current,
+                                                email: event.target.value,
+                                            }))
+                                        }
+                                        maxLength={254}
+                                    />
+                                </label>
+                                <label className={styles.leadField}>
+                                    <span>Phone</span>
+                                    <input
+                                        type="tel"
+                                        value={leadForm.phone}
+                                        onChange={(event) =>
+                                            setLeadForm((current) => ({
+                                                ...current,
+                                                phone: event.target.value,
+                                            }))
+                                        }
+                                        maxLength={30}
+                                    />
+                                </label>
+                                <label className={styles.leadField}>
+                                    <span>Company</span>
+                                    <input
+                                        value={leadForm.company}
+                                        onChange={(event) =>
+                                            setLeadForm((current) => ({
+                                                ...current,
+                                                company: event.target.value,
+                                            }))
+                                        }
+                                        maxLength={120}
+                                    />
+                                </label>
+                                <label className={styles.leadField}>
+                                    <span>Service</span>
+                                    <input
+                                        value={leadForm.service}
+                                        onChange={(event) =>
+                                            setLeadForm((current) => ({
+                                                ...current,
+                                                service: event.target.value,
+                                            }))
+                                        }
+                                        maxLength={120}
+                                    />
+                                </label>
+                            </div>
+                            <div className={styles.leadActions}>
+                                <button type="button" onClick={saveLeadChanges}>
+                                    Save contact details
+                                </button>
+                                {selectedLead.status !== "completed" && (
+                                    <label className={styles.statusSelect}>
+                                        <span>Status</span>
+                                        <select
+                                            value={selectedLead.status}
+                                            onChange={(event) =>
+                                                changeLeadStatus(
+                                                    event.target
+                                                        .value as Lead["status"],
+                                                )
+                                            }
+                                            aria-label={`Update status for ${selectedLead.name}`}
+                                        >
+                                            {manualLeadStatuses.map(
+                                                (status) => (
+                                                    <option
+                                                        key={status}
+                                                        value={status}
+                                                    >
+                                                        {
+                                                            leadStatusLabels[
+                                                                status
+                                                            ]
+                                                        }
+                                                    </option>
+                                                ),
+                                            )}
+                                        </select>
+                                    </label>
+                                )}
+                            </div>
+                            <div className={styles.leadRequirement}>
+                                <strong>Requirement</strong>
+                                <p>{selectedLead.message}</p>
+                                <small>
+                                    Source: {selectedLead.source} · Received{" "}
+                                    {new Date(
+                                        selectedLead.createdAt,
+                                    ).toLocaleString()}
+                                </small>
+                            </div>
+                            <div className={styles.leadTimeline}>
+                                <strong>Relationship history</strong>
+                                {[...(selectedLead.notes || [])]
+                                    .sort(
+                                        (left, right) =>
+                                            new Date(right.createdAt).getTime() -
+                                            new Date(left.createdAt).getTime(),
+                                    )
+                                    .map((note) => (
+                                        <div
+                                            className={styles.timelineItem}
+                                            key={note._id}
+                                        >
+                                            <div className={styles.timelineTop}>
+                                                <span
+                                                    className={styles.timelineType}
+                                                    data-type={note.type}
+                                                >
+                                                    {note.type === "note"
+                                                        ? "Note"
+                                                        : note.type === "status"
+                                                          ? "Update"
+                                                          : "Converted"}
+                                                </span>
+                                                <time>
+                                                    {new Date(
+                                                        note.createdAt,
+                                                    ).toLocaleString()}
+                                                </time>
+                                            </div>
+                                            {editingNoteId === note._id ? (
+                                                <div className={styles.noteEditor}>
+                                                    <textarea
+                                                        value={editingNoteText}
+                                                        onChange={(event) =>
+                                                            setEditingNoteText(
+                                                                event.target
+                                                                    .value,
+                                                            )
+                                                        }
+                                                        maxLength={2000}
+                                                        rows={3}
+                                                    />
+                                                    <div
+                                                        className={
+                                                            styles.updateActions
+                                                        }
+                                                    >
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                saveNoteEdit(
+                                                                    note._id,
+                                                                )
+                                                            }
+                                                        >
+                                                            Save note
+                                                        </button>
+                                                        <button
+                                                            type="button"
+                                                            onClick={() =>
+                                                                setEditingNoteId(
+                                                                    null,
+                                                                )
+                                                            }
+                                                        >
+                                                            Cancel
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <p>{note.text}</p>
+                                                    <small>
+                                                        {note.authorName ||
+                                                            "Nexora team"}
+                                                    </small>
+                                                    {note.type === "note" && (
+                                                        <button
+                                                            type="button"
+                                                            className={
+                                                                styles.noteEditButton
+                                                            }
+                                                            onClick={() => {
+                                                                setEditingNoteId(
+                                                                    note._id,
+                                                                );
+                                                                setEditingNoteText(
+                                                                    note.text,
+                                                                );
+                                                            }}
+                                                        >
+                                                            Edit
+                                                        </button>
+                                                    )}
+                                                </>
+                                            )}
+                                        </div>
+                                    ))}
+                                {(selectedLead.notes || []).length === 0 && (
+                                    <p className={styles.timelineEmpty}>
+                                        No conversation history yet.
+                                    </p>
+                                )}
+                                <form
+                                    className={styles.noteForm}
+                                    onSubmit={submitNote}
+                                >
+                                    <textarea
+                                        value={noteText}
+                                        onChange={(event) =>
+                                            setNoteText(event.target.value)
+                                        }
+                                        placeholder="Add an internal note about this conversation…"
+                                        maxLength={2000}
+                                        rows={3}
+                                        required
+                                    />
+                                    <button type="submit">Add note</button>
+                                </form>
+                                {!selectedLead.convertedAt && (
+                                    <form
+                                        className={styles.convertPanel}
+                                        onSubmit={submitConversion}
+                                    >
+                                        <div className={styles.editorCardHeader}>
+                                            <strong>Convert to client</strong>
+                                        </div>
+                                        <p className={styles.convertHint}>
+                                            Creates a client account for this
+                                            lead (reusing an existing company
+                                            with the same name). Share the
+                                            initial password with the client
+                                            securely — Nexora does not send
+                                            emails automatically.
+                                        </p>
+                                        <div className={styles.leadGrid}>
+                                            <label className={styles.leadField}>
+                                                <span>Company name</span>
+                                                <input
+                                                    value={conversion.companyName}
+                                                    onChange={(event) =>
+                                                        setConversion(
+                                                            (current) => ({
+                                                                ...current,
+                                                                companyName:
+                                                                    event.target
+                                                                        .value,
+                                                            }),
+                                                        )
+                                                    }
+                                                    maxLength={160}
+                                                    required
+                                                />
+                                            </label>
+                                            <label className={styles.leadField}>
+                                                <span>Client name</span>
+                                                <input
+                                                    value={conversion.clientName}
+                                                    onChange={(event) =>
+                                                        setConversion(
+                                                            (current) => ({
+                                                                ...current,
+                                                                clientName:
+                                                                    event.target
+                                                                        .value,
+                                                            }),
+                                                        )
+                                                    }
+                                                    maxLength={120}
+                                                    required
+                                                />
+                                            </label>
+                                            <label className={styles.leadField}>
+                                                <span>Client email</span>
+                                                <input
+                                                    type="email"
+                                                    value={conversion.email}
+                                                    onChange={(event) =>
+                                                        setConversion(
+                                                            (current) => ({
+                                                                ...current,
+                                                                email: event
+                                                                    .target
+                                                                    .value,
+                                                            }),
+                                                        )
+                                                    }
+                                                    maxLength={254}
+                                                    required
+                                                />
+                                            </label>
+                                            <label className={styles.leadField}>
+                                                <span>Client phone</span>
+                                                <input
+                                                    type="tel"
+                                                    value={conversion.phone}
+                                                    onChange={(event) =>
+                                                        setConversion(
+                                                            (current) => ({
+                                                                ...current,
+                                                                phone: event
+                                                                    .target
+                                                                    .value,
+                                                            }),
+                                                        )
+                                                    }
+                                                    maxLength={32}
+                                                />
+                                            </label>
+                                            <label className={styles.leadField}>
+                                                <span>Initial password</span>
+                                                <input
+                                                    type="text"
+                                                    value={conversion.password}
+                                                    onChange={(event) =>
+                                                        setConversion(
+                                                            (current) => ({
+                                                                ...current,
+                                                                password:
+                                                                    event.target
+                                                                        .value,
+                                                            }),
+                                                        )
+                                                    }
+                                                    minLength={8}
+                                                    maxLength={128}
+                                                    required
+                                                    autoComplete="new-password"
+                                                />
+                                            </label>
+                                        </div>
+                                        <button type="submit">
+                                            Convert lead
+                                        </button>
+                                    </form>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                    <div className={styles.leads}>
+                        {leads.length === 0 ? (
+                            <p className={styles.empty}>No leads yet.</p>
+                        ) : (
+                            leads.map((lead) => (
+                                <article className={styles.lead} key={lead._id}>
+                                    <div className={styles.leadTop}>
+                                        <strong>{lead.name}</strong>
+                                        <span>
+                                            {leadStatusLabels[lead.status]}
+                                        </span>
+                                    </div>
+                                    <p>
+                                        {lead.email}
+                                        {lead.company
+                                            ? ` · ${lead.company}`
+                                            : ""}
+                                    </p>
+                                    {lead.phone && <p>{lead.phone}</p>}
+                                    <p className={styles.service}>
+                                        {lead.service}
+                                    </p>
+                                    <div>{lead.message}</div>
+                                    <small>
+                                        {new Date(
+                                            lead.createdAt,
+                                        ).toLocaleString()}
+                                    </small>
+                                    <button
+                                        type="button"
+                                        className={styles.leadOpen}
+                                        onClick={() => openLead(lead)}
+                                    >
+                                        {selectedLead?._id === lead._id
+                                            ? "Edit lead"
+                                            : "Open lead"}
+                                    </button>
+                                </article>
+                            ))
+                        )}
+                    </div>
+                </section>
                 <section className={styles.contentEditor}>
                     <div className={styles.editorHeader}>
                         <div>
@@ -301,7 +1065,6 @@ export default function AdminPage() {
                                 ["hero", "Hero"],
                                 ["solutions", "Solutions"],
                                 ["industries", "Industries"],
-                                ["approach", "Approach"],
                             ] as [ContentSection, string][]
                         ).map(([value, label]) => (
                             <button
@@ -372,155 +1135,6 @@ export default function AdminPage() {
                                         })
                                     }
                                 />
-                            </div>
-                        )}
-                        {contentSection === "approach" && (
-                            <div className={styles.editorGrid}>
-                                <Field
-                                    label="Meta line"
-                                    value={homeContent.approach.meta}
-                                    onChange={(value) =>
-                                        updateHomeContent("approach", {
-                                            ...homeContent.approach,
-                                            meta: value,
-                                        })
-                                    }
-                                />
-                                <Field
-                                    label="Meta second line"
-                                    value={homeContent.approach.metaSecondLine}
-                                    onChange={(value) =>
-                                        updateHomeContent("approach", {
-                                            ...homeContent.approach,
-                                            metaSecondLine: value,
-                                        })
-                                    }
-                                />
-                                <Field
-                                    label="Title"
-                                    value={homeContent.approach.title}
-                                    onChange={(value) =>
-                                        updateHomeContent("approach", {
-                                            ...homeContent.approach,
-                                            title: value,
-                                        })
-                                    }
-                                />
-                                <Field
-                                    label="Title second line"
-                                    value={homeContent.approach.titleSecondLine}
-                                    onChange={(value) =>
-                                        updateHomeContent("approach", {
-                                            ...homeContent.approach,
-                                            titleSecondLine: value,
-                                        })
-                                    }
-                                />
-                                <Field
-                                    label="Title emphasis"
-                                    value={homeContent.approach.titleEmphasis}
-                                    onChange={(value) =>
-                                        updateHomeContent("approach", {
-                                            ...homeContent.approach,
-                                            titleEmphasis: value,
-                                        })
-                                    }
-                                />
-                                <Field
-                                    label="Link label"
-                                    value={homeContent.approach.linkLabel}
-                                    onChange={(value) =>
-                                        updateHomeContent("approach", {
-                                            ...homeContent.approach,
-                                            linkLabel: value,
-                                        })
-                                    }
-                                />
-                                <Field
-                                    label="Description"
-                                    multiline
-                                    value={homeContent.approach.text}
-                                    onChange={(value) =>
-                                        updateHomeContent("approach", {
-                                            ...homeContent.approach,
-                                            text: value,
-                                        })
-                                    }
-                                />
-                            </div>
-                        )}
-                        {contentSection === "approach" && (
-                            <div className={styles.statsEditor}>
-                                <div className={styles.editorCardHeader}>
-                                    <strong>Approach statistics</strong>
-                                    <button
-                                        type="button"
-                                        className={styles.addButton}
-                                        onClick={() =>
-                                            updateHomeContent("stats", [
-                                                ...homeContent.stats,
-                                                {
-                                                    value: "0",
-                                                    label: "new",
-                                                    detail: "stat",
-                                                },
-                                            ])
-                                        }
-                                    >
-                                        Add stat
-                                    </button>
-                                </div>
-                                <div className={styles.editorGrid}>
-                                    {homeContent.stats.map((stat, index) => (
-                                        <div
-                                            className={styles.statEditor}
-                                            key={`${stat.value}-${index}`}
-                                        >
-                                            <Field
-                                                label="Value"
-                                                value={stat.value}
-                                                onChange={(value) =>
-                                                    updateListItem(
-                                                        "stats",
-                                                        index,
-                                                        {
-                                                            ...stat,
-                                                            value,
-                                                        },
-                                                    )
-                                                }
-                                            />
-                                            <Field
-                                                label="Label"
-                                                value={stat.label}
-                                                onChange={(value) =>
-                                                    updateListItem(
-                                                        "stats",
-                                                        index,
-                                                        {
-                                                            ...stat,
-                                                            label: value,
-                                                        },
-                                                    )
-                                                }
-                                            />
-                                            <Field
-                                                label="Detail"
-                                                value={stat.detail}
-                                                onChange={(value) =>
-                                                    updateListItem(
-                                                        "stats",
-                                                        index,
-                                                        {
-                                                            ...stat,
-                                                            detail: value,
-                                                        },
-                                                    )
-                                                }
-                                            />
-                                        </div>
-                                    ))}
-                                </div>
                             </div>
                         )}
                         {contentSection === "solutions" && (

@@ -1,14 +1,23 @@
+"use client";
+
 import styles from "./Hero.module.css";
 import { defaultHomeContent, type HomeContent } from "../../homeContent";
+import { useReveal } from "../../useReveal";
 
 export default function Hero({
     content = defaultHomeContent.hero,
 }: {
     content?: HomeContent["hero"];
 }) {
+    const copyReveal = useReveal<HTMLDivElement>({ variant: "up" });
+    const boardReveal = useReveal<HTMLDivElement>({
+        variant: "scale",
+        delay: 160,
+    });
+
     return (
         <section className={styles.hero} id="top">
-            <div className={styles.heroCopy}>
+            <div className={styles.heroCopy} {...copyReveal}>
                 <p className={styles.eyebrow}>
                     <span className={styles.eyebrowDot} /> {content.eyebrow}
                 </p>
@@ -30,6 +39,7 @@ export default function Hero({
             <div
                 className={styles.signalBoard}
                 aria-label="Nexora project signal board"
+                {...boardReveal}
             >
                 <div className={styles.boardTop}>
                     <span>NX / SIGNAL BOARD</span>

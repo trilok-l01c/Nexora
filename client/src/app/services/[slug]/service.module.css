@@ -188,7 +188,7 @@
     color: var(--section-dark-text);
 }
 .capabilities .kicker {
-    color: var(--approach-kicker);
+    color: var(--section-dark-kicker);
 }
 .capabilities h2 {
     margin-top: 0;

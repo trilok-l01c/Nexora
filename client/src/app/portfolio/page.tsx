@@ -38,21 +38,12 @@ export default async function PortfolioPage() {
     return (
         <main className={styles.page}>
             <header className={styles.hero}>
-                <div className={styles.heroMeta}>
-                    <p>NX / Showcase</p>
-                    <span>Portfolio / 2026</span>
+                <div className={styles.heroCopy}>
+                    <p className={styles.kicker}>Selected work</p>
+                    <h1>Useful ideas, <em>made visible.</em></h1>
+                    <p className={styles.intro}>A closer look at the digital experiences, systems, and foundations we create for businesses ready to move forward.</p>
                 </div>
-                <p className={styles.kicker}>Selected work</p>
-                <h1>
-                    Projects that
-                    <br />
-                    <em>keep moving.</em>
-                </h1>
-                <p className={styles.intro}>
-                    A look at what we design, build, and run — product
-                    engineering, AI systems, cloud infrastructure, and digital
-                    presence.
-                </p>
+                <div className={styles.heroPhoto}><img src="/city-in-night.jpg" alt="City at night, representing connected digital business" /></div>
             </header>
             <section
                 className={styles.listing}
