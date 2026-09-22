@@ -23,14 +23,13 @@ export default function AuthDialog() {
         password: "",
         confirmPassword: "",
     });
-    const triggerRef = useRef<HTMLButtonElement>(null);
+    const signInRef = useRef<HTMLButtonElement>(null);
+    const signUpRef = useRef<HTMLButtonElement>(null);
     const dialogRef = useRef<HTMLDivElement>(null);
 
     function close() {
         setOpen(false);
         setMessage("");
-        // Clear the #signup hash so clicking a "Start a conversation"
-        // button again re-triggers the hashchange listener.
         if (window.location.hash === "#signup") {
             history.replaceState(
                 null,
@@ -38,13 +37,20 @@ export default function AuthDialog() {
                 window.location.pathname + window.location.search,
             );
         }
-        triggerRef.current?.focus();
+        signInRef.current?.focus();
     }
 
     function switchMode(nextMode: Mode) {
         setMode(nextMode);
         setMessage("");
         setShowPassword(false);
+        setForm({
+            name: "",
+            email: "",
+            company: "",
+            password: "",
+            confirmPassword: "",
+        });
     }
 
     useEffect(() => {
@@ -79,8 +85,6 @@ export default function AuthDialog() {
         };
     }, [open]);
 
-    // "Start a conversation" buttons link to #signup; open the dialog in
-    // register mode when the page loads with that hash or when it changes.
     useEffect(() => {
         function openSignupFromHash() {
             if (window.location.hash !== "#signup") return;
@@ -122,9 +126,6 @@ export default function AuthDialog() {
                         "Authentication failed. Please try again.",
                 );
             close();
-            // Re-read the session so the shared auth context (and every
-            // navigation surface that depends on it) reflects the new sign-in
-            // before the redirect happens.
             await refresh().catch(() => undefined);
             router.push(
                 result.data?.user?.role === "admin"
@@ -145,7 +146,7 @@ export default function AuthDialog() {
     return (
         <>
             <button
-                ref={triggerRef}
+                ref={signInRef}
                 className={styles.trigger}
                 type="button"
                 onClick={() => {
@@ -156,6 +157,7 @@ export default function AuthDialog() {
                 Sign In
             </button>
             <button
+                ref={signUpRef}
                 className={`${styles.trigger} ${styles.triggerRegister}`}
                 type="button"
                 onClick={() => {
@@ -168,6 +170,7 @@ export default function AuthDialog() {
             {open && (
                 <div
                     className={styles.backdrop}
+                    style={{ opacity: 1 }}
                     role="presentation"
                     onMouseDown={(event) => {
                         if (event.target === event.currentTarget) close();
@@ -207,10 +210,7 @@ export default function AuthDialog() {
                                         <input
                                             value={form.name}
                                             onChange={(event) =>
-                                                update(
-                                                    "name",
-                                                    event.target.value,
-                                                )
+                                                update("name", event.target.value)
                                             }
                                             required
                                             minLength={2}
@@ -223,10 +223,7 @@ export default function AuthDialog() {
                                         <input
                                             value={form.company}
                                             onChange={(event) =>
-                                                update(
-                                                    "company",
-                                                    event.target.value,
-                                                )
+                                                update("company", event.target.value)
                                             }
                                             required
                                             minLength={2}
@@ -253,15 +250,10 @@ export default function AuthDialog() {
                                 Password
                                 <div className={styles.passwordWrap}>
                                     <input
-                                        type={
-                                            showPassword ? "text" : "password"
-                                        }
+                                        type={showPassword ? "text" : "password"}
                                         value={form.password}
                                         onChange={(event) =>
-                                            update(
-                                                "password",
-                                                event.target.value,
-                                            )
+                                            update("password", event.target.value)
                                         }
                                         required
                                         minLength={8}
@@ -276,9 +268,7 @@ export default function AuthDialog() {
                                         className={styles.passwordToggle}
                                         type="button"
                                         onClick={() =>
-                                            setShowPassword(
-                                                (visible) => !visible,
-                                            )
+                                            setShowPassword((visible) => !visible)
                                         }
                                     >
                                         {showPassword ? "Hide" : "Show"}
@@ -289,15 +279,10 @@ export default function AuthDialog() {
                                 <label className={styles.field}>
                                     Confirm password
                                     <input
-                                        type={
-                                            showPassword ? "text" : "password"
-                                        }
+                                        type={showPassword ? "text" : "password"}
                                         value={form.confirmPassword}
                                         onChange={(event) =>
-                                            update(
-                                                "confirmPassword",
-                                                event.target.value,
-                                            )
+                                            update("confirmPassword", event.target.value)
                                         }
                                         required
                                         minLength={8}
@@ -306,11 +291,6 @@ export default function AuthDialog() {
                                     />
                                 </label>
                             )}
-                            <p className={styles.passwordHint}>
-                                {mode === "signup"
-                                    ? "Use 8 to 128 characters. Your account will be created as a client account."
-                                    : ""}
-                            </p>
                             <p
                                 className={`${styles.message} ${message ? styles.error : ""}`}
                                 aria-live="polite"
@@ -325,8 +305,8 @@ export default function AuthDialog() {
                                 {loading
                                     ? "Please wait..."
                                     : mode === "signin"
-                                      ? "Sign In"
-                                      : "Create Account"}
+                                        ? "Sign In"
+                                        : "Create Account"}
                             </button>
                         </form>
                         <p className={styles.switchPrompt}>
@@ -336,9 +316,7 @@ export default function AuthDialog() {
                             <button
                                 type="button"
                                 onClick={() =>
-                                    switchMode(
-                                        mode === "signin" ? "signup" : "signin",
-                                    )
+                                    switchMode(mode === "signin" ? "signup" : "signin")
                                 }
                             >
                                 {mode === "signin"

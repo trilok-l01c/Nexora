@@ -42,7 +42,7 @@ export default function Nav() {
                     <button className={styles.menu} type="button" aria-label="Toggle menu" aria-expanded={open} onClick={() => setOpen(!open)}><span /><span /></button>
                 </div>
             </nav>
-            {open && <div className={styles.mobile}>{links.map((link) => <Link key={link.href} href={link.href} onClick={() => setOpen(false)}>{link.label}</Link>)}{!isSignedIn && <Link href="/client/login" onClick={() => setOpen(false)}>Sign in</Link>}<Link href="/#contact" onClick={() => setOpen(false)}>Let&apos;s talk</Link></div>}
+            {open && <div className={styles.mobile} data-motion="drawer">{links.map((link) => <Link key={link.href} href={link.href} onClick={() => setOpen(false)}>{link.label}</Link>)}{!isSignedIn && <Link href="/client/login" onClick={() => setOpen(false)}>Sign in</Link>}<Link href="/#contact" onClick={() => setOpen(false)}>Let&apos;s talk</Link></div>}
         </header>
     );
 }

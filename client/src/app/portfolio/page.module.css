@@ -101,20 +101,21 @@
         border-color 0.2s,
         transform 0.2s,
         box-shadow 0.2s;
+    isolation: isolate;
 }
 
 .card:hover {
     border-color: #15906f;
-    transform: translateY(-5px);
-    box-shadow: 0 18px 35px rgba(20, 61, 81, 0.14);
+    transform: translateY(-8px);
+    box-shadow: 0 24px 40px rgba(20, 61, 81, 0.18);
 }
 
 .cardFeatured {
-    box-shadow: 10px 10px 0 var(--signal-shadow);
+    box-shadow: 14px 14px 0 var(--signal-shadow);
 }
 
 .cardFeatured:hover {
-    box-shadow: 12px 12px 0 var(--signal-shadow);
+    box-shadow: 16px 16px 0 var(--signal-shadow);
 }
 
 .cardMedia {

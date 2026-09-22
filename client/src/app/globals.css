@@ -64,6 +64,7 @@
     --ticker-accent: var(--accent-blue);
     --auth-dialog-bg: #ffffff;
     --auth-dialog-shadow: rgba(42, 93, 173, 0.2);
+    --auth-dialog-border: rgba(10, 15, 22, 0.08);
     --auth-field-border: rgba(10, 15, 22, 0.2);
     --auth-muted: #6b7a95;
     --auth-accent: var(--accent-green);
@@ -514,3 +515,451 @@ a {
     }
 }
 
+/* Public-site motion vocabulary.  These attributes keep the system reusable
+   across CSS modules without coupling animation to generated class names. */
+[data-motion-page] {
+    animation: nxFadeIn 0.45s var(--ease-out) both;
+}
+[data-motion="hero-copy"] {
+    animation: nxFadeLeft 0.75s var(--ease-out) 0.08s both;
+}
+[data-motion="hero-media"] {
+    animation: nxPopIn 0.8s var(--ease-out) 0.18s both;
+}
+[data-motion="hero-media"][src] {
+    animation: nxPopIn 0.8s var(--ease-out) 0.18s both;
+    transition: transform 0.7s var(--ease-out), filter 0.5s var(--ease-out);
+}
+[data-motion="hero-media"] img,
+[data-motion="image"] img {
+    transition: transform 0.7s var(--ease-out), filter 0.5s var(--ease-out);
+}
+[data-motion-page] .hero > div[data-motion="hero-media"] {
+    width: 100%;
+    height: 460px;
+    overflow: hidden;
+    border-radius: 25px;
+    box-shadow: 0 24px 48px rgba(20, 61, 81, 0.13);
+}
+[data-motion-page] .hero > div[data-motion="hero-media"] > img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+[data-motion="hero-media"]:hover img,
+[data-motion="image"]:hover img {
+    transform: scale(1.035);
+    filter: saturate(1.06);
+}
+[data-motion="hero-media"][src]:hover {
+    transform: scale(1.025);
+    filter: saturate(1.06);
+}
+[data-motion="cta"] {
+    transition: transform 0.25s var(--ease-out), box-shadow 0.25s var(--ease-out);
+}
+[data-motion="cta"]:hover {
+    transform: translateY(-3px);
+}
+[data-motion="drawer"] {
+    transform-origin: top right;
+    animation: nxPopIn 0.24s var(--ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    [data-motion-page],
+    [data-motion="hero-copy"],
+    [data-motion="hero-media"] {
+        animation: none !important;
+    }
+    [data-motion="image"] {
+        animation: none !important;
+    }
+    [data-motion="hero-media"] img,
+    [data-motion="image"] img,
+    [data-motion="cta"] {
+        transition: none !important;
+    }
+}
+
+@media (max-width: 760px) {
+    [data-motion-page] .hero > div[data-motion="hero-media"] {
+        height: 350px;
+    }
+}
+
+/* Portfolio page styles */
+.portfolio-page {
+    min-height: 100vh;
+    color: var(--ink);
+    background: var(--paper);
+}
+
+.portfolio-hero {
+    min-height: 590px;
+    padding: 145px max(5vw, 32px) 75px;
+    display: grid;
+    grid-template-columns: 1fr 0.85fr;
+    gap: 8vw;
+    align-items: center;
+    background: linear-gradient(125deg, #edf8f5, #f5fbff);
+}
+
+.portfolio-heroCopy {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.portfolio-kicker {
+    color: var(--card-label);
+    font:
+        600 10px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.portfolio-hero h1 {
+    max-width: 680px;
+    margin: 20px 0 24px;
+    font-size: clamp(52px, 6.2vw, 88px);
+    line-height: 0.96;
+    letter-spacing: -0.075em;
+}
+
+.portfolio-hero h1 em {
+    color: var(--hero-emphasis);
+    font-style: normal;
+}
+
+.portfolio-intro {
+    max-width: 470px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+.portfolio-heroPhoto {
+    height: 400px;
+    overflow: hidden;
+    border-radius: 24px;
+    box-shadow: 0 24px 48px rgba(20, 61, 81, 0.13);
+    transition: transform 0.5s ease;
+}
+
+.portfolio-heroPhoto:hover {
+    transform: scale(1.02);
+}
+
+.portfolio-heroPhoto img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.portfolio-listing {
+    max-width: 1320px;
+    margin: auto;
+    padding: 0 32px 110px;
+}
+
+.portfolio-listingHeader {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+    border-top: 1px solid var(--line);
+    padding-top: 18px;
+    margin-bottom: 26px;
+}
+
+.portfolio-count {
+    color: var(--muted);
+    font:
+        10px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.portfolio-projectGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.portfolio-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--line);
+    background: transparent;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(20, 61, 81, 0.08);
+    transition:
+        border-color 0.2s,
+        transform 0.2s,
+        box-shadow 0.2s;
+    isolation: isolate;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.portfolio-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-8px);
+    box-shadow: 0 24px 40px rgba(20, 61, 81, 0.18);
+}
+
+.portfolio-cardFeatured {
+    box-shadow: 14px 14px 0 var(--signal-shadow);
+    position: relative;
+}
+
+.portfolio-cardFeatured:hover {
+    box-shadow: 16px 16px 0 var(--signal-shadow);
+}
+
+.portfolio-cardFeatured::before {
+    content: "";
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    right: -4px;
+    bottom: -4px;
+    border: 2px solid var(--acid);
+    border-radius: 20px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.portfolio-cardFeatured:hover::before {
+    opacity: 0.7;
+}
+
+.portfolio-cardMedia {
+    display: block;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-bottom: 1px solid var(--line);
+    background: var(--featured-bg);
+}
+
+.portfolio-cardMedia img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.portfolio-card:hover .portfolio-cardMedia img {
+    transform: scale(1.05);
+}
+
+.portfolio-mediaPlaceholder {
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    color: var(--acid);
+    background: var(--section-dark-bg);
+    font:
+        700 30px var(--font-geist-mono),
+        monospace;
+    letter-spacing: -0.04em;
+}
+
+.portfolio-cardBody {
+    display: grid;
+    gap: 12px;
+    padding: 20px 20px 22px;
+}
+
+.portfolio-cardMeta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.portfolio-category {
+    color: var(--card-label);
+    font:
+        700 9px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.portfolio-featuredBadge {
+    padding: 4px 8px;
+    color: var(--acid-text);
+    background: var(--acid);
+    font:
+        700 9px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+}
+
+.portfolio-cardTitle {
+    margin: 0;
+    font-size: 25px;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+}
+
+.portfolio-cardText {
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.portfolio-techLine {
+    color: var(--muted);
+    font:
+        10px var(--font-geist-mono),
+        monospace;
+}
+
+.portfolio-cardFoot {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+    border-top: 1px solid var(--line);
+    padding-top: 13px;
+    color: var(--muted);
+    font:
+        700 10px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.portfolio-emptyState {
+    max-width: 640px;
+    margin: 30px auto 0;
+    border: 1px dashed var(--line);
+    padding: 54px 32px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: center;
+    border-radius: 16px;
+    background: var(--featured-bg);
+}
+
+.portfolio-emptyState strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--ink);
+    font-size: 20px;
+    letter-spacing: -0.03em;
+}
+
+.portfolio-contactCTA {
+    padding: 120px 32px 140px;
+    color: var(--signal-orb-text);
+    background: var(--acid);
+    text-align: center;
+    border-radius: 24px 24px 0 0;
+    margin-top: 40px;
+}
+
+.portfolio-contactCTA .portfolio-kicker {
+    color: inherit;
+    opacity: 0.7;
+}
+
+.portfolio-contactCTA h2 {
+    margin: 22px 0 40px;
+    font-size: clamp(44px, 5.5vw, 76px);
+    line-height: 0.92;
+    letter-spacing: -0.08em;
+}
+
+.portfolio-contactCTA h2 em {
+    color: inherit;
+    font-style: normal;
+}
+
+.portfolio-primaryButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 28px;
+    padding: 16px 19px;
+    color: var(--button-text);
+    background: var(--button-bg);
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(46, 133, 64, 0.25);
+    transition: all 0.25s var(--ease-out);
+    cursor: pointer;
+}
+
+.portfolio-primaryButton:hover {
+    background: var(--button-hover-bg);
+    box-shadow: 0 12px 32px rgba(46, 133, 64, 0.32);
+    transform: translateY(-2px);
+}
+
+.portfolio-primaryButton:active {
+    transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .portfolio-heroPhoto img,
+    .portfolio-cardMedia img {
+        transition: none;
+    }
+
+    .portfolio-card,
+    .portfolio-cardFeatured,
+    .portfolio-cardFeatured::before {
+        transform: none !important;
+        transition: none;
+    }
+}
+
+@media (max-width: 760px) {
+    .portfolio-hero {
+        min-height: auto;
+        grid-template-columns: 1fr;
+        padding-top: 125px;
+        gap: 35px;
+    }
+
+    .portfolio-heroPhoto {
+        height: 280px;
+    }
+
+    .portfolio-heroCopy {
+        padding: 0 max(5vw, 32px);
+    }
+
+    .portfolio-listing {
+        padding: 0 20px 80px;
+    }
+
+    .portfolio-projectGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .portfolio-contactCTA {
+        padding: 90px 20px 105px;
+        border-radius: 0;
+        margin-top: 0;
+    }
+
+    .portfolio-primaryButton {
+        gap: 18px;
+    }
+}
