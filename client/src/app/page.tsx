@@ -9,22 +9,29 @@ const services = [["Websites that bring in enquiries", "A clear, credible home f
 
 const heroSlides = [
     {
-        image: "/hero.jpg",
-        alt: "Nexora technology and digital solutions",
+        image: "/HERO-SLIDE-IMAGES/ACCOUNT-HERO.jpg",
+        alt: "Client portal dashboard for local Indian businesses",
         title: "easier to choose",
-        subtitle: "Build a digital presence that works for your business"
     },
     {
-        image: "/team-work.jpg",
-        alt: "Indian business team collaborating",
+        image: "/HERO-SLIDE-IMAGES/AI-HERO.jpg",
+        alt: "AI automation for Indian small businesses",
         title: "easier to grow",
-        subtitle: "Technology that adapts to the way you work"
     },
     {
-        image: "/health-tech.jpg",
-        alt: "Healthcare technology solutions",
-        title: "easier to serve",
-        subtitle: "Digital experiences your customers will love"
+        image: "/HERO-SLIDE-IMAGES/GARAGE-HERO.jpg",
+        alt: "Local garage workshop with digital management",
+        title: "easier to run",
+    },
+    {
+        image: "/HERO-SLIDE-IMAGES/IT-HERO.jpg",
+        alt: "IT support for local Indian businesses",
+        title: "easier to trust",
+    },
+    {
+        image: "/HERO-SLIDE-IMAGES/RESTO-HERO.jpg",
+        alt: "Restaurant digital presence solutions",
+        title: "easier to attract",
     }
 ];
 
