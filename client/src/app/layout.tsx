@@ -18,16 +18,16 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://nexora.studio"),
     title: {
-        default: "Nexora | Build what moves people",
+        default: "Nexora | Digital growth for real businesses",
         template: "%s | Nexora",
     },
     description:
-        "Nexora builds intelligent digital products, AI systems, and experiences with momentum. Strategy, design, engineering, and intelligence in one room.",
+        "Nexora helps local and growing businesses build a stronger digital presence, useful software, and practical systems.",
     keywords: [
-        "digital products",
-        "AI systems",
-        "software development",
-        "cloud infrastructure",
+        "small business websites",
+        "business software",
+        "AI automation",
+        "IT support",
         "web development",
         "Nexora",
     ],
@@ -37,15 +37,15 @@ export const metadata: Metadata = {
         type: "website",
         locale: "en_GB",
         siteName: "Nexora",
-        title: "Nexora | Build what moves people",
+        title: "Nexora | Digital growth for real businesses",
         description:
-            "Nexora builds intelligent digital products, AI systems, and experiences with momentum.",
+            "Practical digital solutions for local and growing businesses.",
     },
     twitter: {
         card: "summary_large_image",
-        title: "Nexora | Build what moves people",
+        title: "Nexora | Digital growth for real businesses",
         description:
-            "Nexora builds intelligent digital products, AI systems, and experiences with momentum.",
+            "Practical digital solutions for local and growing businesses.",
     },
     robots: {
         index: true,
@@ -72,13 +72,25 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
                                     var stored = localStorage.getItem("nexora-theme");
                                     var theme = stored === "light" || stored === "dark"
                                         ? stored
-                                        : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+                                        : "light";
                                     document.documentElement.setAttribute("data-theme", theme);
-                                } catch (e) {}
+                                } catch (e) {
+                                    document.documentElement.setAttribute("data-theme", "dark");
+                                }
                             })();
                         `,
                     }}
                 />
+                {/* Scroll reveals ship hidden so they can animate in. Without
+                    JS they must stay visible, otherwise the page would render
+                    blank for no-JS users and non-executing crawlers. */}
+                <noscript>
+                    <style
+                        dangerouslySetInnerHTML={{
+                            __html: `[data-reveal]{opacity:1 !important;transform:none !important}`,
+                        }}
+                    />
+                </noscript>
             </head>
             <body>
                 <ThemeProvider>

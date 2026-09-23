@@ -9,6 +9,63 @@ export type Service = {
     capabilities: string[];
 };
 
+export const categories = [
+    {
+        slug: "websites",
+        title: "Website & Web Development",
+        shortDescription:
+            "A professional website that brings you customers — fast, mobile-friendly, and easy to find on Google.",
+        image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=70",
+        alt: "Business owner reviewing a new website on a laptop",
+        href: "/what-we-do#websites",
+    },
+    {
+        slug: "mobile-apps",
+        title: "Mobile Apps",
+        shortDescription:
+            "Simple, useful apps your customers actually enjoy using — on both iPhone and Android.",
+        image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1200&q=70",
+        alt: "Customer using a business mobile app on a smartphone",
+        href: "/what-we-do#mobile-apps",
+    },
+    {
+        slug: "custom-software",
+        title: "Custom Software",
+        shortDescription:
+            "Tools built around how your business works — bookings, billing, records, and systems that save hours every week.",
+        image: "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=70",
+        alt: "Small business team working with custom software",
+        href: "/what-we-do#custom-software",
+    },
+    {
+        slug: "ai-automation",
+        title: "AI & Automation",
+        shortDescription:
+            "Practical AI that handles repetitive work — answering questions, following up, and keeping things moving.",
+        image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1200&q=70",
+        alt: "Business dashboard showing automated workflows",
+        href: "/what-we-do#ai-automation",
+    },
+    {
+        slug: "online-presence",
+        title: "Digital Marketing & Online Presence",
+        shortDescription:
+            "Get found, look great, and turn attention into enquiries — Google, social media, and content that works.",
+        image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?auto=format&fit=crop&w=1200&q=70",
+        alt: "Phone showing a business social media presence",
+        href: "/what-we-do#online-presence",
+    },
+    {
+        slug: "cloud-support",
+        title: "Cloud, Hosting & IT Support",
+        shortDescription:
+            "Reliable hosting, secure systems, and friendly help when something needs fixing — so you never lose a day to tech problems.",
+        image: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1200&q=70",
+        alt: "Support specialist helping a business with IT systems",
+        href: "/what-we-do#cloud-support",
+    },
+];
+
 export const serviceGroups: Record<"services" | "solutions", Service[]> = {
     services: [
         {

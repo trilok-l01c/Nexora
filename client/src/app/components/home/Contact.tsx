@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import { useReveal } from "../../useReveal";
 import styles from "./Contact.module.css";
 
 export default function Contact() {
@@ -17,6 +18,8 @@ export default function Contact() {
     >("idle");
     const [statusMessage, setStatusMessage] = useState("");
     const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
+    const introReveal = useReveal<HTMLDivElement>();
+    const formReveal = useReveal<HTMLFormElement>({ delay: 120 });
 
     function updateField(field: keyof typeof form, value: string) {
         setForm((current) => ({ ...current, [field]: value }));
@@ -63,13 +66,19 @@ export default function Contact() {
 
     return (
         <section className={styles.contact} id="contact">
-            <p className={styles.kicker}>03 / Make a move</p>
-            <h2>
-                Have a good
-                <br />
-                <em>feeling</em> about this?
-            </h2>
-            <form className={styles.contactForm} onSubmit={submitContact}>
+            <div {...introReveal}>
+                <p className={styles.kicker}>03 / Make a move</p>
+                <h2>
+                    Have a good
+                    <br />
+                    <em>feeling</em> about this?
+                </h2>
+            </div>
+            <form
+                className={styles.contactForm}
+                onSubmit={submitContact}
+                {...formReveal}
+            >
                 <div className={styles.formGrid}>
                     <label>
                         <span className={styles.fieldLabel}>
@@ -135,12 +144,12 @@ export default function Contact() {
                             required
                         >
                             <option value="">Select a service</option>
-                            <option>Software development</option>
-                            <option>Cloud &amp; infrastructure</option>
-                            <option>IT support &amp; maintenance</option>
-                            <option>AI systems</option>
-                            <option>Data analysis</option>
-                            <option>Digital presence</option>
+                            <option>Website &amp; web development</option>
+                            <option>Mobile applications</option>
+                            <option>Custom software</option>
+                            <option>AI &amp; automation</option>
+                            <option>Digital presence / marketing</option>
+                            <option>Cloud &amp; IT support</option>
                         </select>
                     </label>
                     <label className={styles.formWide}>

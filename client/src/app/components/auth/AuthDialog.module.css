@@ -1,27 +1,39 @@
+@import "./CursorEffects.module.css";
+
 .trigger {
     border: 1px solid var(--auth-trigger-border);
-    padding: 9px 14px;
+    padding: 10px 16px;
     color: var(--auth-trigger-text);
     background: transparent;
-    font: inherit;
-    font-size: 12px;
-    font-weight: 700;
+    font:
+        600 13px var(--font-geist-sans),
+        sans-serif;
+    font-family: var(--font-geist-sans);
     cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.2s var(--ease-out);
+    position: relative;
+    overflow: hidden;
 }
-.trigger:hover {
-    color: var(--auth-trigger-hover-text);
-    background: var(--auth-trigger-hover-bg);
+.trigger::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+.trigger:hover::before {
+    opacity: 1;
 }
 .trigger:active {
-    transform: scale(0.97);
+    transform: scale(0.96);
 }
-/* Register is the filled counterpart of the Sign In trigger; it reuses the
-   primary-button tokens so light and dark themes stay consistent. Defined
-   after .trigger:hover so the filled styles win when hovering. */
 .triggerRegister {
     border-color: var(--primary-button-bg);
     color: var(--primary-button-text);
     background: var(--primary-button-bg);
+    box-shadow: 0 4px 16px rgba(46, 133, 64, 0.2);
 }
 .triggerRegister:hover {
     border-color: var(--primary-button-hover-bg);
@@ -29,7 +41,7 @@
     background: var(--primary-button-hover-bg);
 }
 .triggerRegister:active {
-    transform: scale(0.97);
+    transform: scale(0.96);
 }
 .backdrop {
     position: fixed;
@@ -38,86 +50,125 @@
     display: grid;
     place-items: center;
     padding: 24px;
-    background: rgba(17, 19, 16, 0.58);
+    background: rgba(10, 15, 22, 0.48);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    opacity: 0;
+    animation: nxFadeIn 0.3s var(--ease-out) forwards;
+}
+.backdrop[style*="opacity: 1"] {
+    animation: nxFadeIn 0.3s var(--ease-out) forwards;
 }
 .dialog {
     position: relative;
-    width: min(470px, 100%);
-    max-height: min(760px, 92vh);
+    width: min(460px, 100%);
+    max-height: min(780px, 92vh);
     overflow-y: auto;
-    border: 1px solid var(--ink);
-    padding: 38px;
+    border: 1px solid var(--auth-dialog-border, var(--line));
+    border-radius: 24px;
+    padding: 48px;
     color: var(--ink);
     background: var(--auth-dialog-bg);
-    box-shadow: 12px 12px 0 var(--auth-dialog-shadow);
+    box-shadow: 0 32px 72px -24px rgba(10, 15, 22, 0.38);
+    animation: nxPopIn 0.4s var(--ease-spring) both;
+    transform-origin: center;
+    isolation: isolate;
+}
+.dialog::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: 24px;
+    background: linear-gradient(135deg, rgba(46, 133, 64, 0.15), rgba(37, 99, 235, 0.15));
+    opacity: 0;
+    transition: opacity 0.3s var(--ease-out);
+    pointer-events: none;
+}
+.dialog:hover::before {
+    opacity: 1;
 }
 .close {
     position: absolute;
-    top: 14px;
-    right: 16px;
+    top: 22px;
+    right: 24px;
     border: 0;
-    color: var(--ink);
-    background: transparent;
-    font-size: 26px;
+    background: none;
+    color: var(--muted);
+    font-size: 28px;
     line-height: 1;
     cursor: pointer;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    display: grid;
+    place-items: center;
+    transition: all 0.2s var(--ease-out);
+}
+.close:hover {
+    background: rgba(10, 15, 22, 0.06);
+    color: var(--ink);
+    transform: rotate(90deg);
 }
 .kicker {
-    margin-bottom: 18px;
+    margin-bottom: 14px;
     color: var(--card-label);
     font:
-        700 10px var(--font-geist-mono),
+        700 11px var(--font-geist-mono),
         monospace;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
+    font-family: var(--font-geist-mono);
 }
 .dialog h2 {
-    max-width: 330px;
-    margin-bottom: 10px;
-    font-size: clamp(34px, 7vw, 54px);
-    letter-spacing: -0.08em;
+    max-width: 340px;
+    margin: 0 0 14px;
+    font-size: clamp(32px, 6.5vw, 52px);
+    letter-spacing: -0.06em;
     line-height: 0.92;
+    font-weight: 800;
 }
 .intro {
-    margin-bottom: 26px;
+    margin-bottom: 28px;
     color: var(--auth-muted);
-    font-size: 13px;
-    line-height: 1.5;
+    font-size: 14px;
+    line-height: 1.55;
 }
 .field {
     display: grid;
-    gap: 7px;
-    margin-bottom: 15px;
+    gap: 8px;
+    margin-bottom: 18px;
     color: var(--auth-muted);
-    font-size: 10px;
+    font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+    font-family: var(--font-geist-mono);
 }
 .field input {
     width: 100%;
     border: 1px solid var(--auth-field-border);
-    border-radius: 0;
-    padding: 13px;
+    border-radius: 10px;
+    padding: 14px 16px;
     color: var(--ink);
     background: transparent;
     font:
-        14px var(--font-geist-sans),
+        15px var(--font-geist-sans),
         sans-serif;
     letter-spacing: 0;
     text-transform: none;
     outline: none;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 }
 .field input:focus {
     border-color: var(--link-hover);
-    box-shadow: 0 0 0 2px rgba(120, 156, 0, 0.16);
+    box-shadow: 0 0 0 3px var(--focus-ring);
 }
 .field input::placeholder {
     color: var(--auth-muted);
     opacity: 1;
 }
-/* Browser autofill forces its own light background on the transparent
-   input, which would stay light in dark mode without this override. */
 .field input:-webkit-autofill,
 .field input:-webkit-autofill:hover,
 .field input:-webkit-autofill:focus {
@@ -129,81 +180,144 @@
     position: relative;
 }
 .passwordWrap input {
-    padding-right: 58px;
+    padding-right: 54px;
 }
 .passwordToggle {
     position: absolute;
     top: 50%;
-    right: 10px;
+    right: 12px;
     transform: translateY(-50%);
     border: 0;
+    background: none;
     color: var(--auth-accent);
-    background: transparent;
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 600;
     cursor: pointer;
+    padding: 0;
+    border-radius: 6px;
+    transition: background 0.15s, color 0.15s;
+}
+.passwordToggle:hover {
+    background: rgba(46, 133, 64, 0.08);
+    color: var(--accent);
 }
 .passwordHint {
-    min-height: 16px;
+    min-height: 20px;
     color: var(--auth-muted);
-    font-size: 11px;
-    line-height: 1.4;
-}
-.message {
-    min-height: 21px;
-    margin: 5px 0 10px;
-    color: var(--auth-accent);
     font-size: 12px;
     line-height: 1.4;
 }
-.error {
+.message {
+    min-height: 24px;
+    margin: 6px 0 12px;
+    color: var(--auth-accent);
+    font-size: 13px;
+    line-height: 1.4;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(46, 133, 64, 0.08);
+    font-weight: 500;
+}
+.message.error {
     color: var(--auth-error);
+    background: rgba(194, 65, 12, 0.08);
 }
 .submit {
     width: 100%;
     border: 0;
-    padding: 14px;
+    padding: 16px;
     color: var(--primary-button-text);
     background: var(--primary-button-bg);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 700;
     cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.2s var(--ease-out);
+    box-shadow: 0 4px 16px rgba(46, 133, 64, 0.25);
 }
 .submit:hover {
     background: var(--primary-button-hover-bg);
+    box-shadow: 0 6px 20px rgba(46, 133, 64, 0.32);
+    transform: translateY(-1px);
+}
+.submit:active {
+    transform: translateY(0);
 }
 .submit:disabled {
     cursor: wait;
     opacity: 0.6;
+    transform: none;
 }
-.submit:focus-visible,
-.trigger:focus-visible,
-.close:focus-visible {
-    outline: 2px solid var(--link-hover);
-    outline-offset: 2px;
+.submit:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 3px;
 }
 .switchPrompt {
-    margin-top: 20px;
+    margin-top: 22px;
     color: var(--auth-muted);
-    font-size: 12px;
+    font-size: 13px;
     text-align: center;
 }
 .switchPrompt button {
     border: 0;
+    background: none;
     padding: 0;
     color: var(--auth-accent);
-    background: transparent;
-    font: inherit;
-    font-weight: 700;
+    font-weight: 600;
     cursor: pointer;
+    font-family: var(--font-geist-sans);
+    transition: color 0.2s;
 }
+.switchPrompt button:hover {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dialog {
+        animation: none;
+    }
+    .backdrop {
+        animation: none;
+    }
+    .close:hover {
+        transform: none;
+    }
+    .submit:hover {
+        transform: none;
+    }
+    .message {
+        animation: none;
+    }
+}
+
 @media (max-width: 760px) {
     .trigger {
-        padding: 8px 10px;
-        font-size: 11px;
+        padding: 8px 12px;
+        font-size: 12px;
+        gap: 8px;
     }
     .dialog {
-        padding: 32px 24px 25px;
-        box-shadow: 7px 7px 0 var(--auth-dialog-shadow);
+        padding: 32px 20px 24px;
+        border-radius: 16px;
+        box-shadow: 8px 8px 0 rgba(10, 15, 22, 0.12);
+    }
+    .close {
+        top: 16px;
+        right: 18px;
+        width: 38px;
+        height: 38px;
+        font-size: 22px;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    @media (hover: none) {
+        .trigger::before {
+            display: none;
+        }
+        .passwordToggle:hover {
+            display: none;
+        }
     }
 }

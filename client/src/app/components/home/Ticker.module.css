@@ -4,7 +4,10 @@
     align-items: center;
     justify-content: center;
     padding: 12px 30px;
-    background: var(--acid);
+    /* Accent band. The gradient pans slowly so the strip stays alive without
+       any per-frame work beyond a composited background shift. */
+    background-image: var(--accent-gradient);
+    background-size: 200% 100%;
     color: var(--ticker-text);
     font-size: 10px;
     font-weight: 700;
@@ -13,6 +16,7 @@
     transform: rotate(-1.2deg) scale(1.02);
     max-width: 100%;
     overflow: hidden;
+    animation: nxGradientPan 14s linear infinite;
 }
 .ticker b {
     color: var(--ticker-star);
@@ -73,6 +77,7 @@
 @media (prefers-reduced-motion: reduce) {
     .ticker {
         transform: none;
+        animation: none;
     }
     .tickerTrack {
         animation: none;

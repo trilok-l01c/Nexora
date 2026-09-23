@@ -35,10 +35,13 @@ export const defaultHomeContent: HomeContent = {
         text: "Nexora turns ambitious ideas into intelligent digital products, from the first line of code to the last meaningful interaction.",
     },
     ticker: [
-        "Full-stack development",
-        "Intelligent systems",
-        "Digital momentum",
-        "Human-first technology",
+        "website developement",
+        "App development",
+        "Data Analysis",
+        "AI agents",
+        "WORKFLOWS",
+        "automations",
+        "UI/UX",
     ],
     solutions: [
         {

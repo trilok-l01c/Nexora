@@ -44,6 +44,19 @@
     color: var(--hero-emphasis);
     font-style: normal;
 }
+/* Animated cyan -> violet sweep across the emphasis word. Kept behind
+   @supports so the flat accent colour above remains the fallback wherever
+   background-clip: text is unavailable. */
+@supports (background-clip: text) or (-webkit-background-clip: text) {
+    .hero h1 em {
+        background-image: var(--accent-gradient);
+        background-size: 200% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: nxGradientPan 8s linear infinite;
+    }
+}
 .heroText {
     max-width: 385px;
     margin: 35px 0 29px;
@@ -57,27 +70,67 @@
     gap: 25px;
 }
 .buttonPrimary {
+    position: relative;
     display: inline-flex;
     gap: 25px;
     align-items: center;
+    overflow: hidden;
     padding: 15px 18px;
-    background: var(--button-bg);
+    border-radius: var(--radius-sm);
+    background-image: var(--accent-gradient);
+    background-size: 200% 100%;
     color: var(--button-text);
     font-size: 12px;
     font-weight: 600;
+    box-shadow: 0 10px 30px -14px var(--glow-cyan);
+    transition:
+        transform 0.25s var(--ease-out),
+        box-shadow 0.25s var(--ease-out),
+        background-position 0.6s var(--ease-out);
+}
+/* Light sweep that crosses the button on hover. */
+.buttonPrimary::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 45%;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(255, 255, 255, 0.5),
+        transparent
+    );
+    transform: translateX(-140%) skewX(-18deg);
+    pointer-events: none;
 }
 .buttonQuiet {
     display: inline-flex;
     gap: 15px;
     font-size: 12px;
     font-weight: 600;
+    transition: color 0.2s ease;
+}
+.buttonQuiet span {
+    transition: transform 0.25s var(--ease-out);
 }
 .buttonPrimary:hover {
-    background: var(--button-hover-bg);
+    background-position: 100% 50%;
     transform: translateY(-2px);
+    box-shadow: 0 18px 42px -14px var(--glow-cyan);
+}
+.buttonPrimary:hover::after {
+    animation: nxSheen 0.9s var(--ease-out);
+}
+.buttonPrimary:active {
+    transform: translateY(0);
 }
 .buttonQuiet:hover {
     color: var(--link-hover);
+}
+.buttonQuiet:hover span {
+    transform: translateY(3px);
 }
 .signalBoard {
     position: relative;
@@ -86,9 +139,30 @@
     justify-self: end;
     overflow: hidden;
     padding: 20px;
+    border: 1px solid var(--signal-inner-border);
+    border-radius: var(--radius-lg);
     background: var(--signal-bg);
     color: var(--signal-text);
-    box-shadow: 22px 22px 0 var(--signal-shadow);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        var(--elevation-2),
+        0 0 90px -28px var(--glow-cyan);
+}
+/* Ambient cyan wash that breathes behind the board. It lives on a pseudo
+   element so the keyframe never fights the reveal animation, which owns the
+   element's own `animation` property. */
+.signalBoard::after {
+    content: "";
+    position: absolute;
+    inset: -30%;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(
+        45% 45% at 50% 45%,
+        var(--glow-cyan),
+        transparent 70%
+    );
+    animation: nxGlowPulse 6.5s ease-in-out infinite;
 }
 .signalBoard::before {
     content: "";
@@ -131,6 +205,7 @@
     place-items: center;
 }
 .orbCore {
+    position: relative;
     display: grid;
     place-items: center;
     width: 88px;
@@ -140,7 +215,25 @@
     color: var(--signal-orb-text);
     font-size: 22px;
     font-weight: 700;
+    letter-spacing: -0.04em;
     box-shadow: 0 0 55px var(--signal-orb-glow);
+}
+/* Slow rotating halo. A mask keeps the conic gradient as a thin ring so it
+   reads as an orbiting light rather than a filled disc. */
+.orbCore::before {
+    content: "";
+    position: absolute;
+    inset: -15px;
+    border-radius: 50%;
+    background: conic-gradient(
+        from 0deg,
+        transparent 0deg,
+        var(--glow-cyan) 100deg,
+        transparent 210deg
+    );
+    -webkit-mask: radial-gradient(circle, transparent 57%, #000 59%);
+    mask: radial-gradient(circle, transparent 57%, #000 59%);
+    animation: nxSpin 8s linear infinite;
 }
 .orbitTrack {
     position: absolute;
@@ -236,6 +329,30 @@
 .chart span:nth-child(7) {
     height: 100%;
 }
+/* The bars grow in once the board itself has revealed, so the two effects
+   read as one moment instead of firing separately on page load. */
+.signalBoard[data-reveal="in"] .chart span {
+    transform-origin: bottom center;
+    animation: nxBarGrow 0.85s var(--ease-out) both;
+}
+.signalBoard[data-reveal="in"] .chart span:nth-child(2) {
+    animation-delay: 0.06s;
+}
+.signalBoard[data-reveal="in"] .chart span:nth-child(3) {
+    animation-delay: 0.12s;
+}
+.signalBoard[data-reveal="in"] .chart span:nth-child(4) {
+    animation-delay: 0.18s;
+}
+.signalBoard[data-reveal="in"] .chart span:nth-child(5) {
+    animation-delay: 0.24s;
+}
+.signalBoard[data-reveal="in"] .chart span:nth-child(6) {
+    animation-delay: 0.3s;
+}
+.signalBoard[data-reveal="in"] .chart span:nth-child(7) {
+    animation-delay: 0.36s;
+}
 .boardBottom {
     position: absolute;
     right: 20px;
@@ -261,8 +378,21 @@
     }
 }
 @media (prefers-reduced-motion: reduce) {
-    .orbitTrack i {
+    .orbitTrack i,
+    .orbCore::before,
+    .signalBoard::after,
+    .hero h1 em,
+    .signalBoard[data-reveal="in"] .chart span {
         animation: none;
+    }
+    .buttonPrimary:hover,
+    .buttonPrimary:active {
+        transform: none;
+    }
+    .buttonPrimary:hover::after,
+    .buttonQuiet:hover span {
+        animation: none;
+        transform: none;
     }
 }
 @media (max-width: 760px) {
