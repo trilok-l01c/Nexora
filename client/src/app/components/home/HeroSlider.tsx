@@ -202,7 +202,7 @@ export default function HeroSlider({ slides }: HeroSliderProps) {
                     Business grows with technology
                     <br />
                     <em className={styles.dynamicPhrase}>
-                        Make it {safePhrase}
+                        Make it easier to {safePhrase}
                         <span
                             className={`${styles.cursor} ${isTyping ? styles.blinkOn : styles.blinkOff}`}
                         >

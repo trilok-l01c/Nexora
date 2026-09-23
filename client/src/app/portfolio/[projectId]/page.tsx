@@ -6,6 +6,7 @@ import {
     formatPortfolioDate,
     type PortfolioProjectDetail,
 } from "../../portfolioTypes";
+import { demoProjectDetail } from "../demoProjects";
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
 
@@ -28,9 +29,12 @@ async function loadProject(
             return result.data as PortfolioProjectDetail;
         }
     } catch {
-        return null;
+        /* fall through to the bundled sample projects */
     }
-    return null;
+    // Last resort: the showcase page falls back to the bundled sample case
+    // studies when the API has nothing, so those routes must resolve here too
+    // instead of dead-ending in a 404. Returns null for anything unknown.
+    return demoProjectDetail(projectId);
 }
 
 export async function generateMetadata({

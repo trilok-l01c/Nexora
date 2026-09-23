@@ -4,7 +4,7 @@
     margin: auto;
     padding: 100px 32px 20px;
     display: grid;
-    grid-template-columns: 0.45fr 0.55fr;
+    grid-template-columns: 0.47fr 0.53fr;
     align-items: center;
     gap: 56px;
 }
@@ -166,8 +166,8 @@
 
 .heroImageContainer {
     position: relative;
-    top: -110px;
-    left: 165px;
+    top: -90px;
+    /* right: -165px; */
     width: 680px;
     aspect-ratio: 4 / 3;
     overflow: hidden;

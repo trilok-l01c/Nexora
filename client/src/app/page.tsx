@@ -27,27 +27,27 @@ const heroSlides = [
     {
         image: "/HERO-SLIDE-IMAGES/ACCOUNT-HERO.jpg",
         alt: "Client portal dashboard for local Indian businesses",
-        phrase: "easier to choose",
+        phrase: "choose",
     },
     {
         image: "/HERO-SLIDE-IMAGES/AI-HERO.jpg",
         alt: "AI automation for Indian small businesses",
-        phrase: "easier to grow",
+        phrase: "grow",
     },
     {
         image: "/HERO-SLIDE-IMAGES/GARAGE-HERO.jpg",
         alt: "Local garage workshop with digital management",
-        phrase: "easier to run",
+        phrase: "run",
     },
     {
         image: "/HERO-SLIDE-IMAGES/IT-HERO.jpg",
         alt: "IT support for local Indian businesses",
-        phrase: "easier to trust",
+        phrase: "trust",
     },
     {
         image: "/HERO-SLIDE-IMAGES/RESTO-HERO.jpg",
         alt: "Restaurant digital presence solutions",
-        phrase: "easier to attract",
+        phrase: "attract",
     },
 ];
 
