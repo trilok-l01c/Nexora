@@ -17,6 +17,12 @@
 
 /* ---- Hero / overview ---- */
 .hero {
+    /* Hero surface, expressed as local tokens so the dark theme below can
+       re-point it and the mobile override can reuse the same sweep. */
+    --hero-glow-cool: rgba(37, 99, 235, 0.08);
+    --hero-glow-warm: rgba(46, 133, 64, 0.08);
+    --hero-sweep: linear-gradient(125deg, #edf8f5, #f5fbff);
+
     position: relative;
     display: grid;
     grid-template-columns: 1fr 1.15fr;
@@ -25,10 +31,20 @@
     min-height: 100vh;
     padding: clamp(90px, 11vw, 150px) max(5vw, 32px) 80px;
     background:
-        radial-gradient(1200px 600px at 80% -10%, rgba(37, 99, 235, 0.08), transparent 60%),
-        radial-gradient(900px 500px at 0% 10%, rgba(46, 133, 64, 0.08), transparent 60%),
-        linear-gradient(125deg, #edf8f5, #f5fbff);
+        radial-gradient(1200px 600px at 80% -10%, var(--hero-glow-cool), transparent 60%),
+        radial-gradient(900px 500px at 0% 10%, var(--hero-glow-warm), transparent 60%),
+        var(--hero-sweep);
     overflow: hidden;
+}
+
+/* The hero copy is painted with the global `--ink` token, which flips to
+   near-white in dark mode. Against the light gradient above that left the
+   headline at roughly 1:1 contrast (invisible), so the hero carries its own
+   dark surface instead of inheriting a light-only background. */
+html[data-theme="dark"] .hero {
+    --hero-glow-cool: rgba(34, 211, 238, 0.16);
+    --hero-glow-warm: rgba(46, 133, 64, 0.22);
+    --hero-sweep: linear-gradient(125deg, #0b1220, #05090f);
 }
 
 .heroCopy {
@@ -92,6 +108,14 @@
     height: 100%;
     object-fit: cover;
     will-change: transform;
+}
+
+/* The default shadow was tuned for a light backdrop; on the dark hero it needs
+   more depth to read as a lifted panel. */
+html[data-theme="dark"] .heroMedia {
+    box-shadow:
+        0 30px 64px rgba(2, 6, 16, 0.62),
+        0 0 0 1px var(--line);
 }
 
 /* ---- Active case-study progress rail ---- */
@@ -542,8 +566,8 @@
         padding-top: 120px;
         padding-bottom: 60px;
         gap: 36px;
-        background:
-            linear-gradient(125deg, #edf8f5, #f5fbff);
+        /* Flatten the glows on small screens but keep the themed sweep. */
+        background: var(--hero-sweep);
     }
 
     .heroCopy {

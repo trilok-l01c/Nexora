@@ -5,22 +5,30 @@ import Reveal from "./components/motion/Reveal";
 import HeroSlider from "./components/home/HeroSlider";
 import styles from "./page.module.css";
 
+// Each card leads with the supplied artwork from `public/Home-page-services`,
+// which is what a visitor recognises before reading the headline.
 const services = [
-    [
-        "Websites that bring in enquiries",
-        "A clear, credible home for your business—fast on every screen and easy to update.",
-        "01",
-    ],
-    [
-        "Apps that keep customers close",
-        "Make booking, ordering, updates, and everyday service feel effortless.",
-        "02",
-    ],
-    [
-        "Systems that save your team time",
-        "Replace scattered spreadsheets and repetitive tasks with a simpler way to work.",
-        "03",
-    ],
+    {
+        number: "01",
+        title: "Websites that bring in enquiries",
+        text: "A clear, credible home for your business—fast on every screen and easy to update.",
+        image: "/Home-page-services/WEBSITE.png",
+        alt: "Restaurant website with an online table-booking button",
+    },
+    {
+        number: "02",
+        title: "Apps that keep customers close",
+        text: "Make booking, ordering, updates, and everyday service feel effortless.",
+        image: "/Home-page-services/APPS.jpg",
+        alt: "Smartphone home screen filled with mobile app icons",
+    },
+    {
+        number: "03",
+        title: "Systems that save your team time",
+        text: "Replace scattered spreadsheets and repetitive tasks with a simpler way to work.",
+        image: "/Home-page-services/AI.jpg",
+        alt: "AI assistant on a screen listing what it can do",
+    },
 ];
 
 const heroSlides = [
@@ -74,11 +82,23 @@ export default function Home() {
                 </Reveal>
             </section>
             <section className={styles.services}>
-                {services.map(([title, text, number], index) => (
+                {services.map(({ number, title, text, image, alt }, index) => (
                     <Reveal key={number} delay={index * 90}>
                         <article className={styles.service}>
-                            <span>{number}</span>
-                            <div className={styles.icon}>✦</div>
+                            <div className={styles.serviceMedia}>
+                                <img
+                                    src={image}
+                                    alt={alt}
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            </div>
+                            <div className={styles.serviceMeta}>
+                                <span>{number}</span>
+                                <div className={styles.icon} aria-hidden="true">
+                                    ✦
+                                </div>
+                            </div>
                             <h3>{title}</h3>
                             <p>{text}</p>
                             <Link href="/what-we-do">
