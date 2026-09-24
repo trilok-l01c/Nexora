@@ -10,7 +10,6 @@ const links = [
     { label: "Who we are", href: "/who-we-are" },
     { label: "What we do", href: "/what-we-do" },
     { label: "Our work", href: "/portfolio" },
-    { label: "For clients", href: "/clients" },
 ];
 
 export default function Nav() {

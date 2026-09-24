@@ -2,11 +2,11 @@
     min-height: 680px;
     max-width: 90%;
     margin: auto;
-    padding: 100px 32px 20px;
+    padding: 100px 20px;
     display: grid;
-    grid-template-columns: 0.47fr 0.53fr;
+    grid-template-columns: 0.5fr 0.5fr;
     align-items: center;
-    gap: 56px;
+    gap: 200px;
 }
 
 .heroText {

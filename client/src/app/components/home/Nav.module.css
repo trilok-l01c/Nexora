@@ -1,8 +1,174 @@
-.shell { position: fixed; inset: 0 0 auto; z-index: 100; padding: 16px clamp(16px, 4vw, 56px); pointer-events: none; }
-.nav { max-width: 1280px; height: 64px; margin: auto; padding: 0 10px 0 18px; display: flex; align-items: center; justify-content: space-between; border: 1px solid rgba(12, 47, 66, .1); border-radius: 18px; background: rgba(255,255,255,.9); box-shadow: 0 8px 30px rgba(10, 41, 58, .08); backdrop-filter: blur(16px); pointer-events: auto; }
-.brand { display:flex; align-items:center; gap:10px; font-size:19px; font-weight:800; color:#12344d; letter-spacing:-.05em; }.brandMark { width:30px; height:30px; display:grid; place-items:center; border-radius:9px; color:white; font-size:14px; background:linear-gradient(135deg,#12755d,#1674b9); }
-.links { display:flex; gap:28px; align-items:center; font-size:13px; font-weight:650; color:#466274; }.links a { transition: color .2s ease; }.links a:hover,.active { color:#08715b !important; }
-.actions { display:flex; align-items:center; gap:9px; }.portal,.signOut { padding:9px 12px; color:#31566b; background:transparent; border:0; font:inherit; font-size:12px; font-weight:700; cursor:pointer; }.signIn { display:inline-flex; align-items:center; padding:10px 14px; border:1px solid #a9c9c8; border-radius:10px; color:#123f55; background:#fff; font-size:12px; font-weight:800; transition:border-color .2s, background .2s, color .2s; }.signIn:hover { border-color:#08715b; color:#08715b; background:#f1faf7; }.cta { display:inline-flex; gap:13px; align-items:center; padding:11px 15px; border-radius:11px; color:white; background:#08715b; font-size:12px; font-weight:750; box-shadow:0 8px 16px rgba(8,113,91,.18); transition:transform .2s ease, background .2s ease; }.cta:hover { background:#075f4e; transform:translateY(-1px); }.cta span { font-size:17px; line-height:.7; }
-.menu,.mobile { display:none; }
-@media(max-width:850px){.links,.portal,.signOut,.signIn{display:none}.menu{display:grid; width:38px; height:38px; gap:5px; place-content:center; border:0; border-radius:10px; background:#edf5f4; cursor:pointer}.menu span{width:17px;height:2px;background:#12344d}.mobile{display:flex;position:absolute;top:88px;right:16px;left:16px;flex-direction:column;padding:16px;gap:5px;border:1px solid rgba(12,47,66,.1);border-radius:16px;background:white;box-shadow:0 16px 40px rgba(10,41,58,.15);pointer-events:auto}.mobile a{padding:13px 10px;border-radius:8px;color:#23465a;font-size:15px;font-weight:700}.mobile a:hover{background:#eff8f5;color:#08715b}}
-@media(prefers-reduced-motion:reduce){.cta{transition:none}}
+.shell {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 100;
+    padding: 16px clamp(16px, 4vw, 56px);
+    pointer-events: none;
+}
+.nav {
+    max-width: 1280px;
+    height: 74px;
+    margin: auto;
+    padding: 0 10px 0 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid rgba(12, 47, 66, 0.1);
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 8px 30px rgba(10, 41, 58, 0.08);
+    backdrop-filter: blur(16px);
+    pointer-events: auto;
+}
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 19px;
+    font-weight: 800;
+    color: #12344d;
+    letter-spacing: -0.05em;
+}
+.brandMark {
+    width: 30px;
+    height: 30px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    color: white;
+    font-size: 14px;
+    background: linear-gradient(135deg, #12755d, #1674b9);
+}
+.links {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    font-size: 18px;
+    font-weight: 650;
+    color: #466274;
+}
+.links a {
+    transition: color 0.2s ease;
+}
+.links a:hover,
+.active {
+    color: #08715b !important;
+}
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+.portal,
+.signOut {
+    padding: 9px 12px;
+    color: #31566b;
+    background: transparent;
+    border: 0;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.signIn {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 14px;
+    border: 1px solid #a9c9c8;
+    border-radius: 10px;
+    color: #123f55;
+    background: #fff;
+    font-size: 12px;
+    font-weight: 800;
+    transition:
+        border-color 0.2s,
+        background 0.2s,
+        color 0.2s;
+}
+.signIn:hover {
+    border-color: #08715b;
+    color: #08715b;
+    background: #f1faf7;
+}
+.cta {
+    display: inline-flex;
+    gap: 13px;
+    align-items: center;
+    padding: 11px 15px;
+    border-radius: 11px;
+    color: white;
+    background: #08715b;
+    font-size: 12px;
+    font-weight: 750;
+    box-shadow: 0 8px 16px rgba(8, 113, 91, 0.18);
+    transition:
+        transform 0.2s ease,
+        background 0.2s ease;
+}
+.cta:hover {
+    background: #075f4e;
+    transform: translateY(-1px);
+}
+.cta span {
+    font-size: 17px;
+    line-height: 0.7;
+}
+.menu,
+.mobile {
+    display: none;
+}
+@media (max-width: 850px) {
+    .links,
+    .portal,
+    .signOut,
+    .signIn {
+        display: none;
+    }
+    .menu {
+        display: grid;
+        width: 38px;
+        height: 38px;
+        gap: 5px;
+        place-content: center;
+        border: 0;
+        border-radius: 10px;
+        background: #edf5f4;
+        cursor: pointer;
+    }
+    .menu span {
+        width: 17px;
+        height: 2px;
+        background: #12344d;
+    }
+    .mobile {
+        display: flex;
+        position: absolute;
+        top: 88px;
+        right: 16px;
+        left: 16px;
+        flex-direction: column;
+        padding: 16px;
+        gap: 5px;
+        border: 1px solid rgba(12, 47, 66, 0.1);
+        border-radius: 16px;
+        background: white;
+        box-shadow: 0 16px 40px rgba(10, 41, 58, 0.15);
+        pointer-events: auto;
+    }
+    .mobile a {
+        padding: 13px 10px;
+        border-radius: 8px;
+        color: #23465a;
+        font-size: 15px;
+        font-weight: 700;
+    }
+    .mobile a:hover {
+        background: #eff8f5;
+        color: #08715b;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .cta {
+        transition: none;
+    }
+}
