@@ -121,7 +121,9 @@ html[data-theme="dark"] .heroMedia {
 /* ---- Active case-study progress rail ---- */
 .progress {
     position: sticky;
-    top: 0;
+    /* Clears the fixed site nav (16px shell padding + 74px bar + 16px) so the
+       rail stays readable instead of sliding underneath it. */
+    top: 106px;
     z-index: 40;
     display: flex;
     align-items: center;
@@ -165,18 +167,75 @@ html[data-theme="dark"] .heroMedia {
     text-underline-offset: 3px;
 }
 
-/* ---- Showcase rail ---- */
+/* ---- Showcase stage ----
+   `.projects` is a tall scroll container whose height is the scroll distance
+   for the whole showcase. `.showcaseStage` is sticky inside it, so all the
+   cards share one frame that stays put while the visitor scrolls through the
+   projects. Card count is read by animateShowcase() and drives the fade. */
 .projects {
     position: relative;
+    /* One extra viewport per project beyond the first, so each card is held
+       on stage for roughly a full screen of scrolling. */
+    height: calc(100vh * var(--showcase-slots, 1));
 }
 
-/* Each project occupies a scroll slot: the card holds in the middle of the
-   viewport (clear of the sticky progress rail) while its info panel scrubs
-   itself in. */
+.showcaseStage {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* ---- Scroll hint ----
+   A quiet cue that the shared frame holds more projects. It is pure
+   instruction rather than a control, so it is hidden from assistive tech and
+   fades out as soon as the visitor starts scrolling the stage. */
+.scrollHint {
+    position: absolute;
+    right: max(3vw, 20px);
+    bottom: 28px;
+    z-index: 3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    pointer-events: none;
+    opacity: 0.75;
+    transition: opacity 0.4s var(--ease-out);
+}
+
+.scrollHint[data-retired] {
+    opacity: 0;
+}
+
+.scrollHintText {
+    color: var(--muted);
+    font:
+        600 10px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+/* A short line that points down the page, the same direction the stage moves
+   when the visitor scrolls. */
+.scrollHintLine {
+    width: 1px;
+    height: 28px;
+    background: linear-gradient(
+        to bottom,
+        var(--accent-green),
+        transparent
+    );
+}
+
+/* Every project renders into the same sticky frame: the cards are stacked in
+   the same place and the scroll fade decides which one is on stage. */
 .project {
     /* The image is the point of this section, so the card is sized to fill
-       the viewport width and most of its height. These tokens feed the slot
-       maths below and the frame itself, so the two stay in step. */
+       the viewport width and most of its height. `--card-height` and
+       `--card-gutter` also set the centring padding below. */
     --card-height: min(76vh, 700px);
     --card-width: 1440px;
     --card-gutter: max(3vw, 20px);
@@ -184,16 +243,13 @@ html[data-theme="dark"] .heroMedia {
     --card-scrim: rgba(255, 255, 255, 0.96);
     --card-scrim-fade: rgba(255, 255, 255, 0.74);
 
-    position: relative;
-    /* The slot is exactly "lead-in + card + pin dwell", so the section never
-       carries dead trailing space. The 30vh dwell MUST stay in step with the
-       pin distance in animateProject() (`window.innerHeight * 0.3`). */
-    height: calc((100vh - var(--card-height)) / 2 + var(--card-height) + 30vh);
-    /* Centre the card in the first viewport so the pin holds it mid-screen
-       rather than tucked under the sticky rail. */
-    padding-top: calc((100vh - var(--card-height)) / 2);
-    padding-left: var(--card-gutter);
-    padding-right: var(--card-gutter);
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* Centre the card in the viewport, clear of the sticky progress rail. */
+    padding: (100vh - var(--card-height)) / 2 var(--card-gutter);
 }
 
 /* The overlay scrim used to be a hard-coded white wash, which left the
@@ -203,19 +259,9 @@ html[data-theme="dark"] .project {
     --card-scrim-fade: rgba(8, 13, 24, 0.7);
 }
 
-.sentinel {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 1px;
-    height: 1px;
-    pointer-events: none;
-}
-
-/* The pinned media card: one normal, contained card per project instead of a
-   full-height panel. GSAP sets `position: fixed` while the section scrolls;
-   the CSS keeps a stable card size, rounded overflow, and a soft shadow so the
-   pin feels intentional. */
+/* One normal, contained card per project. GSAP cross-fades the stack, so the
+   card keeps a stable size, rounded overflow, and a soft shadow that makes the
+   shared frame read as intentional. */
 .projectFrame {
     position: relative;
     width: 100%;
@@ -230,22 +276,6 @@ html[data-theme="dark"] .project {
     transition:
         box-shadow 0.45s var(--ease-out),
         opacity 0.45s var(--ease-out);
-}
-
-/* Fade the frame slightly as it approaches the edges of the viewport,
-   so adjacent projects feel like part of one continuous journey. */
-.projectFrame[data-first=""] {
-    box-shadow:
-        0 30px 70px rgba(20, 61, 81, 0.18),
-        0 0 0 1px var(--line),
-        0 0 0 1px rgba(255, 255, 255, 0.6) inset;
-}
-
-.projectFrame[data-last=""] {
-    box-shadow:
-        0 30px 70px rgba(20, 61, 81, 0.18),
-        0 0 0 1px var(--line),
-        0 0 0 1px rgba(255, 255, 255, 0.4) inset;
 }
 
 .projectMedia {
@@ -671,10 +701,30 @@ html[data-theme="dark"] .project {
         font-size: 12px;
     }
 
-    .project {
+    /* The whole page scrolls on mobile, so the "scroll for more" cue has
+       nothing to point at. The cards are simply listed top to bottom. */
+    .scrollHint {
+        display: none;
+    }
+
+    /* Mobile drops the shared frame entirely: the stage un-sticks and the
+       cards become a plain vertical stack, so no scroll-scrubbing is needed
+       to reach a project. */
+    .projects {
         height: auto;
-        padding-top: 0;
-        margin-bottom: 36px;
+    }
+
+    .showcaseStage {
+        position: static;
+        height: auto;
+        overflow: visible;
+    }
+
+    .project {
+        position: relative;
+        inset: auto;
+        height: auto;
+        padding: 0 0 36px;
     }
 
     .projectFrame {

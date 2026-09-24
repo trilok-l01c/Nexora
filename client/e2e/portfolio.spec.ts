@@ -205,41 +205,101 @@ test("portfolio showcase animates, pins and tracks progress with data", async ({
         )
         .toBe("1");
 
-    // Desktop pinning is live: ScrollTrigger wraps every pin target.
-    await expect(page.locator(".pin-spacer")).toHaveCount(2);
+    // Every project shares ONE sticky stage instead of pinning individually.
+    const stage = page.locator("[data-showcase-stage]");
+    await expect(stage).toHaveCount(1);
+    await expect(stage).toHaveCSS("position", "sticky");
 
-    // Scrolling into a project slot pins its media frame to the viewport.
-    await page.evaluate(() => {
-        const section = document.querySelector('[data-project-index="0"]');
-        if (!section) return;
-        window.scrollTo(
-            0,
-            section.getBoundingClientRect().top + window.scrollY + 300,
+    // Identical geometry for every card proves they are stacked into the same
+    // frame rather than laid out as separate scroll slots.
+    const cardBoxes = await page
+        .locator("[data-project-index]")
+        .evaluateAll((els) =>
+            els.map((el) => {
+                const r = el.getBoundingClientRect();
+                return {
+                    top: Math.round(r.top),
+                    left: Math.round(r.left),
+                    width: Math.round(r.width),
+                    height: Math.round(r.height),
+                };
+            }),
         );
-    });
-    await expect
-        .poll(async () =>
-            page
-                .locator("[data-pin-frame]")
-                .first()
-                .evaluate((el) => getComputedStyle(el).position),
-        )
-        .toBe("fixed");
+    for (const box of cardBoxes.slice(1)) {
+        expect(box).toEqual(cardBoxes[0]);
+    }
 
-    // Scrubbing deeper into the slot completes the info-panel reveal, which is
-    // what proves the paused timeline is actually driven by ScrollTrigger.
-    await page.evaluate(() => window.scrollBy(0, 1000));
+    // The container is the scroll runway: one viewport per project, and a stage
+    // exactly one viewport tall that stays put while the runway scrolls.
+    const runway = await page.evaluate(() => {
+        const rail = document.querySelector(
+            "[data-projects-rail]",
+        ) as HTMLElement;
+        const stageEl = document.querySelector(
+            "[data-showcase-stage]",
+        ) as HTMLElement;
+        return {
+            containerH: rail.offsetHeight,
+            stageH: stageEl.offsetHeight,
+            vh: window.innerHeight,
+        };
+    });
+    expect(runway.containerH).toBe(runway.vh * mockProjects.length);
+    expect(runway.stageH).toBe(runway.vh);
+
+    // Before scrolling, the first project is on stage and the rest are held
+    // back, so the frame is never a stack of half-visible cards.
+    const hint = page.locator("[data-scroll-hint]");
+    await expect(hint).toBeVisible();
+    expect(await hint.getAttribute("data-retired")).toBeNull();
+    await expect
+        .poll(() =>
+            page
+                .locator('[data-project-index="0"]')
+                .evaluate((el) => Number(getComputedStyle(el).opacity)),
+        )
+        .toBeGreaterThan(0.9);
+    await expect
+        .poll(() =>
+            page
+                .locator('[data-project-index="1"]')
+                .evaluate((el) => Number(getComputedStyle(el).opacity)),
+        )
+        .toBeLessThan(0.1);
+
+    // Scrolling the full runway cross-fades to the last project and retires the
+    // "scroll for more" cue.
+    await page.evaluate(() => {
+        const rail = document.querySelector(
+            "[data-projects-rail]",
+        ) as HTMLElement;
+        const top = rail.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo(0, top + rail.offsetHeight - window.innerHeight);
+    });
+    await expect(hint).toHaveAttribute("data-retired", "");
+    await expect
+        .poll(() =>
+            page
+                .locator('[data-project-index="1"]')
+                .evaluate((el) => Number(getComputedStyle(el).opacity)),
+        )
+        .toBeGreaterThan(0.9);
+    await expect
+        .poll(() =>
+            page
+                .locator('[data-project-index="0"]')
+                .evaluate((el) => Number(getComputedStyle(el).opacity)),
+        )
+        .toBeLessThan(0.1);
+
+    // The info panel for the project now on stage is fully revealed.
     await expect(
-        page.locator('[data-project-index="0"]').getByRole("link", {
-            name: /View case study/i,
-        }),
+        page.locator('[data-project-index="1"] [data-reveal-cta]'),
     ).toBeVisible();
 
-    // The progress rail follows whichever project is in view.
-    await page.locator('[data-index="1"]').scrollIntoViewIfNeeded();
-    await expect(page.locator('[class*="__progressCount"]')).toHaveAttribute(
-        "aria-label",
-        "Project 2 of 2",
+    // The sticky rail follows whichever project is on stage.
+    await expect(page.locator("[data-progress-rail]")).toHaveText(
+        mockProjects[1].category,
     );
 
     // The rail fill is scrubbed against the projects container.

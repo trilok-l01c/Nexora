@@ -1,6 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+    useEffect,
+    useRef,
+    useState,
+    type CSSProperties,
+} from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -65,31 +70,9 @@ export default function PortfolioPage() {
 
     const pageRef = useRef<HTMLElement>(null);
     const { ready: gsapReady, reducedMotion } = useGSAP();
-
-    const sentinelRefs = useRef<(HTMLDivElement | null)[]>([]);
-    useEffect(() => {
-        const sentinels = sentinelRefs.current.filter(
-            (node): node is HTMLDivElement => !!node,
-        );
-        if (sentinels.length === 0) return;
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        const idx =
-                            entry.target.getAttribute("data-index") ??
-                            entry.target.getAttribute("data-project-index");
-                        if (idx !== null) setActiveIndex(Number(idx));
-                    }
-                });
-            },
-            { threshold: 0.5 },
-        );
-        sentinels.forEach((sentinel) => observer.observe(sentinel));
-
-        return () => observer.disconnect();
-    }, [loading, projects]);
+    // The scroll cue is pure instruction, so it retires as soon as the visitor
+    // moves into the showcase and never comes back.
+    const [hintRetired, setHintRetired] = useState(false);
 
     const featured = projects.length > 0 ? projects[0] : null;
     const heroMedia = featured
@@ -109,13 +92,9 @@ export default function PortfolioPage() {
         const ctx = gsap.context(() => {
             animateHero(root);
             animateProgressRail(root, reducedMotion);
-            projects.forEach((_project, index) => {
-                const frame = root.querySelector<HTMLElement>(
-                    `[data-project-index="${index}"]`,
-                );
-                if (frame) {
-                    animateProject(frame, index, reducedMotion);
-                }
+            animateShowcase(root, reducedMotion, {
+                onActiveChange: setActiveIndex,
+                onFirstScroll: () => setHintRetired(true),
             });
         }, root);
 
@@ -148,25 +127,49 @@ export default function PortfolioPage() {
                 reducedMotion={reducedMotion}
             />
 
-            <div className={styles.projects} data-projects-rail>
+            <div
+                className={styles.projects}
+                data-projects-rail
+                // The container is the scroll runway for the shared frame: one
+                // viewport per project drives how far the stage can travel.
+                style={
+                    {
+                        "--showcase-slots": projects.length || 1,
+                    } as CSSProperties
+                }
+            >
                 {loading ? (
                     <ShowcaseLoading />
                 ) : projects.length === 0 ? (
                     <ShowcaseEmpty />
                 ) : (
-                    projects.map((project, index) => (
-                        <ProjectShowcase
-                            key={project._id}
-                            project={project}
-                            index={index}
-                            total={projects.length}
-                            isFirst={index === 0}
-                            isLast={index === projects.length - 1}
-                            sentinelRef={(node) => {
-                                sentinelRefs.current[index] = node;
-                            }}
-                        />
-                    ))
+                    <div className={styles.showcaseStage} data-showcase-stage>
+                        {projects.map((project, index) => (
+                            <ProjectShowcase
+                                key={project._id}
+                                project={project}
+                                index={index}
+                                total={projects.length}
+                            />
+                        ))}
+
+                        {projects.length > 1 ? (
+                            <div
+                                className={styles.scrollHint}
+                                data-scroll-hint
+                                data-retired={hintRetired ? "" : undefined}
+                                aria-hidden={hintRetired}
+                            >
+                                <span className={styles.scrollHintText}>
+                                    Scroll for more
+                                </span>
+                                <span
+                                    className={styles.scrollHintLine}
+                                    aria-hidden="true"
+                                />
+                            </div>
+                        ) : null}
+                    </div>
                 )}
             </div>
 
@@ -279,18 +282,12 @@ interface ProjectShowcaseProps {
     project: PortfolioProject;
     index: number;
     total: number;
-    isFirst: boolean;
-    isLast: boolean;
-    sentinelRef: (node: HTMLDivElement | null) => void;
 }
 
 function ProjectShowcase({
     project,
     index,
     total,
-    isFirst,
-    isLast,
-    sentinelRef,
 }: ProjectShowcaseProps) {
     const resolvedImages = (project.images ?? [])
         .map(resolveAssetUrl)
@@ -308,19 +305,7 @@ function ProjectShowcase({
             className={styles.project}
             aria-labelledby={`project-title-${index}`}
         >
-            <div
-                data-index={index}
-                className={styles.sentinel}
-                aria-hidden="true"
-                ref={sentinelRef}
-            />
-
-            <div
-                className={styles.projectFrame}
-                data-pin-frame
-                data-first={isFirst ? "" : undefined}
-                data-last={isLast ? "" : undefined}
-            >
+            <div className={styles.projectFrame} data-pin-frame>
                 <div className={styles.projectMedia} data-pin-media>
                     {mediaSrc ? (
                         /* eslint-disable-next-line @next/next/no-img-element */
@@ -456,149 +441,165 @@ function ProjectShowcase({
 }
 
 /* --------------------------------------------------------------------------
- * Per-project GSAP timeline + ScrollTrigger
- * -------------------------------------------------------------------------- */
+ * Showcase stage (GSAP ScrollTrigger)
+ * Every project shares ONE sticky stage. Scrolling the tall `.projects`
+ * container scrubs a single trigger that cross-fades the stacked cards and
+ * plays each card's existing staggered copy reveal as it takes the stage.
+ * --------------------------------------------------------------------------
+ */
 
-function animateProject(
-    frame: HTMLElement,
-    index: number,
+interface ShowcaseHandlers {
+    onActiveChange: (index: number) => void;
+    onFirstScroll: () => void;
+}
+
+function animateShowcase(
+    root: HTMLElement,
     reducedMotion: boolean,
+    { onActiveChange, onFirstScroll }: ShowcaseHandlers,
 ) {
-    const pinFrame =
-        frame.querySelector<HTMLElement>("[data-pin-frame]") ?? frame;
-    const pinMedia = frame.querySelector<HTMLElement>("[data-pin-media]");
-    const parallaxMedia = frame.querySelector<HTMLElement>(
-        "[data-parallax-media]",
+    const container = root.querySelector<HTMLElement>("[data-projects-rail]");
+    const stage = root.querySelector<HTMLElement>("[data-showcase-stage]");
+    if (!container || !stage) return;
+
+    const cards = Array.from(
+        stage.querySelectorAll<HTMLElement>("[data-project-index]"),
     );
-    const revealInner = frame.querySelector<HTMLElement>("[data-reveal-inner]");
-    const revealKicker = frame.querySelector<HTMLElement>(
-        "[data-reveal-kicker]",
-    );
-    const revealDesc = frame.querySelector<HTMLElement>("[data-reveal-desc]");
-    const revealTags = frame.querySelector<HTMLElement>("[data-reveal-tags]");
-    const revealMeta = frame.querySelector<HTMLElement>("[data-reveal-meta]");
-    const revealCta = frame.querySelector<HTMLElement>("[data-reveal-cta]");
+    if (cards.length === 0) return;
 
-    const revealTargets = [
-        revealInner,
-        revealKicker,
-        revealDesc,
-        revealTags,
-        revealMeta,
-        revealCta,
-    ].filter((el): el is HTMLElement => !!el);
-
-    const isDesktop = window.matchMedia("(min-width: 881px)").matches;
-    const canPin =
-        isDesktop && !!pinMedia && revealTargets.length > 0 && !reducedMotion;
-
-    if (canPin && pinMedia) {
-        gsap.set(pinMedia, { autoAlpha: 0 });
-        gsap.set(revealTargets, { autoAlpha: 0, y: 32 });
-        if (parallaxMedia) {
-            gsap.set(parallaxMedia, { scale: 1.04, y: 8 });
-        }
+    // One paused reveal timeline per card, mirroring the original per-project
+    // choreography: media first, then copy staggering in.
+    const reveals = cards.map((card) => {
+        const media = card.querySelector<HTMLElement>("[data-pin-media]");
+        const mediaImg = card.querySelector<HTMLElement>(
+            "[data-parallax-media]",
+        );
+        const revealTargets = (
+            [
+                "inner",
+                "kicker",
+                "desc",
+                "tags",
+                "meta",
+                "cta",
+            ] as const
+        )
+            .map((name) =>
+                card.querySelector<HTMLElement>(`[data-reveal-${name}]`),
+            )
+            .filter((el): el is HTMLElement => !!el);
 
         const tl = gsap.timeline({
             paused: true,
             defaults: { ease: "power2.out" },
         });
-
-        // Only touch elements that actually exist in this project's markup.
-        const step = (
-            el: HTMLElement | null,
-            position: number,
-            duration: number,
-        ) => {
-            if (el) {
-                tl.to(el, { autoAlpha: 1, y: 0, duration }, position);
-            }
-        };
-
-        tl.to(pinMedia, { autoAlpha: 1, duration: 0.35 }, 0);
-        if (parallaxMedia) {
+        if (media) tl.to(media, { autoAlpha: 1, duration: 0.35 }, 0);
+        if (mediaImg) {
             tl.to(
-                parallaxMedia,
+                mediaImg,
                 { scale: 1, y: 0, duration: 0.9, overwrite: "auto" },
                 0,
             );
         }
-        step(revealInner, 0.1, 0.5);
-        step(revealKicker, 0.14, 0.35);
-        step(revealDesc, 0.18, 0.4);
-        step(revealTags, 0.24, 0.4);
-        step(revealMeta, 0.3, 0.4);
-        step(revealCta, 0.36, 0.4);
-
-        // Pin the media frame for the length of the project slot and scrub the
-        // reveal timeline against the scroll position.
-        ScrollTrigger.create({
-            id: `portfolio-project-${index}`,
-            trigger: frame,
-            start: "top top",
-            // Keep the pin distance in step with the `.project` slot height in
-            // page.module.css (the 30vh dwell), otherwise ScrollTrigger pads
-            // the spacer with dead space and the page grows needlessly long.
-            end: () => `+=${window.innerHeight * 0.3}`,
-            pin: pinFrame,
-            pinSpacing: true,
-            anticipatePin: 1,
-            scrub: 1.1,
-            invalidateOnRefresh: true,
-            animation: tl,
-            onLeaveBack: () => {
-                gsap.set(pinMedia, { autoAlpha: 0 });
-                gsap.set(revealTargets, { autoAlpha: 0, y: 32 });
-                if (parallaxMedia) {
-                    gsap.set(parallaxMedia, { scale: 1.04, y: 8 });
-                }
-            },
+        revealTargets.forEach((el, i) => {
+            tl.to(el, { autoAlpha: 1, y: 0, duration: 0.45 }, 0.1 + i * 0.06);
         });
-    } else if (pinMedia) {
-        // Mobile / reduced-motion: no pinning, just a light one-shot reveal.
-        if (reducedMotion) {
-            gsap.set([pinMedia, ...revealTargets], { autoAlpha: 1, y: 0 });
-            if (parallaxMedia) {
-                gsap.set(parallaxMedia, { scale: 1, y: 0 });
+
+        return { card, media, mediaImg, revealTargets, tl };
+    });
+
+    const show = (entry: (typeof reveals)[number]) => {
+        gsap.set(entry.card, { autoAlpha: 1 });
+        entry.tl.play();
+    };
+
+    const reset = (entry: (typeof reveals)[number]) => {
+        entry.tl.pause(0);
+        if (entry.media) gsap.set(entry.media, { autoAlpha: 0 });
+        if (entry.mediaImg) gsap.set(entry.mediaImg, { scale: 1.04, y: 8 });
+        gsap.set(entry.revealTargets, { autoAlpha: 0, y: 32 });
+    };
+
+    // Mobile / reduced motion: the CSS drops the stage, so the cards are a
+    // plain vertical stack and only need their one-shot reveals.
+    if (reducedMotion || !window.matchMedia("(min-width: 881px)").matches) {
+        reveals.forEach((entry) => {
+            if (reducedMotion) {
+                gsap.set(
+                    [
+                        entry.media,
+                        entry.mediaImg,
+                        ...entry.revealTargets,
+                    ].filter((el): el is HTMLElement => !!el),
+                    { autoAlpha: 1, y: 0, scale: 1 },
+                );
+                return;
             }
-            return;
+            reset(entry);
+            ScrollTrigger.create({
+                id: `portfolio-card-${reveals.indexOf(entry)}`,
+                trigger: entry.card,
+                start: "top 85%",
+                end: "bottom 20%",
+                animation: entry.tl,
+                toggleActions: "play none none reverse",
+            });
+        });
+        onActiveChange(0);
+        return;
+    }
+
+    // Desktop: every card starts hidden except the first, which is on stage
+    // from the first paint so the showcase is never blank.
+    reveals.forEach((entry, i) => {
+        gsap.set(entry.card, { autoAlpha: i === 0 ? 1 : 0 });
+        reset(entry);
+    });
+    show(reveals[0]);
+    onActiveChange(0);
+
+    const last = reveals.length - 1;
+    let current = 0;
+    let hinted = false;
+
+    // A single project has no runway to scroll, so the card simply stays on
+    // stage. Creating a zero-length trigger here would never fire onUpdate.
+    if (last === 0) {
+        onActiveChange(0);
+        return;
+    }
+
+    const applyProgress = (progress: number) => {
+        // 0 -> card 0, 1 -> card n. Cross-fade around the integer boundaries.
+        const position = progress * last;
+        reveals.forEach((entry, i) => {
+            const distance = Math.abs(position - i);
+            const alpha = distance >= 1 ? 0 : 1 - distance;
+            gsap.set(entry.card, { autoAlpha: alpha });
+        });
+
+        const index = Math.max(0, Math.min(last, Math.round(position)));
+        if (index !== current) {
+            current = index;
+            onActiveChange(index);
+            show(reveals[index]);
         }
 
-        gsap.set(pinMedia, { autoAlpha: 0 });
-        gsap.set(revealTargets, { autoAlpha: 0, y: 24 });
+        if (!hinted && progress > 0.005) {
+            hinted = true;
+            onFirstScroll();
+        }
+    };
 
-        const tl = gsap.timeline({
-            paused: true,
-            defaults: { ease: "power2.out" },
-        });
-
-        const step = (
-            el: HTMLElement | null,
-            position: number,
-            duration: number,
-        ) => {
-            if (el) {
-                tl.to(el, { autoAlpha: 1, y: 0, duration }, position);
-            }
-        };
-
-        tl.to(pinMedia, { autoAlpha: 1, duration: 0.5 }, 0);
-        step(revealInner, 0.08, 0.5);
-        step(revealKicker, 0.12, 0.35);
-        step(revealDesc, 0.16, 0.35);
-        step(revealTags, 0.2, 0.35);
-        step(revealMeta, 0.24, 0.35);
-        step(revealCta, 0.28, 0.35);
-
-        ScrollTrigger.create({
-            id: `portfolio-project-${index}-reveal`,
-            trigger: frame,
-            start: "top 85%",
-            end: "bottom 20%",
-            animation: tl,
-            toggleActions: "play none none reverse",
-        });
-    }
+    ScrollTrigger.create({
+        id: "portfolio-showcase",
+        trigger: container,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.6,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => applyProgress(self.progress),
+    });
 }
 
 /* --------------------------------------------------------------------------

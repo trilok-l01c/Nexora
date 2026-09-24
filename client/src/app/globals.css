@@ -274,7 +274,11 @@ html {
 html,
 body {
     max-width: 100vw;
-    overflow-x: hidden;
+    /* `clip` rather than `hidden`: `overflow-x: hidden` would turn the body
+       into a scroll container, and a sticky element inside a non-scrolling
+       scrollport never sticks. The portfolio showcase relies on a sticky
+       stage. `clip` clips the same overflow without creating a scrollport. */
+    overflow-x: clip;
 }
 
 body {
