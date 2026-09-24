@@ -170,13 +170,37 @@ html[data-theme="dark"] .heroMedia {
     position: relative;
 }
 
-/* Each project occupies a tall scroll slot so the frame has room to
-   breathe and the info panel has time to reveal itself. */
+/* Each project occupies a scroll slot: the card holds in the middle of the
+   viewport (clear of the sticky progress rail) while its info panel scrubs
+   itself in. */
 .project {
+    /* The image is the point of this section, so the card is sized to fill
+       the viewport width and most of its height. These tokens feed the slot
+       maths below and the frame itself, so the two stay in step. */
+    --card-height: min(76vh, 700px);
+    --card-width: 1440px;
+    --card-gutter: max(3vw, 20px);
+    /* Scrim behind the lower-left copy; the dark theme re-points it below. */
+    --card-scrim: rgba(255, 255, 255, 0.96);
+    --card-scrim-fade: rgba(255, 255, 255, 0.74);
+
     position: relative;
-    height: 180vh;
-    /* Prevents the sticky frame from feeling glued to the very top edge. */
-    padding-top: 1px;
+    /* The slot is exactly "lead-in + card + pin dwell", so the section never
+       carries dead trailing space. The 30vh dwell MUST stay in step with the
+       pin distance in animateProject() (`window.innerHeight * 0.3`). */
+    height: calc((100vh - var(--card-height)) / 2 + var(--card-height) + 30vh);
+    /* Centre the card in the first viewport so the pin holds it mid-screen
+       rather than tucked under the sticky rail. */
+    padding-top: calc((100vh - var(--card-height)) / 2);
+    padding-left: var(--card-gutter);
+    padding-right: var(--card-gutter);
+}
+
+/* The overlay scrim used to be a hard-coded white wash, which left the
+   `--ink` (near-white) title invisible in the dark theme. */
+html[data-theme="dark"] .project {
+    --card-scrim: rgba(8, 13, 24, 0.94);
+    --card-scrim-fade: rgba(8, 13, 24, 0.7);
 }
 
 .sentinel {
@@ -188,14 +212,16 @@ html[data-theme="dark"] .heroMedia {
     pointer-events: none;
 }
 
-/* The pinned media frame: pin target for GSAP ScrollTrigger on desktop.
-   GSAP sets `position: fixed` while the section scrolls; the CSS keeps a
-   stable size, rounded overflow, and a soft shadow so the pin feels
-   intentional. */
+/* The pinned media card: one normal, contained card per project instead of a
+   full-height panel. GSAP sets `position: fixed` while the section scrolls;
+   the CSS keeps a stable card size, rounded overflow, and a soft shadow so the
+   pin feels intentional. */
 .projectFrame {
     position: relative;
     width: 100%;
-    height: 100%;
+    max-width: var(--card-width);
+    height: var(--card-height);
+    margin: 0 auto;
     overflow: hidden;
     border-radius: 24px;
     box-shadow:
@@ -286,21 +312,49 @@ html[data-theme="dark"] .heroMedia {
     pointer-events: none;
 }
 
-/* ---- Info panel ---- */
+/* ---- Info panel ----
+   The copy sits in the lower-left over a diagonal wash that is dense at the
+   bottom-left corner and fades out well before the right edge, so the image
+   keeps the upper-right two thirds of the card to itself. */
 .projectOverlay {
     position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 32px max(5vw, 32px) 40px;
-    background: linear-gradient(to top, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0) 100%);
+    inset: auto 0 0 0;
+    padding: 96px 56px 40px;
+    background: linear-gradient(
+        28deg,
+        var(--card-scrim) 0%,
+        var(--card-scrim-fade) 34%,
+        transparent 68%
+    );
     pointer-events: none;
 }
 
 .overlayInner {
     position: relative;
-    max-width: 680px;
+    max-width: 640px;
     pointer-events: auto;
+}
+
+/* Category and the project counter share the top line of the hierarchy. */
+.kickerRow {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.counter {
+    color: var(--muted);
+    font:
+        600 11px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+}
+
+.counterCurrent {
+    color: var(--ink);
+    font-weight: 700;
 }
 
 .kicker {
@@ -328,30 +382,45 @@ html[data-theme="dark"] .heroMedia {
     border-radius: 999px;
 }
 
+/* Largest tier: the project title, kept to two comfortable lines. */
 .title {
-    margin: 14px 0 16px;
-    max-width: 780px;
-    font-size: clamp(38px, 5vw, 72px);
+    margin: 18px 0 14px;
+    max-width: 15ch;
+    font-size: clamp(38px, 4.6vw, 68px);
     font-weight: 700;
-    line-height: 0.96;
-    letter-spacing: -0.06em;
+    line-height: 0.98;
+    letter-spacing: -0.055em;
     color: var(--ink);
 }
 
+/* Third tier: one short line of supporting copy, clamped so it never
+   competes with the image. */
 .description {
-    max-width: 620px;
+    max-width: 48ch;
     color: var(--muted);
     font-size: 16px;
-    line-height: 1.6;
+    line-height: 1.55;
+}
+
+/* Last tier: technologies sit on their own line, with the date/live meta and
+   the case-study link sharing the row beneath it. The tags get a full-width
+   line because the chip row is too wide to sit beside the CTA, which would
+   otherwise strand the link on a row of its own. */
+.overlayFooter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px 28px;
+    margin-top: 26px;
 }
 
 /* Tags / technology & service chips */
 .tagSection {
     display: flex;
+    flex: 1 1 100%;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 24px;
-    max-width: 700px;
+    gap: 8px;
+    min-width: 0;
 }
 
 .tagList {
@@ -384,13 +453,17 @@ html[data-theme="dark"] .heroMedia {
     display: flex;
     align-items: center;
     gap: 14px;
-    margin-top: 22px;
     color: var(--muted);
     font:
         600 10px var(--font-geist-mono),
         monospace;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+}
+
+/* Keep the meta row from collapsing when a project has no date or live URL. */
+.overlayMeta:empty {
+    display: none;
 }
 
 .date {
@@ -410,7 +483,7 @@ html[data-theme="dark"] .heroMedia {
     display: inline-flex;
     align-items: center;
     gap: 14px;
-    margin-top: 28px;
+    margin-left: auto;
     color: var(--accent-blue);
     font:
         700 12px var(--font-geist-mono),
@@ -601,7 +674,7 @@ html[data-theme="dark"] .heroMedia {
     .project {
         height: auto;
         padding-top: 0;
-        margin-bottom: 60px;
+        margin-bottom: 36px;
     }
 
     .projectFrame {
@@ -614,10 +687,12 @@ html[data-theme="dark"] .heroMedia {
         background: var(--section-light-bg);
     }
 
+    /* Image-first: the artwork leads, the copy follows underneath. */
     .projectMedia {
         position: relative;
-        height: 55vh;
-        min-height: 260px;
+        height: auto;
+        aspect-ratio: 4 / 3;
+        min-height: 0;
         overflow: hidden;
         border-radius: 18px 18px 0 0;
         background: var(--section-light-bg);
@@ -628,12 +703,12 @@ html[data-theme="dark"] .heroMedia {
         display: none;
     }
 
+    /* No diagonal wash on mobile: the copy sits on the page surface, so the
+       full-width scrim and its padding reset to a plain block. */
     .projectOverlay {
         position: relative;
-        bottom: auto;
-        left: auto;
-        right: auto;
-        padding: 28px 24px 34px;
+        inset: auto;
+        padding: 24px 22px 26px;
         background: var(--paper);
         border-top: 1px solid var(--line);
     }
@@ -642,12 +717,27 @@ html[data-theme="dark"] .heroMedia {
         max-width: 100%;
     }
 
+    .kickerRow {
+        gap: 16px;
+    }
+
     .title {
-        font-size: clamp(32px, 8vw, 48px);
+        margin: 14px 0 10px;
+        max-width: 100%;
+        font-size: clamp(30px, 8vw, 44px);
     }
 
     .description {
         font-size: 15px;
+    }
+
+    .overlayFooter {
+        margin-top: 20px;
+        gap: 14px 20px;
+    }
+
+    .cta {
+        margin-left: 0;
     }
 
     .contact {

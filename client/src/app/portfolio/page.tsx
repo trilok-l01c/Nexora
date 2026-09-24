@@ -92,12 +92,11 @@ export default function PortfolioPage() {
     }, [loading, projects]);
 
     const featured = projects.length > 0 ? projects[0] : null;
-    const heroMedia =
-        featured
-            ? resolveAssetUrl(featured.coverImage) ||
-              (featured.images?.[0] && resolveAssetUrl(featured.images[0])) ||
-              fallbackImage
-            : "";
+    const heroMedia = featured
+        ? resolveAssetUrl(featured.coverImage) ||
+          (featured.images?.[0] && resolveAssetUrl(featured.images[0])) ||
+          fallbackImage
+        : "";
 
     useEffect(() => {
         const root = pageRef.current;
@@ -160,6 +159,7 @@ export default function PortfolioPage() {
                             key={project._id}
                             project={project}
                             index={index}
+                            total={projects.length}
                             isFirst={index === 0}
                             isLast={index === projects.length - 1}
                             sentinelRef={(node) => {
@@ -201,11 +201,16 @@ function animateHero(root: HTMLElement) {
     if (copyTargets.length === 0 && !media) return;
 
     if (reducedMotion) {
-        gsap.set([...copyTargets, media, mediaImg].filter((el): el is HTMLElement => !!el), {
-            autoAlpha: 1,
-            y: 0,
-            scale: 1,
-        });
+        gsap.set(
+            [...copyTargets, media, mediaImg].filter(
+                (el): el is HTMLElement => !!el,
+            ),
+            {
+                autoAlpha: 1,
+                y: 0,
+                scale: 1,
+            },
+        );
         return;
     }
 
@@ -273,6 +278,7 @@ function animateProgressRail(root: HTMLElement, reducedMotion: boolean) {
 interface ProjectShowcaseProps {
     project: PortfolioProject;
     index: number;
+    total: number;
     isFirst: boolean;
     isLast: boolean;
     sentinelRef: (node: HTMLDivElement | null) => void;
@@ -281,6 +287,7 @@ interface ProjectShowcaseProps {
 function ProjectShowcase({
     project,
     index,
+    total,
     isFirst,
     isLast,
     sentinelRef,
@@ -335,19 +342,32 @@ function ProjectShowcase({
                     )}
 
                     <div className={styles.mediaFringeTop} aria-hidden="true" />
-                    <div className={styles.mediaFringeBottom} aria-hidden="true" />
+                    <div
+                        className={styles.mediaFringeBottom}
+                        aria-hidden="true"
+                    />
                 </div>
 
                 <div className={styles.projectOverlay}>
                     <div className={styles.overlayInner} data-reveal-inner>
-                        <p className={styles.kicker} data-reveal-kicker>
-                            {project.category}
-                            {project.featured ? (
-                                <span className={styles.featuredBadge}>
-                                    Featured
+                        <div className={styles.kickerRow} data-reveal-kicker>
+                            <p className={styles.kicker}>
+                                {project.category}
+                                {project.featured ? (
+                                    <span className={styles.featuredBadge}>
+                                        Featured
+                                    </span>
+                                ) : null}
+                            </p>
+
+                            <span className={styles.counter} aria-hidden="true">
+                                <span className={styles.counterCurrent}>
+                                    {String(index + 1).padStart(2, "0")}
                                 </span>
-                            ) : null}
-                        </p>
+                                {" / "}
+                                {String(total).padStart(2, "0")}
+                            </span>
+                        </div>
 
                         <h2
                             id={`project-title-${index}`}
@@ -360,58 +380,80 @@ function ProjectShowcase({
                             {project.shortDescription}
                         </p>
 
-                        {(technologies.length > 0 || services.length > 0) && (
-                            <div className={styles.tagSection} data-reveal-tags>
-                                {technologies.length > 0 && (
-                                    <ul className={styles.tagList}>
-                                        {technologies.slice(0, 6).map((tech) => (
-                                            <li key={tech} className={styles.tag}>
-                                                {tech}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
-                                {services.length > 0 && (
-                                    <ul className={styles.tagList}>
-                                        {services.slice(0, 4).map((service) => (
-                                            <li key={service} className={styles.tag}>
-                                                {service}
-                                            </li>
-                                        ))}
-                                    </ul>
+                        <div className={styles.overlayFooter}>
+                            {(technologies.length > 0 ||
+                                services.length > 0) && (
+                                <div
+                                    className={styles.tagSection}
+                                    data-reveal-tags
+                                >
+                                    {technologies.length > 0 && (
+                                        <ul className={styles.tagList}>
+                                            {technologies
+                                                .slice(0, 6)
+                                                .map((tech) => (
+                                                    <li
+                                                        key={tech}
+                                                        className={styles.tag}
+                                                    >
+                                                        {tech}
+                                                    </li>
+                                                ))}
+                                        </ul>
+                                    )}
+                                    {services.length > 0 && (
+                                        <ul className={styles.tagList}>
+                                            {services
+                                                .slice(0, 4)
+                                                .map((service) => (
+                                                    <li
+                                                        key={service}
+                                                        className={styles.tag}
+                                                    >
+                                                        {service}
+                                                    </li>
+                                                ))}
+                                        </ul>
+                                    )}
+                                </div>
+                            )}
+
+                            <div
+                                className={styles.overlayMeta}
+                                data-reveal-meta
+                            >
+                                {project.completionDate ? (
+                                    <time
+                                        className={styles.date}
+                                        dateTime={project.completionDate}
+                                    >
+                                        {formatPortfolioDate(
+                                            project.completionDate,
+                                        )}
+                                    </time>
+                                ) : null}
+                                {project.projectUrl && (
+                                    <span className={styles.liveLabel}>
+                                        Live project
+                                    </span>
                                 )}
                             </div>
-                        )}
 
-                        <div className={styles.overlayMeta} data-reveal-meta>
-                            {project.completionDate ? (
-                                <time
-                                    className={styles.date}
-                                    dateTime={project.completionDate}
-                                >
-                                    {formatPortfolioDate(project.completionDate)}
-                                </time>
-                            ) : null}
-                            {project.projectUrl && (
-                                <span className={styles.liveLabel}>Live project</span>
-                            )}
+                            <Link
+                                href={`/portfolio/${project._id}`}
+                                className={styles.cta}
+                                data-reveal-cta
+                            >
+                                View case study
+                                <span aria-hidden="true">↗</span>
+                            </Link>
                         </div>
-
-                        <Link
-                            href={`/portfolio/${project._id}`}
-                            className={styles.cta}
-                            data-reveal-cta
-                        >
-                            View case study
-                            <span aria-hidden="true">↗</span>
-                        </Link>
                     </div>
                 </div>
             </div>
         </section>
     );
 }
-
 
 /* --------------------------------------------------------------------------
  * Per-project GSAP timeline + ScrollTrigger
@@ -422,11 +464,16 @@ function animateProject(
     index: number,
     reducedMotion: boolean,
 ) {
-    const pinFrame = frame.querySelector<HTMLElement>("[data-pin-frame]") ?? frame;
+    const pinFrame =
+        frame.querySelector<HTMLElement>("[data-pin-frame]") ?? frame;
     const pinMedia = frame.querySelector<HTMLElement>("[data-pin-media]");
-    const parallaxMedia = frame.querySelector<HTMLElement>("[data-parallax-media]");
+    const parallaxMedia = frame.querySelector<HTMLElement>(
+        "[data-parallax-media]",
+    );
     const revealInner = frame.querySelector<HTMLElement>("[data-reveal-inner]");
-    const revealKicker = frame.querySelector<HTMLElement>("[data-reveal-kicker]");
+    const revealKicker = frame.querySelector<HTMLElement>(
+        "[data-reveal-kicker]",
+    );
     const revealDesc = frame.querySelector<HTMLElement>("[data-reveal-desc]");
     const revealTags = frame.querySelector<HTMLElement>("[data-reveal-tags]");
     const revealMeta = frame.querySelector<HTMLElement>("[data-reveal-meta]");
@@ -452,7 +499,10 @@ function animateProject(
             gsap.set(parallaxMedia, { scale: 1.04, y: 8 });
         }
 
-        const tl = gsap.timeline({ paused: true, defaults: { ease: "power2.out" } });
+        const tl = gsap.timeline({
+            paused: true,
+            defaults: { ease: "power2.out" },
+        });
 
         // Only touch elements that actually exist in this project's markup.
         const step = (
@@ -486,7 +536,10 @@ function animateProject(
             id: `portfolio-project-${index}`,
             trigger: frame,
             start: "top top",
-            end: () => `+=${window.innerHeight * 1.6}`,
+            // Keep the pin distance in step with the `.project` slot height in
+            // page.module.css (the 30vh dwell), otherwise ScrollTrigger pads
+            // the spacer with dead space and the page grows needlessly long.
+            end: () => `+=${window.innerHeight * 0.3}`,
             pin: pinFrame,
             pinSpacing: true,
             anticipatePin: 1,
@@ -514,7 +567,10 @@ function animateProject(
         gsap.set(pinMedia, { autoAlpha: 0 });
         gsap.set(revealTargets, { autoAlpha: 0, y: 24 });
 
-        const tl = gsap.timeline({ paused: true, defaults: { ease: "power2.out" } });
+        const tl = gsap.timeline({
+            paused: true,
+            defaults: { ease: "power2.out" },
+        });
 
         const step = (
             el: HTMLElement | null,
@@ -625,13 +681,6 @@ function ShowcaseProgress({
             aria-live="polite"
             data-progress-rail
         >
-            <span className={styles.progressKicker}>Case studies</span>
-            <span
-                className={styles.progressCount}
-                aria-label={`Project ${clamped + 1} of ${total}`}
-            >
-                0{clamped + 1} <span>/ {total}</span>
-            </span>
             {category ? (
                 <span className={styles.progressCategory}>{category}</span>
             ) : null}
@@ -669,8 +718,7 @@ function ShowcaseEmpty() {
             <strong>No case studies yet</strong>
             <p>
                 The portfolio is still being prepared. When projects are
-                published they will appear here as a visual case-study
-                showcase.
+                published they will appear here as a visual case-study showcase.
             </p>
         </div>
     );
@@ -689,8 +737,7 @@ function ShowcaseContact() {
                 className={styles.primaryButton}
                 href="mailto:hello@nexora.studio"
             >
-                hello@nexora.studio{" "}
-                <span aria-hidden="true">↗</span>
+                hello@nexora.studio <span aria-hidden="true">↗</span>
             </a>
         </section>
     );

@@ -9,7 +9,7 @@
     max-width: 1280px;
     height: 74px;
     margin: auto;
-    padding: 0 10px 0 18px;
+    padding: 0 15px 0 18px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -66,7 +66,7 @@
     background: transparent;
     border: 0;
     font: inherit;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
 }
@@ -78,7 +78,7 @@
     border-radius: 10px;
     color: #123f55;
     background: #fff;
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 800;
     transition:
         border-color 0.2s,
@@ -98,7 +98,7 @@
     border-radius: 11px;
     color: white;
     background: #08715b;
-    font-size: 12px;
+    font-size: 16px;
     font-weight: 750;
     box-shadow: 0 8px 16px rgba(8, 113, 91, 0.18);
     transition:
@@ -110,7 +110,7 @@
     transform: translateY(-1px);
 }
 .cta span {
-    font-size: 17px;
+    font-size: 15px;
     line-height: 0.7;
 }
 .menu,
