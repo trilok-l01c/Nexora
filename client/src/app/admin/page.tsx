@@ -76,6 +76,7 @@ const manualLeadStatuses: Exclude<LeadStatus, "all" | "completed">[] = [
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
 
 type ContentSection = "hero" | "solutions" | "industries";
+type AdminTab = "leads" | "projects" | "clients" | "cms";
 
 function Field({
     label,
@@ -120,6 +121,10 @@ export default function AdminPage() {
     const [contentSection, setContentSection] =
         useState<ContentSection>("hero");
     const [leads, setLeads] = useState<Lead[]>([]);
+    const [clientLeads, setClientLeads] = useState<Lead[]>([]);
+    const [clientsLoading, setClientsLoading] = useState(false);
+    const [clientsMessage, setClientsMessage] = useState("");
+    const [activeTab, setActiveTab] = useState<AdminTab>("leads");
     const [statusFilter, setStatusFilter] = useState<LeadStatus>("all");
     const [selectedLead, setSelectedLead] = useState<Lead | null>(null);
     const [leadMessage, setLeadMessage] = useState("");
@@ -442,6 +447,39 @@ export default function AdminPage() {
         const next = [...homeContent[section]];
         next[index] = value;
         updateHomeContent(section, next as HomeContent[K]);
+    }
+
+    async function loadClients() {
+        setClientsLoading(true);
+        setClientsMessage("");
+        try {
+            const response = await fetch(
+                `${apiUrl}/api/admin/leads?status=completed`,
+                { credentials: "include" },
+            );
+            const result = await response.json();
+            if (!response.ok) {
+                throw new Error(
+                    result.message || "Could not load converted clients.",
+                );
+            }
+            setClientLeads(result.data);
+        } catch (error) {
+            setClientsMessage(
+                error instanceof Error
+                    ? error.message
+                    : "Could not load converted clients.",
+            );
+        } finally {
+            setClientsLoading(false);
+        }
+    }
+
+    async function selectTab(tab: AdminTab) {
+        setActiveTab(tab);
+        if (tab === "clients" && clientLeads.length === 0) {
+            await loadClients();
+        }
     }
 
     async function handleLogin(event: FormEvent<HTMLFormElement>) {

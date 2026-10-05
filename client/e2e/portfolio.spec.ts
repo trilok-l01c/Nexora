@@ -129,6 +129,54 @@ test("portfolio showcase falls back when the API returns no projects", async ({
     );
 });
 
+test("project cover opens the live site in a new tab", async ({ page }) => {
+    await page.setViewportSize({ width: 1440, height: 900 });
+    await page.route("**/api/portfolio", (route) =>
+        route.fulfill({
+            status: 200,
+            contentType: "application/json",
+            body: JSON.stringify({ success: true, data: mockProjects }),
+        }),
+    );
+    await page.context().route("https://example.com/**", (route) =>
+        route.fulfill({
+            status: 200,
+            contentType: "text/html",
+            body: "<h1>Atlas project site</h1>",
+        }),
+    );
+
+    await page.goto("http://localhost:3000/portfolio", {
+        waitUntil: "domcontentloaded",
+    });
+
+    const projectLink = page.locator(
+        '[data-project-index="0"] [data-project-site-link]',
+    );
+    await expect(projectLink).toHaveAttribute(
+        "href",
+        mockProjects[0].projectUrl as string,
+    );
+    await expect(projectLink).toHaveAttribute("target", "_blank");
+    await expect(projectLink).toHaveAttribute("rel", "noopener noreferrer");
+    await expect(
+        page.locator('[data-project-index="1"] [data-project-site-link]'),
+    ).toHaveCount(0);
+
+    const heroLink = page.locator("[data-hero-media] [data-hero-site-link]");
+    await expect(heroLink).toHaveAttribute(
+        "href",
+        mockProjects[0].projectUrl as string,
+    );
+    await expect(heroLink).toHaveAttribute("target", "_blank");
+
+    const popupPromise = page.waitForEvent("popup");
+    await projectLink.click({ position: { x: 100, y: 100 } });
+    const popup = await popupPromise;
+    expect(popup.url()).toBe(mockProjects[0].projectUrl);
+    await popup.close();
+});
+
 // ---------------------------------------------------------------------------
 // Mocked-API run: exercises the GSAP/ScrollTrigger showcase (hero entrance,
 // desktop pinning, scrubbed reveals and the progress rail) without depending
@@ -267,8 +315,54 @@ test("portfolio showcase animates, pins and tracks progress with data", async ({
         )
         .toBeLessThan(0.1);
 
-    // Scrolling the full runway cross-fades to the last project and retires the
-    // "scroll for more" cue.
+    // At the halfway point the current project is moving up and fading out,
+    // while the next project is moving in from below and fading in.
+    await page.evaluate(() => {
+        const rail = document.querySelector(
+            "[data-projects-rail]",
+        ) as HTMLElement;
+        const top = rail.getBoundingClientRect().top + window.scrollY;
+        window.scrollTo(
+            0,
+            top + (rail.offsetHeight - window.innerHeight) / 2,
+        );
+    });
+    const midpointState = () =>
+        page.locator("[data-project-index]").evaluateAll((cards) =>
+            cards.map((card) => {
+                const element = card as HTMLElement;
+                const frame = element.querySelector<HTMLElement>(
+                    "[data-pin-frame]",
+                );
+                const matrix = frame
+                    ? new DOMMatrixReadOnly(
+                          getComputedStyle(frame).transform,
+                      )
+                    : null;
+                return {
+                    y: matrix ? matrix.m42 : 0,
+                    opacity: Number(getComputedStyle(element).opacity),
+                };
+            }),
+        );
+    await expect
+        .poll(async () => {
+            const state = await midpointState();
+            const current = state[0];
+            const incoming = state[1];
+            return (
+                current.y < -1 &&
+                incoming.y > 1 &&
+                current.opacity > 0.1 &&
+                current.opacity < 0.9 &&
+                incoming.opacity > 0.1 &&
+                incoming.opacity < 0.9
+            );
+        }, { timeout: 3000 })
+        .toBe(true);
+
+    // Scrolling the full runway replaces the current project with the last one
+    // and retires the "scroll for more" cue.
     await page.evaluate(() => {
         const rail = document.querySelector(
             "[data-projects-rail]",

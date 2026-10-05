@@ -298,6 +298,21 @@ function ProjectShowcase({
         fallbackImage;
     const technologies = (project.technologies ?? []).filter(Boolean);
     const services = (project.services ?? []).filter(Boolean);
+    const cover = mediaSrc ? (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+            className={styles.mediaImg}
+            src={mediaSrc}
+            alt={project.title}
+            loading={index === 0 ? "eager" : "lazy"}
+            sizes="100vw"
+            data-parallax-media
+        />
+    ) : (
+        <div className={styles.mediaPlaceholder} aria-hidden="true">
+            {project.title}
+        </div>
+    );
 
     return (
         <section
@@ -307,23 +322,19 @@ function ProjectShowcase({
         >
             <div className={styles.projectFrame} data-pin-frame>
                 <div className={styles.projectMedia} data-pin-media>
-                    {mediaSrc ? (
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <img
-                            className={styles.mediaImg}
-                            src={mediaSrc}
-                            alt={project.title}
-                            loading={index === 0 ? "eager" : "lazy"}
-                            sizes="100vw"
-                            data-parallax-media
-                        />
-                    ) : (
-                        <div
-                            className={styles.mediaPlaceholder}
-                            aria-hidden="true"
+                    {project.projectUrl ? (
+                        <a
+                            className={styles.projectMediaLink}
+                            href={project.projectUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`Open ${project.title} project site in a new tab`}
+                            data-project-site-link
                         >
-                            {project.title}
-                        </div>
+                            {cover}
+                        </a>
+                    ) : (
+                        cover
                     )}
 
                     <div className={styles.mediaFringeTop} aria-hidden="true" />
@@ -443,14 +454,21 @@ function ProjectShowcase({
 /* --------------------------------------------------------------------------
  * Showcase stage (GSAP ScrollTrigger)
  * Every project shares ONE sticky stage. Scrolling the tall `.projects`
- * container scrubs a single trigger that cross-fades the stacked cards and
- * plays each card's existing staggered copy reveal as it takes the stage.
+ * container scrubs a single trigger that lifts the current project upward
+ * while the next project rises from below to replace it.
  * --------------------------------------------------------------------------
  */
 
 interface ShowcaseHandlers {
     onActiveChange: (index: number) => void;
     onFirstScroll: () => void;
+}
+
+const projectTravelPercent = 100;
+
+function easeProjectTransition(value: number) {
+    const progress = Math.min(1, Math.max(0, value));
+    return progress * progress * (3 - 2 * progress);
 }
 
 function animateShowcase(
@@ -470,6 +488,7 @@ function animateShowcase(
     // One paused reveal timeline per card, mirroring the original per-project
     // choreography: media first, then copy staggering in.
     const reveals = cards.map((card) => {
+        const frame = card.querySelector<HTMLElement>("[data-pin-frame]");
         const media = card.querySelector<HTMLElement>("[data-pin-media]");
         const mediaImg = card.querySelector<HTMLElement>(
             "[data-parallax-media]",
@@ -505,16 +524,23 @@ function animateShowcase(
             tl.to(el, { autoAlpha: 1, y: 0, duration: 0.45 }, 0.1 + i * 0.06);
         });
 
-        return { card, media, mediaImg, revealTargets, tl };
+        return { card, frame, media, mediaImg, revealTargets, tl };
     });
 
     const show = (entry: (typeof reveals)[number]) => {
-        gsap.set(entry.card, { autoAlpha: 1 });
+        // The frame opacity is scrubbed below; only the content reveal needs
+        // to be kicked when a project reaches the centre of the stage.
         entry.tl.play();
     };
 
     const reset = (entry: (typeof reveals)[number]) => {
         entry.tl.pause(0);
+        if (entry.frame) {
+            gsap.set(entry.frame, {
+                y: 0,
+                yPercent: 0,
+            });
+        }
         if (entry.media) gsap.set(entry.media, { autoAlpha: 0 });
         if (entry.mediaImg) gsap.set(entry.mediaImg, { scale: 1.04, y: 8 });
         gsap.set(entry.revealTargets, { autoAlpha: 0, y: 32 });
@@ -527,11 +553,17 @@ function animateShowcase(
             if (reducedMotion) {
                 gsap.set(
                     [
+                        entry.frame,
                         entry.media,
                         entry.mediaImg,
                         ...entry.revealTargets,
                     ].filter((el): el is HTMLElement => !!el),
-                    { autoAlpha: 1, y: 0, scale: 1 },
+                    {
+                        autoAlpha: 1,
+                        y: 0,
+                        yPercent: 0,
+                        scale: 1,
+                    },
                 );
                 return;
             }
@@ -570,12 +602,35 @@ function animateShowcase(
     }
 
     const applyProgress = (progress: number) => {
-        // 0 -> card 0, 1 -> card n. Cross-fade around the integer boundaries.
+        // 0 -> card 0, 1 -> card n. The current project travels upward and
+        // fades out while the next project enters from below and fades in.
         const position = progress * last;
         reveals.forEach((entry, i) => {
-            const distance = Math.abs(position - i);
-            const alpha = distance >= 1 ? 0 : 1 - distance;
-            gsap.set(entry.card, { autoAlpha: alpha });
+            const relativePosition = position - i;
+            const distance = Math.abs(relativePosition);
+            const transition = easeProjectTransition(distance);
+            const isOutgoing = relativePosition > 0;
+            const isIncoming = relativePosition < 0;
+            const alpha = isOutgoing
+                ? 1 - transition
+                : isIncoming
+                  ? transition
+                  : 1;
+
+            gsap.set(entry.card, {
+                autoAlpha: alpha,
+                zIndex: isOutgoing ? 1 : 2,
+            });
+            if (entry.frame) {
+                gsap.set(entry.frame, {
+                    y: 0,
+                    yPercent: isOutgoing
+                        ? -projectTravelPercent * transition
+                        : isIncoming
+                          ? projectTravelPercent * transition
+                          : 0,
+                });
+            }
         });
 
         const index = Math.max(0, Math.min(last, Math.round(position)));
@@ -615,6 +670,36 @@ function ShowcaseHero({
     loading: boolean;
     heroMedia: string;
 }) {
+    const featuredProject = projects[0];
+    const heroImage = heroMedia ? (
+        /* eslint-disable-next-line @next/next/no-img-element */
+        <img
+            className={styles.heroMediaImg}
+            src={heroMedia}
+            alt={featuredProject?.title ?? "Selected work"}
+            loading="eager"
+        />
+    ) : (
+        <div className={styles.mediaPlaceholder} aria-hidden="true">
+            Project imagery
+        </div>
+    );
+    const heroContent =
+        heroMedia && featuredProject?.projectUrl ? (
+            <a
+                className={styles.heroMediaLink}
+                href={featuredProject.projectUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Open ${featuredProject.title} project site in a new tab`}
+                data-hero-site-link
+            >
+                {heroImage}
+            </a>
+        ) : (
+            heroImage
+        );
+
     return (
         <section className={styles.hero} data-hero-root>
             <div className={styles.heroCopy} data-hero-copy>
@@ -639,19 +724,7 @@ function ShowcaseHero({
             </div>
 
             <div className={styles.heroMedia} data-hero-media>
-                {heroMedia ? (
-                    /* eslint-disable-next-line @next/next/no-img-element */
-                    <img
-                        className={styles.heroMediaImg}
-                        src={heroMedia}
-                        alt={projects[0]?.title ?? "Selected work"}
-                        loading="eager"
-                    />
-                ) : (
-                    <div className={styles.mediaPlaceholder} aria-hidden="true">
-                        Project imagery
-                    </div>
-                )}
+                {heroContent}
             </div>
         </section>
     );
