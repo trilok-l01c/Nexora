@@ -1,4 +1,348 @@
+/* ---- Page shell ---- */
+.showcase {
+    min-height: 100vh;
+    color: var(--ink);
+    background: var(--paper);
+}
 
+/* ---- Hero / overview ---- */
+.hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    align-items: center;
+    gap: 6vw;
+    min-height: 100vh;
+    padding: clamp(90px, 12vw, 150px) max(5vw, 32px) 90px;
+    background: linear-gradient(125deg, #f4f2ff, #fff4f1);
+    overflow: hidden;
+}
+
+.heroCopy {
+    z-index: 1;
+    max-width: 600px;
+}
+
+.hero h1 {
+    margin: 24px 0 24px;
+    max-width: 780px;
+    font-size: clamp(52px, 6.2vw, 88px);
+    font-weight: 700;
+    line-height: 0.94;
+    letter-spacing: -0.075em;
+    color: var(--ink);
+}
+
+.hero h1 em {
+    color: var(--hero-emphasis);
+}
+
+/* .intro {
+    max-width: 470px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.65;
+} */
+
+.heroMedia {
+    position: relative;
+    height: 70vh;
+    max-height: 540px;
+    overflow: hidden;
+    border-radius: 24px;
+    box-shadow: 0 24px 48px rgba(32, 33, 63, 0.14);
+}
+
+.heroMediaImg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scale(var(--nx-pscale, 1))
+        translate3d(0, var(--nx-ptrans, 0px), 0);
+    transform-origin: center;
+    will-change: transform;
+    transition: filter 0.4s var(--ease-out);
+}
+
+/* ---- Active case-study progress label ---- */
+.progress {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px max(5vw, 32px);
+    border-bottom: 1px solid var(--line);
+    background: var(--paper);
+}
+
+.progressKicker {
+    font:
+        600 10px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+
+.progressCount {
+    font:
+        700 12px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.12em;
+    color: var(--ink);
+}
+
+.progressCategory {
+    font:
+        600 10px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--card-label);
+}
+
+/* ---- Showcase rail ---- */
+.projects {
+    width: 100px;
+}
+
+.project {
+    position: relative;
+    height: 170vh;
+}
+
+.sentinel {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+}
+
+/* The pinned media frame: fills the viewport while its section scrolls. */
+.projectFrame {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    height: 100vh;
+    overflow: hidden;
+    border-radius: 22px;
+}
+
+.projectMedia {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+}
+
+.mediaImg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Parallax scale / drift is authored here via CSS custom properties that
+       useScrollParallax writes. When JS is absent or motion is reduced the
+       fallback values (scale 1, no translate) keep the image static. */
+    transform: scale(var(--nx-pscale, 1))
+        translate3d(0, var(--nx-ptrans, 0px), 0);
+    transform-origin: center;
+    will-change: transform;
+}
+
+.projectMedia:hover .mediaImg {
+    filter: saturate(1.04) contrast(1.02);
+}
+
+/* Floating info card anchored to the pinned media. */
+.projectOverlay {
+    position: absolute;
+    left: 5vw;
+    right: 30vw;
+    bottom: 6vh;
+    max-width: 540px;
+    padding: 26px 24px 22px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--accent-green);
+    border-radius: 18px;
+    box-shadow: 0 22px 45px rgba(32, 33, 63, 0.13);
+}
+
+.kicker {
+    font:
+        600 10px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--card-label);
+}
+
+.title {
+    margin: 12px 0 14px;
+    font-size: clamp(28px, 3.4vw, 42px);
+    font-weight: 700;
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+}
+
+.description {
+    max-width: 500px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.techList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.techItem {
+    font:
+        600 10px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+}
+
+.date {
+    display: block;
+    margin-top: 14px;
+    font:
+        600 10px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+}
+
+.featuredBadge {
+    display: inline-block;
+    margin: 12px 0 0;
+    padding: 5px 9px;
+    font:
+        700 9px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--button-text);
+    background: var(--accent-green);
+    border-radius: 6px;
+}
+
+.cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 18px;
+    font:
+        700 12px var(--font-geist-mono),
+        monospace;
+    letter-spacing: 0.09em;
+    color: var(--accent-blue);
+}
+
+.cta:hover {
+    color: var(--accent-blue-dark);
+    text-decoration: underline;
+}
+
+/* ---- Contact footer ---- */
+.contact {
+    padding: 120px max(5vw, 32px) 140px;
+    color: var(--button-text);
+    background: var(--accent-green);
+    text-align: center;
+}
+
+.contact .kicker {
+    color: inherit;
+    opacity: 0.8;
+}
+
+.contact h2 {
+    margin: 22px 0 40px;
+    font-size: clamp(44px, 5.5vw, 76px);
+    font-weight: 600;
+    line-height: 0.92;
+    letter-spacing: -0.08em;
+}
+
+.contact h2 em {
+    color: inherit;
+    font-style: normal;
+}
+
+.primaryButton {
+    display: inline-flex;
+    align-items: center;
+    gap: 28px;
+    padding: 16px 19px;
+    color: var(--button-text);
+    background: var(--button-bg);
+    font-size: 12px;
+    font-weight: 600;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px var(--glow-green);
+    transition: all 0.25s var(--ease-out);
+    cursor: pointer;
+}
+
+.primaryButton:hover {
+    background: var(--button-hover-bg);
+    box-shadow: 0 12px 32px var(--glow-green);
+    transform: translateY(-2px);
+}
+
+.primaryButton:active {
+    transform: translateY(0);
+}
+
+/* ---- Loading / empty state ---- */
+.empty {
+    max-width: 640px;
+    margin: 80px auto 0;
+    padding: 54px 32px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: center;
+    border: 1px dashed var(--line);
+    border-radius: 16px;
+    background: var(--featured-bg);
+}
+
+.empty strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--ink);
+    font-size: 20px;
+    letter-spacing: -0.03em;
+}
+
+/* ---- Reduced motion ----
+   Only rest overrides that need local scoping live here. The global
+   reduced-motion rules in globals.css already neutralise the
+   [data-reveal] entry animations and forced transforms. */
+@media (prefers-reduced-motion: reduce) {
+    .heroMediaImg,
+    .mediaImg {
+        transform: none !important;
+        transition: none;
+        will-change: auto;
+    }
+    .primaryButton:hover {
+        transform: none !important;
+    }
+}
 
 /* ================================================================
    Portfolio showcase — a scroll-driven, image-first case-study
@@ -17,12 +361,6 @@
 
 /* ---- Hero / overview ---- */
 .hero {
-    /* Hero surface, expressed as local tokens so the dark theme below can
-       re-point it and the mobile override can reuse the same sweep. */
-    --hero-glow-cool: rgba(37, 99, 235, 0.08);
-    --hero-glow-warm: rgba(46, 133, 64, 0.08);
-    --hero-sweep: linear-gradient(125deg, #edf8f5, #f5fbff);
-
     position: relative;
     display: grid;
     grid-template-columns: 1fr 1.15fr;
@@ -31,20 +369,18 @@
     min-height: 100vh;
     padding: clamp(90px, 11vw, 150px) max(5vw, 32px) 80px;
     background:
-        radial-gradient(1200px 600px at 80% -10%, var(--hero-glow-cool), transparent 60%),
-        radial-gradient(900px 500px at 0% 10%, var(--hero-glow-warm), transparent 60%),
-        var(--hero-sweep);
+        radial-gradient(
+            1200px 600px at 80% -10%,
+            rgba(185, 56, 43, 0.08),
+            transparent 60%
+        ),
+        radial-gradient(
+            900px 500px at 0% 10%,
+            rgba(67, 56, 202, 0.08),
+            transparent 60%
+        ),
+        linear-gradient(125deg, #f4f2ff, #fff4f1);
     overflow: hidden;
-}
-
-/* The hero copy is painted with the global `--ink` token, which flips to
-   near-white in dark mode. Against the light gradient above that left the
-   headline at roughly 1:1 contrast (invisible), so the hero carries its own
-   dark surface instead of inheriting a light-only background. */
-html[data-theme="dark"] .hero {
-    --hero-glow-cool: rgba(34, 211, 238, 0.16);
-    --hero-glow-warm: rgba(46, 133, 64, 0.22);
-    --hero-sweep: linear-gradient(125deg, #0b1220, #05090f);
 }
 
 .heroCopy {
@@ -98,23 +434,8 @@ html[data-theme="dark"] .hero {
     overflow: hidden;
     border-radius: 28px;
     box-shadow:
-        0 28px 56px rgba(20, 61, 81, 0.16),
+        0 28px 56px rgba(32, 33, 63, 0.16),
         0 0 0 1px var(--line);
-}
-
-.heroMediaLink {
-    display: block;
-    width: 100%;
-    height: 100%;
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-.heroMediaLink:focus-visible,
-.projectMediaLink:focus-visible {
-    outline: 3px solid var(--accent-blue);
-    outline-offset: -4px;
 }
 
 .heroMediaImg {
@@ -122,23 +443,17 @@ html[data-theme="dark"] .hero {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transform: scale(var(--nx-pscale, 1))
+        translate3d(0, var(--nx-ptrans, 0px), 0);
+    transform-origin: center;
     will-change: transform;
-}
-
-/* The default shadow was tuned for a light backdrop; on the dark hero it needs
-   more depth to read as a lifted panel. */
-html[data-theme="dark"] .heroMedia {
-    box-shadow:
-        0 30px 64px rgba(2, 6, 16, 0.62),
-        0 0 0 1px var(--line);
+    transition: filter 0.4s var(--ease-out);
 }
 
 /* ---- Active case-study progress rail ---- */
 .progress {
     position: sticky;
-    /* Clears the fixed site nav (16px shell padding + 74px bar + 16px) so the
-       rail stays readable instead of sliding underneath it. */
-    top: 106px;
+    top: 0;
     z-index: 40;
     display: flex;
     align-items: center;
@@ -180,118 +495,98 @@ html[data-theme="dark"] .heroMedia {
     color: var(--card-label);
     text-decoration: underline;
     text-underline-offset: 3px;
+    text-decoration-color: var(--line);
+    transition: color 0.2s ease;
 }
 
-/* ---- Showcase stage ----
-   `.projects` is a tall scroll container whose height is the scroll distance
-   for the whole showcase. `.showcaseStage` is sticky inside it, so all the
-   cards share one frame that stays put while the visitor scrolls through the
-   projects. Card count is read by animateShowcase() and drives the fade. */
+.progressTrack {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--line);
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+    transform-origin: left center;
+    will-change: width;
+}
+
+/* ---- Showcase rail ---- */
 .projects {
     position: relative;
-    /* One extra viewport per project beyond the first, so each card is held
-       on stage for roughly a full screen of scrolling. */
-    height: calc(100vh * var(--showcase-slots, 1));
+    display: grid;
+    width: 100%;
 }
 
-.showcaseStage {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    overflow: hidden;
+.projectSlots,
+.projectStage {
+    grid-area: 1 / 1;
 }
 
-/* ---- Scroll hint ----
-   A quiet cue that the shared frame holds more projects. It is pure
-   instruction rather than a control, so it is hidden from assistive tech and
-   fades out as soon as the visitor starts scrolling the stage. */
-.scrollHint {
+.projectSlots {
+    position: relative;
+    z-index: 0;
+}
+
+.projectSlot {
+    position: relative;
+    height: 100svh;
+}
+
+.projectSlot:last-child {
+    height: 180svh;
+}
+
+.sentinel {
     position: absolute;
-    right: max(3vw, 20px);
-    bottom: 28px;
-    z-index: 3;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    pointer-events: none;
-    opacity: 0.75;
-    transition: opacity 0.4s var(--ease-out);
-}
-
-.scrollHint[data-retired] {
-    opacity: 0;
-}
-
-.scrollHintText {
-    color: var(--muted);
-    font:
-        600 10px var(--font-geist-mono),
-        monospace;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-/* A short line that points down the page, the same direction the stage moves
-   when the visitor scrolls. */
-.scrollHintLine {
+    top: 50%;
+    left: 0;
     width: 1px;
-    height: 28px;
-    background: linear-gradient(
-        to bottom,
-        var(--accent-green),
-        transparent
-    );
+    height: 1px;
+    pointer-events: none;
 }
 
-/* Every project renders into the same sticky frame: the cards are stacked in
-   the same place and the upward replacement decides which one is on stage. */
-.project {
-    /* The image is the point of this section, so the card is sized to fill
-       the viewport width and most of its height. `--card-height` and
-       `--card-gutter` also set the centring padding below. */
-    --card-height: min(76vh, 700px);
-    --card-width: 1440px;
-    --card-gutter: max(3vw, 20px);
-    /* Scrim behind the lower-left copy; the dark theme re-points it below. */
-    --card-scrim: rgba(255, 255, 255, 0.96);
-    --card-scrim-fade: rgba(255, 255, 255, 0.74);
-
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* Centre the card in the viewport, clear of the sticky progress rail. */
-    padding: (100vh - var(--card-height)) / 2 var(--card-gutter);
+.projectSlot:last-child .sentinel {
+    top: 25%;
 }
 
-/* The overlay scrim used to be a hard-coded white wash, which left the
-   `--ink` (near-white) title invisible in the dark theme. */
-html[data-theme="dark"] .project {
-    --card-scrim: rgba(8, 13, 24, 0.94);
-    --card-scrim-fade: rgba(8, 13, 24, 0.7);
+.projectStage {
+    position: sticky;
+    top: calc(100svh - min(80svh, 820px) - 24px);
+    z-index: 2;
+    align-self: start;
+    width: 100%;
+    height: min(80svh, 820px);
+    margin: 0 auto 24px;
+    perspective: 1400px;
+    pointer-events: none;
 }
 
-/* One normal, contained card per project. GSAP lifts the stack upward, so the
-   card keeps a stable size, rounded overflow, and a soft shadow that makes the
-   shared frame read as intentional. */
 .projectFrame {
     position: relative;
-    width: 100%;
-    max-width: var(--card-width);
-    height: var(--card-height);
+    width: calc(100% - clamp(32px, 8vw, 128px));
+    max-width: 1680px;
+    height: 100%;
     margin: 0 auto;
     overflow: hidden;
     border-radius: 24px;
     box-shadow:
-        0 30px 70px rgba(20, 61, 81, 0.18),
+        0 30px 70px rgba(32, 33, 63, 0.18),
         0 0 0 1px var(--line);
-    will-change: transform;
-    transition:
-        box-shadow 0.45s var(--ease-out),
-        opacity 0.45s var(--ease-out);
+    pointer-events: auto;
+}
+
+.projectContent {
+    position: absolute;
+    inset: 0;
+    transform-origin: center bottom;
+    transform-style: preserve-3d;
+    will-change: transform, opacity;
 }
 
 .projectMedia {
@@ -301,25 +596,24 @@ html[data-theme="dark"] .project {
     background: var(--section-light-bg);
 }
 
-.projectMediaLink {
-    display: block;
-    width: 100%;
-    height: 100%;
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-}
-
 .mediaImg {
     display: block;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transform: scale(var(--nx-pscale, 1))
+        translate3d(0, var(--nx-ptrans, 0px), 0);
+    transform-origin: center;
     will-change: transform;
+    transition:
+        transform 0.7s var(--ease-out),
+        filter 0.5s var(--ease-out);
 }
 
 .mediaImg[src] {
-    will-change: transform;
+    transition:
+        transform 0.7s var(--ease-out),
+        filter 0.5s var(--ease-out);
 }
 
 /* Soft gradient fringes blend adjacent frames into each other. */
@@ -355,203 +649,6 @@ html[data-theme="dark"] .project {
         700 16px var(--font-geist-mono),
         monospace;
     letter-spacing: -0.02em;
-}
-
-.progressTrack {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--line);
-    overflow: hidden;
-    pointer-events: none;
-}
-
-/* ---- Info panel ----
-   The copy sits in the lower-left over a diagonal wash that is dense at the
-   bottom-left corner and fades out well before the right edge, so the image
-   keeps the upper-right two thirds of the card to itself. */
-.projectOverlay {
-    position: absolute;
-    inset: auto 0 0 0;
-    padding: 96px 56px 40px;
-    background: linear-gradient(
-        28deg,
-        var(--card-scrim) 0%,
-        var(--card-scrim-fade) 34%,
-        transparent 68%
-    );
-    pointer-events: none;
-}
-
-.overlayInner {
-    position: relative;
-    max-width: 640px;
-    pointer-events: auto;
-}
-
-/* Category and the project counter share the top line of the hierarchy. */
-.kickerRow {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 24px;
-}
-
-.counter {
-    color: var(--muted);
-    font:
-        600 11px var(--font-geist-mono),
-        monospace;
-    letter-spacing: 0.1em;
-    white-space: nowrap;
-}
-
-.counterCurrent {
-    color: var(--ink);
-    font-weight: 700;
-}
-
-.kicker {
-    color: var(--card-label);
-    font:
-        600 10px var(--font-geist-mono),
-        monospace;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.featuredBadge {
-    padding: 4px 8px;
-    color: var(--acid-text);
-    background: var(--accent-gradient-soft);
-    border: 1px solid rgba(37, 99, 235, 0.18);
-    font:
-        700 9px var(--font-geist-mono),
-        monospace;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    border-radius: 999px;
-}
-
-/* Largest tier: the project title, kept to two comfortable lines. */
-.title {
-    margin: 18px 0 14px;
-    max-width: 15ch;
-    font-size: clamp(38px, 4.6vw, 68px);
-    font-weight: 700;
-    line-height: 0.98;
-    letter-spacing: -0.055em;
-    color: var(--ink);
-}
-
-/* Third tier: one short line of supporting copy, clamped so it never
-   competes with the image. */
-.description {
-    max-width: 48ch;
-    color: var(--muted);
-    font-size: 16px;
-    line-height: 1.55;
-}
-
-/* Last tier: technologies sit on their own line, with the date/live meta and
-   the case-study link sharing the row beneath it. The tags get a full-width
-   line because the chip row is too wide to sit beside the CTA, which would
-   otherwise strand the link on a row of its own. */
-.overlayFooter {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 16px 28px;
-    margin-top: 26px;
-}
-
-/* Tags / technology & service chips */
-.tagSection {
-    display: flex;
-    flex: 1 1 100%;
-    flex-wrap: wrap;
-    gap: 8px;
-    min-width: 0;
-}
-
-.tagList {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    border: 1px solid var(--line);
-    background: var(--paper);
-    padding: 8px 10px;
-    border-radius: 999px;
-}
-
-.tag {
-    color: var(--ink);
-    font:
-        600 11px var(--font-geist-mono),
-        monospace;
-    letter-spacing: 0.02em;
-    text-transform: none;
-    background: transparent;
-    border: 0;
-    padding: 0;
-    cursor: default;
-}
-
-.overlayMeta {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    color: var(--muted);
-    font:
-        600 10px var(--font-geist-mono),
-        monospace;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-
-/* Keep the meta row from collapsing when a project has no date or live URL. */
-.overlayMeta:empty {
-    display: none;
-}
-
-.date {
-    color: var(--muted);
-}
-
-.liveLabel {
-    color: var(--accent-blue);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-color: rgba(37, 99, 235, 0.4);
-    font-weight: 700;
-}
-
-/* CTA */
-.cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 14px;
-    margin-left: auto;
-    color: var(--accent-blue);
-    font:
-        700 12px var(--font-geist-mono),
-        monospace;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    text-decoration: none;
-    text-decoration-color: var(--line);
-    transition:
-        color 0.2s ease,
-        gap 0.2s var(--ease-out),
-        text-decoration-color 0.2s ease;
-    pointer-events: auto;
 }
 
 /* ---- Contact footer ---- */
@@ -593,7 +690,7 @@ html[data-theme="dark"] .project {
     font-size: 12px;
     font-weight: 700;
     border-radius: 10px;
-    box-shadow: 0 10px 28px rgba(46, 133, 64, 0.28);
+    box-shadow: 0 10px 28px var(--glow-green);
     transition:
         background 0.2s ease,
         transform 0.2s var(--ease-out),
@@ -603,7 +700,7 @@ html[data-theme="dark"] .project {
 
 .primaryButton:hover {
     background: var(--button-hover-bg);
-    box-shadow: 0 14px 34px rgba(46, 133, 64, 0.34);
+    box-shadow: 0 14px 34px var(--glow-green);
     transform: translateY(-2px);
 }
 
@@ -633,34 +730,6 @@ html[data-theme="dark"] .project {
     letter-spacing: -0.03em;
 }
 
-/* ---- Sample-data notice ----
-   Only rendered when the showcase falls back to the bundled sample case
-   studies because the portfolio API had no projects to return. ------- */
-.demoNotice {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px 12px;
-    align-items: baseline;
-    justify-content: center;
-    max-width: 680px;
-    margin: 0 auto 56px;
-    padding: 14px 22px;
-    color: var(--muted);
-    font-size: 13px;
-    line-height: 1.55;
-    text-align: center;
-    border: 1px dashed var(--line);
-    border-radius: 999px;
-    background: var(--featured-bg);
-}
-
-.demoNotice strong {
-    color: var(--ink);
-    font: 700 11px var(--font-geist-mono), monospace;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-}
-
 /* ---- Reduced motion ----
    The global rules in globals.css already neutralise the [data-reveal]
    entry animations and forced transforms. These module overrides silence
@@ -686,7 +755,7 @@ html[data-theme="dark"] .project {
     }
 }
 
-/* ---- Mobile: clean vertical stack, no forced sticky layouts ---- */
+/* ---- Mobile: preserve the single-frame showcase ---- */
 @media (max-width: 880px) {
     .hero {
         grid-template-columns: 1fr;
@@ -694,8 +763,7 @@ html[data-theme="dark"] .project {
         padding-top: 120px;
         padding-bottom: 60px;
         gap: 36px;
-        /* Flatten the glows on small screens but keep the themed sweep. */
-        background: var(--hero-sweep);
+        background: linear-gradient(125deg, #f4f2ff, #fff4f1);
     }
 
     .heroCopy {
@@ -726,50 +794,24 @@ html[data-theme="dark"] .project {
         font-size: 12px;
     }
 
-    /* The whole page scrolls on mobile, so the "scroll for more" cue has
-       nothing to point at. The cards are simply listed top to bottom. */
-    .scrollHint {
-        display: none;
-    }
-
-    /* Mobile drops the shared frame entirely: the stage un-sticks and the
-       cards become a plain vertical stack, so no scroll-scrubbing is needed
-       to reach a project. */
-    .projects {
-        height: auto;
-    }
-
-    .showcaseStage {
-        position: static;
-        height: auto;
-        overflow: visible;
-    }
-
-    .project {
-        position: relative;
-        inset: auto;
-        height: auto;
-        padding: 0 0 36px;
+    .projectStage {
+        top: calc(100svh - 74svh - 12px);
+        height: 74svh;
+        margin-bottom: 12px;
     }
 
     .projectFrame {
-        position: static;
-        height: auto;
+        width: calc(100% - 24px);
         border-radius: 18px;
-        overflow: visible;
-        box-shadow: none;
-        border: 1px solid var(--line);
-        background: var(--section-light-bg);
+        box-shadow:
+            0 18px 42px rgba(32, 33, 63, 0.2),
+            0 0 0 1px var(--line);
     }
 
-    /* Image-first: the artwork leads, the copy follows underneath. */
     .projectMedia {
-        position: relative;
-        height: auto;
-        aspect-ratio: 4 / 3;
-        min-height: 0;
-        overflow: hidden;
-        border-radius: 18px 18px 0 0;
+        position: absolute;
+        inset: 0;
+        border-radius: 0;
         background: var(--section-light-bg);
     }
 
@@ -778,41 +820,27 @@ html[data-theme="dark"] .project {
         display: none;
     }
 
-    /* No diagonal wash on mobile: the copy sits on the page surface, so the
-       full-width scrim and its padding reset to a plain block. */
     .projectOverlay {
-        position: relative;
-        inset: auto;
-        padding: 24px 22px 26px;
+        left: 12px;
+        right: 12px;
+        bottom: 12px;
+        max-height: calc(100% - 24px);
+        padding: 18px 16px 16px;
         background: var(--paper);
-        border-top: 1px solid var(--line);
+        border-left-width: 4px;
+        border-radius: 14px;
     }
 
     .overlayInner {
         max-width: 100%;
     }
 
-    .kickerRow {
-        gap: 16px;
-    }
-
     .title {
-        margin: 14px 0 10px;
-        max-width: 100%;
-        font-size: clamp(30px, 8vw, 44px);
+        font-size: clamp(32px, 8vw, 48px);
     }
 
     .description {
         font-size: 15px;
-    }
-
-    .overlayFooter {
-        margin-top: 20px;
-        gap: 14px 20px;
-    }
-
-    .cta {
-        margin-left: 0;
     }
 
     .contact {
@@ -825,27 +853,6 @@ html[data-theme="dark"] .project {
     }
 }
 
-.cta:hover {
-    color: var(--accent-blue-dark);
-    gap: 22px;
-    text-decoration: underline;
-    text-underline-offset: 4px;
+html[data-theme="dark"] .hero {
+    background: linear-gradient(125deg, #1b1a38, #241a31);
 }
-
-.cta span {
-    transition: transform 0.2s var(--ease-out);
-}
-
-.cta:hover span {
-    transform: translateX(3px);
-}
-
-
-.progressFill {
-    height: 100%;
-    background:
-        linear-gradient(90deg, var(--accent-green), var(--accent-blue));
-    transform-origin: left center;
-    will-change: width;
-}
-

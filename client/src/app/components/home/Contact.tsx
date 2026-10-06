@@ -3,6 +3,7 @@
 import { FormEvent, useState } from "react";
 import { useReveal } from "../../useReveal";
 import styles from "./Contact.module.css";
+import { apiUrl } from "../../apiConfig";
 
 export default function Contact() {
     const [form, setForm] = useState({
@@ -17,7 +18,6 @@ export default function Contact() {
         "idle" | "sending" | "success" | "error"
     >("idle");
     const [statusMessage, setStatusMessage] = useState("");
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
     const introReveal = useReveal<HTMLDivElement>();
     const formReveal = useReveal<HTMLFormElement>({ delay: 120 });
 

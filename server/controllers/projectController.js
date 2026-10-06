@@ -1,4 +1,7 @@
+import { isDatabaseReady } from "../config/database.js";
 import { Project } from "../models/Project.js";
+
+const DATABASE_UNAVAILABLE = "Projects are temporarily unavailable.";
 
 const populate = [
     {
@@ -9,6 +12,14 @@ const populate = [
 ];
 
 export async function listProjects(_, res, next) {
+    // Every other controller guards on the connection first. Without it a
+    // dropped database made Mongoose buffer the query for 10 seconds and then
+    // time out, so the request hung and returned 500 instead of a fast 503.
+    if (!isDatabaseReady()) {
+        return res
+            .status(503)
+            .json({ success: false, message: DATABASE_UNAVAILABLE });
+    }
     try {
         const projects = await Project.find()
             .populate(populate)
@@ -21,6 +32,11 @@ export async function listProjects(_, res, next) {
 }
 
 export async function createProject(req, res, next) {
+    if (!isDatabaseReady()) {
+        return res
+            .status(503)
+            .json({ success: false, message: DATABASE_UNAVAILABLE });
+    }
     try {
         const allowedFields = [
             "companyId",
@@ -53,6 +69,11 @@ export async function createProject(req, res, next) {
 }
 
 export async function updateProject(req, res, next) {
+    if (!isDatabaseReady()) {
+        return res
+            .status(503)
+            .json({ success: false, message: DATABASE_UNAVAILABLE });
+    }
     try {
         const staffFields = [
             "status",

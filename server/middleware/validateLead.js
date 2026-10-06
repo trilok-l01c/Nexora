@@ -6,8 +6,20 @@ export function validateLead(req, res, next) {
     if (typeof name !== "string" || !name.trim()) {
         return res.status(400).json({ success: false, message: "Name is required." });
     }
+    // The Lead schema caps `name` at 100 and `email` at 254. Both limits are
+    // enforced here as well so an oversized value is rejected as bad input
+    // (400) instead of passing validation and then failing inside
+    // `Lead.create()`, which surfaced as a misleading 500.
+    if (name.trim().length > 100) {
+        return res.status(400).json({ success: false, message: "Name is too long." });
+    }
     if (typeof email !== "string" || !emailPattern.test(email.trim())) {
         return res.status(400).json({ success: false, message: "Please enter a valid email address." });
+    }
+    if (email.trim().length > 254) {
+        return res
+            .status(400)
+            .json({ success: false, message: "Email address is too long." });
     }
     if (typeof message !== "string" || !message.trim()) {
         return res.status(400).json({ success: false, message: "Message is required." });

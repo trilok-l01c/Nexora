@@ -1,21 +1,21 @@
 .portal {
-    --portal-ink: #17221e;
-    --portal-muted: #68756e;
-    --portal-paper: #f4f7f3;
-    --portal-line: #dbe4dc;
-    --portal-green: #185c4b;
+    --portal-ink: #20213f;
+    --portal-muted: #686a87;
+    --portal-paper: #f7f7ff;
+    --portal-line: #deddf0;
+    --portal-green: #4338ca;
     --portal-card: #fff;
-    --portal-input-bg: #fbfdfb;
-    --portal-hover: #edf5ed;
-    --portal-notice-bg: #e8f3e8;
-    --portal-badge-bg: #e8f3e8;
-    --portal-track: #e7ece7;
-    --portal-modal-shadow: #b9d7bc;
-    --portal-empty-border: #b9cbbd;
-    --portal-error: #a13f35;
-    --portal-button-text: #e8f4e6;
-    --portal-button-hover: #0f4538;
-    --portal-milestone-border: #a9bcae;
+    --portal-input-bg: #fcfbff;
+    --portal-hover: #f0efff;
+    --portal-notice-bg: #f0eeff;
+    --portal-badge-bg: #fff0ed;
+    --portal-track: #e8e6f4;
+    --portal-modal-shadow: #c9c3f2;
+    --portal-empty-border: #c8c4e4;
+    --portal-error: #c64f54;
+    --portal-button-text: #ffffff;
+    --portal-button-hover: #312e81;
+    --portal-milestone-border: #b8b4d3;
     min-height: 100vh;
     color: var(--portal-ink);
     background: var(--portal-paper);
@@ -25,23 +25,23 @@
 }
 
 html[data-theme="dark"] .portal {
-    --portal-ink: #e8e8e2;
-    --portal-muted: #9aa197;
-    --portal-paper: #0f1110;
-    --portal-line: rgba(232, 232, 226, 0.14);
-    --portal-green: #a8c72e;
-    --portal-card: #1a1d1a;
-    --portal-input-bg: #1a1d1a;
-    --portal-hover: #1a1d1a;
-    --portal-notice-bg: rgba(168, 199, 46, 0.12);
-    --portal-badge-bg: rgba(168, 199, 46, 0.12);
-    --portal-track: #2a2e28;
-    --portal-modal-shadow: #2a2e28;
-    --portal-empty-border: #2a2e28;
-    --portal-error: #e07a5f;
-    --portal-button-text: #0f1110;
-    --portal-button-hover: #8aa51f;
-    --portal-milestone-border: #3a4038;
+    --portal-ink: #f0efff;
+    --portal-muted: #aaa8c5;
+    --portal-paper: #111127;
+    --portal-line: rgba(214, 210, 255, 0.16);
+    --portal-green: #c4b5fd;
+    --portal-card: #1b1a38;
+    --portal-input-bg: #1b1a38;
+    --portal-hover: #242145;
+    --portal-notice-bg: rgba(169, 156, 255, 0.14);
+    --portal-badge-bg: rgba(255, 154, 142, 0.14);
+    --portal-track: #302d54;
+    --portal-modal-shadow: #302d54;
+    --portal-empty-border: #302d54;
+    --portal-error: #ff9a8e;
+    --portal-button-text: #16142c;
+    --portal-button-hover: #ddd6fe;
+    --portal-milestone-border: #414065;
 }
 .navbar {
     position: sticky;

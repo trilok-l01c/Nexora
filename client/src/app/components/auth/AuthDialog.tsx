@@ -4,8 +4,8 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useClientAuth } from "../../client/ClientAuthContext";
 import styles from "./AuthDialog.module.css";
+import { apiUrl } from "../../apiConfig";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
 type Mode = "signin" | "signup";
 
 export default function AuthDialog() {

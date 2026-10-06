@@ -7,7 +7,8 @@ import {
     useRef,
     useState,
 } from "react";
-import styles from "./page.module.css";
+import styles from "./workspace.module.css";
+import { ConfirmDialog } from "./components/primitives";
 import {
     PORTFOLIO_CATEGORIES,
     PORTFOLIO_STATUSES,
@@ -16,8 +17,7 @@ import {
     type PortfolioProjectWithStats,
     type PortfolioUpdate,
 } from "../portfolioTypes";
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
+import { apiUrl } from "../apiConfig";
 
 type UploadStatus =
     | { state: "idle" }
@@ -327,6 +327,13 @@ export default function PortfolioManager() {
     );
     const [updateValues, setUpdateValues] =
         useState<UpdateFormState>(emptyUpdateForm);
+    // Destructive actions are staged here and confirmed in one shared dialog,
+    // rather than using a browser confirm() that cannot be styled.
+    const [pendingDelete, setPendingDelete] = useState<
+        | { kind: "project"; project: PortfolioProjectWithStats }
+        | { kind: "update"; update: PortfolioUpdate }
+        | null
+    >(null);
 
     const loadProjects = useCallback(async () => {
         try {
@@ -434,13 +441,6 @@ export default function PortfolioManager() {
     }
 
     async function deleteProject(project: PortfolioProjectWithStats) {
-        if (
-            !window.confirm(
-                `Delete "${project.title}" from the portfolio? Its updates will also be removed.`,
-            )
-        ) {
-            return;
-        }
         setLoading(true);
         setMessage("");
         try {
@@ -555,9 +555,6 @@ export default function PortfolioManager() {
     }
 
     async function deleteUpdate(update: PortfolioUpdate) {
-        if (!window.confirm(`Delete the update "${update.title}"?`)) {
-            return;
-        }
         setLoading(true);
         setMessage("");
         try {
@@ -895,7 +892,12 @@ export default function PortfolioManager() {
                                 <button
                                     type="button"
                                     className={styles.removeButton}
-                                    onClick={() => deleteProject(project)}
+                                    onClick={() =>
+                                        setPendingDelete({
+                                            kind: "project",
+                                            project,
+                                        })
+                                    }
                                     disabled={loading}
                                 >
                                     Delete
@@ -1182,9 +1184,10 @@ export default function PortfolioManager() {
                                                             styles.removeButton
                                                         }
                                                         onClick={() =>
-                                                            deleteUpdate(
+                                                            setPendingDelete({
+                                                                kind: "update",
                                                                 update,
-                                                            )
+                                                            })
                                                         }
                                                         disabled={loading}
                                                     >
@@ -1200,6 +1203,31 @@ export default function PortfolioManager() {
                     ))
                 )}
             </div>
+            <ConfirmDialog
+                open={pendingDelete !== null}
+                title={
+                    pendingDelete?.kind === "update"
+                        ? "Delete this project update?"
+                        : "Delete this portfolio project?"
+                }
+                description={
+                    pendingDelete?.kind === "update"
+                        ? `The update "${pendingDelete.update.title}" will be permanently removed. This cannot be undone.`
+                        : `"${pendingDelete?.project.title}" and all of its updates will be permanently removed from the public portfolio. This cannot be undone.`
+                }
+                busy={loading}
+                onCancel={() => setPendingDelete(null)}
+                onConfirm={() => {
+                    const target = pendingDelete;
+                    setPendingDelete(null);
+                    if (!target) return;
+                    if (target.kind === "update") {
+                        void deleteUpdate(target.update);
+                    } else {
+                        void deleteProject(target.project);
+                    }
+                }}
+            />
         </section>
     );
 }

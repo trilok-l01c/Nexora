@@ -1,11 +1,6 @@
 "use client";
 
-import {
-    useEffect,
-    useRef,
-    useState,
-    type CSSProperties,
-} from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -22,6 +17,7 @@ export default function PortfolioPage() {
     const [loading, setLoading] = useState(true);
     const [usingDemo, setUsingDemo] = useState(false);
     const [activeIndex, setActiveIndex] = useState(0);
+    const [requestedIndex, setRequestedIndex] = useState(0);
 
     useEffect(() => {
         const controller = new AbortController();
@@ -70,10 +66,8 @@ export default function PortfolioPage() {
 
     const pageRef = useRef<HTMLElement>(null);
     const { ready: gsapReady, reducedMotion } = useGSAP();
-    // The scroll cue is pure instruction, so it retires as soon as the visitor
-    // moves into the showcase and never comes back.
-    const [hintRetired, setHintRetired] = useState(false);
 
+    const sentinelRefs = useRef<(HTMLDivElement | null)[]>([]);
     const featured = projects.length > 0 ? projects[0] : null;
     const heroMedia = featured
         ? resolveAssetUrl(featured.coverImage) ||
@@ -92,9 +86,16 @@ export default function PortfolioPage() {
         const ctx = gsap.context(() => {
             animateHero(root);
             animateProgressRail(root, reducedMotion);
-            animateShowcase(root, reducedMotion, {
-                onActiveChange: setActiveIndex,
-                onFirstScroll: () => setHintRetired(true),
+            projects.forEach((_project, index) => {
+                const sentinel = sentinelRefs.current[index];
+                if (!sentinel) return;
+                ScrollTrigger.create({
+                    id: `portfolio-project-${index}`,
+                    trigger: sentinel,
+                    start: "center center",
+                    onEnter: () => setRequestedIndex(index),
+                    onEnterBack: () => setRequestedIndex(index),
+                });
             });
         }, root);
 
@@ -127,49 +128,33 @@ export default function PortfolioPage() {
                 reducedMotion={reducedMotion}
             />
 
-            <div
-                className={styles.projects}
-                data-projects-rail
-                // The container is the scroll runway for the shared frame: one
-                // viewport per project drives how far the stage can travel.
-                style={
-                    {
-                        "--showcase-slots": projects.length || 1,
-                    } as CSSProperties
-                }
-            >
+            <div className={styles.projects} data-projects-rail>
                 {loading ? (
                     <ShowcaseLoading />
                 ) : projects.length === 0 ? (
                     <ShowcaseEmpty />
                 ) : (
-                    <div className={styles.showcaseStage} data-showcase-stage>
-                        {projects.map((project, index) => (
-                            <ProjectShowcase
-                                key={project._id}
-                                project={project}
-                                index={index}
-                                total={projects.length}
-                            />
-                        ))}
-
-                        {projects.length > 1 ? (
-                            <div
-                                className={styles.scrollHint}
-                                data-scroll-hint
-                                data-retired={hintRetired ? "" : undefined}
-                                aria-hidden={hintRetired}
-                            >
-                                <span className={styles.scrollHintText}>
-                                    Scroll for more
-                                </span>
-                                <span
-                                    className={styles.scrollHintLine}
-                                    aria-hidden="true"
-                                />
-                            </div>
-                        ) : null}
-                    </div>
+                    <>
+                        <ProjectShowcase
+                            projects={projects}
+                            requestedIndex={requestedIndex}
+                            reducedMotion={reducedMotion}
+                            onProjectChange={setActiveIndex}
+                        />
+                        <div className={styles.projectSlots} aria-hidden="true">
+                            {projects.map((_project, index) => (
+                                <div className={styles.projectSlot} key={index}>
+                                    <div
+                                        data-index={index}
+                                        className={styles.sentinel}
+                                        ref={(node) => {
+                                            sentinelRefs.current[index] = node;
+                                        }}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </>
                 )}
             </div>
 
@@ -279,16 +264,67 @@ function animateProgressRail(root: HTMLElement, reducedMotion: boolean) {
  * -------------------------------------------------------------------------- */
 
 interface ProjectShowcaseProps {
-    project: PortfolioProject;
-    index: number;
-    total: number;
+    projects: PortfolioProject[];
+    requestedIndex: number;
+    reducedMotion: boolean;
+    onProjectChange: (index: number) => void;
 }
 
 function ProjectShowcase({
-    project,
-    index,
-    total,
+    projects,
+    requestedIndex,
+    reducedMotion,
+    onProjectChange,
 }: ProjectShowcaseProps) {
+    const [shownIndex, setShownIndex] = useState(0);
+    const [phase, setPhase] = useState<"out" | "in" | null>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
+    const shownIndexRef = useRef(0);
+    const directionRef = useRef(1);
+    const index = shownIndex;
+    const project = projects[index];
+
+    useEffect(() => {
+        if (phase !== null || shownIndex === requestedIndex) return;
+        directionRef.current = Math.sign(requestedIndex - shownIndex);
+        setPhase("out");
+    }, [phase, requestedIndex, shownIndex]);
+
+    useEffect(() => {
+        const content = contentRef.current;
+        if (!content || phase === null) return;
+
+        const direction = directionRef.current;
+        const duration = reducedMotion ? 0 : 0.58;
+        const tween = gsap.to(content, {
+            yPercent: phase === "out" ? (direction > 0 ? -112 : 112) : 0,
+            rotationX: phase === "out" ? (direction > 0 ? -9 : 9) : 0,
+            autoAlpha: phase === "out" ? 0 : 1,
+            duration,
+            ease: "power3.inOut",
+            onComplete: () => {
+                if (phase === "out") {
+                    const nextIndex = shownIndexRef.current + direction;
+                    shownIndexRef.current = nextIndex;
+                    setShownIndex(nextIndex);
+                    onProjectChange(nextIndex);
+                    gsap.set(content, {
+                        yPercent: direction > 0 ? 112 : -112,
+                        rotationX: direction > 0 ? 9 : -9,
+                        autoAlpha: 0,
+                    });
+                    setPhase("in");
+                } else {
+                    setPhase(null);
+                }
+            },
+        });
+
+        return () => {
+            tween.kill();
+        };
+    }, [onProjectChange, phase, reducedMotion]);
+
     const resolvedImages = (project.images ?? [])
         .map(resolveAssetUrl)
         .filter(Boolean);
@@ -298,363 +334,161 @@ function ProjectShowcase({
         fallbackImage;
     const technologies = (project.technologies ?? []).filter(Boolean);
     const services = (project.services ?? []).filter(Boolean);
-    const cover = mediaSrc ? (
-        /* eslint-disable-next-line @next/next/no-img-element */
-        <img
-            className={styles.mediaImg}
-            src={mediaSrc}
-            alt={project.title}
-            loading={index === 0 ? "eager" : "lazy"}
-            sizes="100vw"
-            data-parallax-media
-        />
-    ) : (
-        <div className={styles.mediaPlaceholder} aria-hidden="true">
-            {project.title}
-        </div>
-    );
 
     return (
-        <section
-            data-project-index={index}
-            className={styles.project}
-            aria-labelledby={`project-title-${index}`}
-        >
-            <div className={styles.projectFrame} data-pin-frame>
-                <div className={styles.projectMedia} data-pin-media>
-                    {project.projectUrl ? (
-                        <a
-                            className={styles.projectMediaLink}
-                            href={project.projectUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            aria-label={`Open ${project.title} project site in a new tab`}
-                            data-project-site-link
-                        >
-                            {cover}
-                        </a>
-                    ) : (
-                        cover
-                    )}
-
-                    <div className={styles.mediaFringeTop} aria-hidden="true" />
-                    <div
-                        className={styles.mediaFringeBottom}
-                        aria-hidden="true"
-                    />
-                </div>
-
-                <div className={styles.projectOverlay}>
-                    <div className={styles.overlayInner} data-reveal-inner>
-                        <div className={styles.kickerRow} data-reveal-kicker>
-                            <p className={styles.kicker}>
-                                {project.category}
-                                {project.featured ? (
-                                    <span className={styles.featuredBadge}>
-                                        Featured
-                                    </span>
-                                ) : null}
-                            </p>
-
-                            <span className={styles.counter} aria-hidden="true">
-                                <span className={styles.counterCurrent}>
-                                    {String(index + 1).padStart(2, "0")}
-                                </span>
-                                {" / "}
-                                {String(total).padStart(2, "0")}
-                            </span>
-                        </div>
-
-                        <h2
-                            id={`project-title-${index}`}
-                            className={styles.title}
-                        >
-                            {project.title}
-                        </h2>
-
-                        <p className={styles.description} data-reveal-desc>
-                            {project.shortDescription}
-                        </p>
-
-                        <div className={styles.overlayFooter}>
-                            {(technologies.length > 0 ||
-                                services.length > 0) && (
-                                <div
-                                    className={styles.tagSection}
-                                    data-reveal-tags
-                                >
-                                    {technologies.length > 0 && (
-                                        <ul className={styles.tagList}>
-                                            {technologies
-                                                .slice(0, 6)
-                                                .map((tech) => (
-                                                    <li
-                                                        key={tech}
-                                                        className={styles.tag}
-                                                    >
-                                                        {tech}
-                                                    </li>
-                                                ))}
-                                        </ul>
-                                    )}
-                                    {services.length > 0 && (
-                                        <ul className={styles.tagList}>
-                                            {services
-                                                .slice(0, 4)
-                                                .map((service) => (
-                                                    <li
-                                                        key={service}
-                                                        className={styles.tag}
-                                                    >
-                                                        {service}
-                                                    </li>
-                                                ))}
-                                        </ul>
-                                    )}
-                                </div>
-                            )}
-
+        <div className={styles.projectStage}>
+            <section
+                className={styles.projectFrame}
+                aria-labelledby={`project-title-${index}`}
+                aria-live="polite"
+            >
+                <div className={styles.projectContent} ref={contentRef}>
+                    <div className={styles.projectMedia} data-pin-media>
+                        {mediaSrc ? (
+                            /* eslint-disable-next-line @next/next/no-img-element */
+                            <img
+                                className={styles.mediaImg}
+                                src={mediaSrc}
+                                alt={project.title}
+                                loading={index === 0 ? "eager" : "lazy"}
+                                sizes="100vw"
+                                data-parallax-media
+                            />
+                        ) : (
                             <div
-                                className={styles.overlayMeta}
-                                data-reveal-meta
+                                className={styles.mediaPlaceholder}
+                                aria-hidden="true"
                             >
-                                {project.completionDate ? (
-                                    <time
-                                        className={styles.date}
-                                        dateTime={project.completionDate}
-                                    >
-                                        {formatPortfolioDate(
-                                            project.completionDate,
-                                        )}
-                                    </time>
-                                ) : null}
-                                {project.projectUrl && (
-                                    <span className={styles.liveLabel}>
-                                        Live project
+                                {project.title}
+                            </div>
+                        )}
+
+                        <div
+                            className={styles.mediaFringeTop}
+                            aria-hidden="true"
+                        />
+                        <div
+                            className={styles.mediaFringeBottom}
+                            aria-hidden="true"
+                        />
+                    </div>
+
+                    <div className={styles.projectOverlay}>
+                        <div className={styles.overlayInner} data-reveal-inner>
+                            <div
+                                className={styles.kickerRow}
+                                data-reveal-kicker
+                            >
+                                <p className={styles.kicker}>
+                                    {project.category}
+                                    {project.featured ? (
+                                        <span className={styles.featuredBadge}>
+                                            Featured
+                                        </span>
+                                    ) : null}
+                                </p>
+
+                                <span
+                                    className={styles.counter}
+                                    aria-hidden="true"
+                                >
+                                    <span className={styles.counterCurrent}>
+                                        {String(index + 1).padStart(2, "0")}
                                     </span>
-                                )}
+                                    {" / "}
+                                    {String(projects.length).padStart(2, "0")}
+                                </span>
                             </div>
 
-                            <Link
-                                href={`/portfolio/${project._id}`}
-                                className={styles.cta}
-                                data-reveal-cta
+                            <h2
+                                id={`project-title-${index}`}
+                                className={styles.title}
                             >
-                                View case study
-                                <span aria-hidden="true">↗</span>
-                            </Link>
+                                {project.title}
+                            </h2>
+
+                            <p className={styles.description} data-reveal-desc>
+                                {project.shortDescription}
+                            </p>
+
+                            <div className={styles.overlayFooter}>
+                                {(technologies.length > 0 ||
+                                    services.length > 0) && (
+                                    <div
+                                        className={styles.tagSection}
+                                        data-reveal-tags
+                                    >
+                                        {technologies.length > 0 && (
+                                            <ul className={styles.tagList}>
+                                                {technologies
+                                                    .slice(0, 6)
+                                                    .map((tech) => (
+                                                        <li
+                                                            key={tech}
+                                                            className={
+                                                                styles.tag
+                                                            }
+                                                        >
+                                                            {tech}
+                                                        </li>
+                                                    ))}
+                                            </ul>
+                                        )}
+                                        {services.length > 0 && (
+                                            <ul className={styles.tagList}>
+                                                {services
+                                                    .slice(0, 4)
+                                                    .map((service) => (
+                                                        <li
+                                                            key={service}
+                                                            className={
+                                                                styles.tag
+                                                            }
+                                                        >
+                                                            {service}
+                                                        </li>
+                                                    ))}
+                                            </ul>
+                                        )}
+                                    </div>
+                                )}
+
+                                <div
+                                    className={styles.overlayMeta}
+                                    data-reveal-meta
+                                >
+                                    {project.completionDate ? (
+                                        <time
+                                            className={styles.date}
+                                            dateTime={project.completionDate}
+                                        >
+                                            {formatPortfolioDate(
+                                                project.completionDate,
+                                            )}
+                                        </time>
+                                    ) : null}
+                                    {project.projectUrl && (
+                                        <span className={styles.liveLabel}>
+                                            Live project
+                                        </span>
+                                    )}
+                                </div>
+
+                                <Link
+                                    href={`/portfolio/${project._id}`}
+                                    className={styles.cta}
+                                    data-reveal-cta
+                                >
+                                    View case study
+                                    <span aria-hidden="true">↗</span>
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
     );
-}
-
-/* --------------------------------------------------------------------------
- * Showcase stage (GSAP ScrollTrigger)
- * Every project shares ONE sticky stage. Scrolling the tall `.projects`
- * container scrubs a single trigger that lifts the current project upward
- * while the next project rises from below to replace it.
- * --------------------------------------------------------------------------
- */
-
-interface ShowcaseHandlers {
-    onActiveChange: (index: number) => void;
-    onFirstScroll: () => void;
-}
-
-const projectTravelPercent = 100;
-
-function easeProjectTransition(value: number) {
-    const progress = Math.min(1, Math.max(0, value));
-    return progress * progress * (3 - 2 * progress);
-}
-
-function animateShowcase(
-    root: HTMLElement,
-    reducedMotion: boolean,
-    { onActiveChange, onFirstScroll }: ShowcaseHandlers,
-) {
-    const container = root.querySelector<HTMLElement>("[data-projects-rail]");
-    const stage = root.querySelector<HTMLElement>("[data-showcase-stage]");
-    if (!container || !stage) return;
-
-    const cards = Array.from(
-        stage.querySelectorAll<HTMLElement>("[data-project-index]"),
-    );
-    if (cards.length === 0) return;
-
-    // One paused reveal timeline per card, mirroring the original per-project
-    // choreography: media first, then copy staggering in.
-    const reveals = cards.map((card) => {
-        const frame = card.querySelector<HTMLElement>("[data-pin-frame]");
-        const media = card.querySelector<HTMLElement>("[data-pin-media]");
-        const mediaImg = card.querySelector<HTMLElement>(
-            "[data-parallax-media]",
-        );
-        const revealTargets = (
-            [
-                "inner",
-                "kicker",
-                "desc",
-                "tags",
-                "meta",
-                "cta",
-            ] as const
-        )
-            .map((name) =>
-                card.querySelector<HTMLElement>(`[data-reveal-${name}]`),
-            )
-            .filter((el): el is HTMLElement => !!el);
-
-        const tl = gsap.timeline({
-            paused: true,
-            defaults: { ease: "power2.out" },
-        });
-        if (media) tl.to(media, { autoAlpha: 1, duration: 0.35 }, 0);
-        if (mediaImg) {
-            tl.to(
-                mediaImg,
-                { scale: 1, y: 0, duration: 0.9, overwrite: "auto" },
-                0,
-            );
-        }
-        revealTargets.forEach((el, i) => {
-            tl.to(el, { autoAlpha: 1, y: 0, duration: 0.45 }, 0.1 + i * 0.06);
-        });
-
-        return { card, frame, media, mediaImg, revealTargets, tl };
-    });
-
-    const show = (entry: (typeof reveals)[number]) => {
-        // The frame opacity is scrubbed below; only the content reveal needs
-        // to be kicked when a project reaches the centre of the stage.
-        entry.tl.play();
-    };
-
-    const reset = (entry: (typeof reveals)[number]) => {
-        entry.tl.pause(0);
-        if (entry.frame) {
-            gsap.set(entry.frame, {
-                y: 0,
-                yPercent: 0,
-            });
-        }
-        if (entry.media) gsap.set(entry.media, { autoAlpha: 0 });
-        if (entry.mediaImg) gsap.set(entry.mediaImg, { scale: 1.04, y: 8 });
-        gsap.set(entry.revealTargets, { autoAlpha: 0, y: 32 });
-    };
-
-    // Mobile / reduced motion: the CSS drops the stage, so the cards are a
-    // plain vertical stack and only need their one-shot reveals.
-    if (reducedMotion || !window.matchMedia("(min-width: 881px)").matches) {
-        reveals.forEach((entry) => {
-            if (reducedMotion) {
-                gsap.set(
-                    [
-                        entry.frame,
-                        entry.media,
-                        entry.mediaImg,
-                        ...entry.revealTargets,
-                    ].filter((el): el is HTMLElement => !!el),
-                    {
-                        autoAlpha: 1,
-                        y: 0,
-                        yPercent: 0,
-                        scale: 1,
-                    },
-                );
-                return;
-            }
-            reset(entry);
-            ScrollTrigger.create({
-                id: `portfolio-card-${reveals.indexOf(entry)}`,
-                trigger: entry.card,
-                start: "top 85%",
-                end: "bottom 20%",
-                animation: entry.tl,
-                toggleActions: "play none none reverse",
-            });
-        });
-        onActiveChange(0);
-        return;
-    }
-
-    // Desktop: every card starts hidden except the first, which is on stage
-    // from the first paint so the showcase is never blank.
-    reveals.forEach((entry, i) => {
-        gsap.set(entry.card, { autoAlpha: i === 0 ? 1 : 0 });
-        reset(entry);
-    });
-    show(reveals[0]);
-    onActiveChange(0);
-
-    const last = reveals.length - 1;
-    let current = 0;
-    let hinted = false;
-
-    // A single project has no runway to scroll, so the card simply stays on
-    // stage. Creating a zero-length trigger here would never fire onUpdate.
-    if (last === 0) {
-        onActiveChange(0);
-        return;
-    }
-
-    const applyProgress = (progress: number) => {
-        // 0 -> card 0, 1 -> card n. The current project travels upward and
-        // fades out while the next project enters from below and fades in.
-        const position = progress * last;
-        reveals.forEach((entry, i) => {
-            const relativePosition = position - i;
-            const distance = Math.abs(relativePosition);
-            const transition = easeProjectTransition(distance);
-            const isOutgoing = relativePosition > 0;
-            const isIncoming = relativePosition < 0;
-            const alpha = isOutgoing
-                ? 1 - transition
-                : isIncoming
-                  ? transition
-                  : 1;
-
-            gsap.set(entry.card, {
-                autoAlpha: alpha,
-                zIndex: isOutgoing ? 1 : 2,
-            });
-            if (entry.frame) {
-                gsap.set(entry.frame, {
-                    y: 0,
-                    yPercent: isOutgoing
-                        ? -projectTravelPercent * transition
-                        : isIncoming
-                          ? projectTravelPercent * transition
-                          : 0,
-                });
-            }
-        });
-
-        const index = Math.max(0, Math.min(last, Math.round(position)));
-        if (index !== current) {
-            current = index;
-            onActiveChange(index);
-            show(reveals[index]);
-        }
-
-        if (!hinted && progress > 0.005) {
-            hinted = true;
-            onFirstScroll();
-        }
-    };
-
-    ScrollTrigger.create({
-        id: "portfolio-showcase",
-        trigger: container,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 0.6,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => applyProgress(self.progress),
-    });
 }
 
 /* --------------------------------------------------------------------------
@@ -670,36 +504,6 @@ function ShowcaseHero({
     loading: boolean;
     heroMedia: string;
 }) {
-    const featuredProject = projects[0];
-    const heroImage = heroMedia ? (
-        /* eslint-disable-next-line @next/next/no-img-element */
-        <img
-            className={styles.heroMediaImg}
-            src={heroMedia}
-            alt={featuredProject?.title ?? "Selected work"}
-            loading="eager"
-        />
-    ) : (
-        <div className={styles.mediaPlaceholder} aria-hidden="true">
-            Project imagery
-        </div>
-    );
-    const heroContent =
-        heroMedia && featuredProject?.projectUrl ? (
-            <a
-                className={styles.heroMediaLink}
-                href={featuredProject.projectUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Open ${featuredProject.title} project site in a new tab`}
-                data-hero-site-link
-            >
-                {heroImage}
-            </a>
-        ) : (
-            heroImage
-        );
-
     return (
         <section className={styles.hero} data-hero-root>
             <div className={styles.heroCopy} data-hero-copy>
@@ -724,7 +528,19 @@ function ShowcaseHero({
             </div>
 
             <div className={styles.heroMedia} data-hero-media>
-                {heroContent}
+                {heroMedia ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img
+                        className={styles.heroMediaImg}
+                        src={heroMedia}
+                        alt={projects[0]?.title ?? "Selected work"}
+                        loading="eager"
+                    />
+                ) : (
+                    <div className={styles.mediaPlaceholder} aria-hidden="true">
+                        Project imagery
+                    </div>
+                )}
             </div>
         </section>
     );

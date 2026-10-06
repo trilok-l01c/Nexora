@@ -28,11 +28,13 @@ Test a contact submission:
 
 ```bash
 curl -X POST http://localhost:4292/api/contact \
-  -F 'name=Test User' \
-  -F 'email=test@example.com' \
   -H 'Content-Type: application/json' \
   -d '{"name":"Test User","email":"test@example.com","company":"Example","service":"Software development","message":"Test request"}'
 ```
+
+`/api/contact` reads a JSON body only. The API has no multipart or form-urlencoded
+parser on this route, so a `curl -F` (multipart) request leaves `req.body` empty and
+the handler answers `400 Name is required.`
 
 Test admin login with a cookie jar:
 

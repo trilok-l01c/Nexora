@@ -26,11 +26,21 @@ export function stringListField(itemMaxlength, maxItems) {
     return {
         type: [String],
         trim: true,
-        maxlength: itemMaxlength,
+        // Mongoose does NOT apply a scalar `maxlength` to the elements of a
+        // `[String]` path, so declaring it here gave the illusion of an item
+        // length limit while every oversized item was accepted. The item length
+        // is therefore checked explicitly inside the list validator.
         validate: {
             validator: (items) =>
-                !Array.isArray(items) || items.length <= maxItems,
-            message: (props) => `${props.path} accepts at most ${maxItems} items.`,
+                !Array.isArray(items) ||
+                (items.length <= maxItems &&
+                    items.every(
+                        (item) =>
+                            typeof item !== "string" ||
+                            item.length <= itemMaxlength,
+                    )),
+            message: (props) =>
+                `${props.path} accepts at most ${maxItems} items of up to ${itemMaxlength} characters.`,
         },
     };
 }

@@ -24,6 +24,13 @@ import { validateLeadConversion } from "../middleware/validateLeadConversion.js"
 import { validateLeadNote } from "../middleware/validateLeadNote.js";
 import { validateLeadStatus } from "../middleware/validateLeadStatus.js";
 import { validateLeadUpdate } from "../middleware/validateLeadUpdate.js";
+import { validateTicketUpdate } from "../middleware/validateTicketUpdate.js";
+import {
+    listAdminCompanies,
+    listAdminTeam,
+    listAdminTickets,
+    updateAdminTicket,
+} from "../controllers/adminWorkspaceController.js";
 import {
     createPortfolioProject,
     createPortfolioUpdate,
@@ -60,5 +67,10 @@ router.get("/portfolio/:id/updates", listPortfolioUpdates);
 router.post("/portfolio/:id/updates", createPortfolioUpdate);
 router.patch("/portfolio/:id/updates/:updateId", updatePortfolioUpdate);
 router.delete("/portfolio/:id/updates/:updateId", deletePortfolioUpdate);
+
+router.get("/tickets", listAdminTickets);
+router.patch("/tickets/:id", validateTicketUpdate, updateAdminTicket);
+router.get("/companies", listAdminCompanies);
+router.get("/team", listAdminTeam);
 
 export default router;

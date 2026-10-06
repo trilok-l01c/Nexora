@@ -1,3 +1,4 @@
+import { isDatabaseReady } from "../config/database.js";
 import { HomeContent } from "../models/HomeContent.js";
 
 const defaultContent = {
@@ -21,6 +22,15 @@ function contentOrDefault(content) {
 }
 
 export async function getHomeContent(req, res, next) {
+    // `/api/home` is public and unrated-limited, so without this guard a
+    // database outage made every homepage render hang for 10 seconds on a
+    // buffered query before returning 500.
+    if (!isDatabaseReady()) {
+        return res.status(503).json({
+            success: false,
+            message: "Homepage content is temporarily unavailable.",
+        });
+    }
     try {
         const document = await HomeContent.findOne({ key: "home" }).lean();
         return res.json({
@@ -33,6 +43,12 @@ export async function getHomeContent(req, res, next) {
 }
 
 export async function updateHomeContent(req, res, next) {
+    if (!isDatabaseReady()) {
+        return res.status(503).json({
+            success: false,
+            message: "Homepage content is temporarily unavailable.",
+        });
+    }
     const content = req.body?.content;
     if (!content || typeof content !== "object" || Array.isArray(content)) {
         return res.status(400).json({

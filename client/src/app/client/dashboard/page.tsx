@@ -5,8 +5,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ProjectDialog from "../ProjectDialog";
 import styles from "../portal.module.css";
+import { apiUrl } from "../../apiConfig";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
 type TechnologyGroup = { category: string; items: string[] };
 type Project = {
     _id: string;

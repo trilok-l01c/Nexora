@@ -12,6 +12,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express-rate-limit": "^8.7.0",
+    "geist": "^1.7.2",
     "gsap": "^3.15.0",
     "helmet": "^8.3.0",
     "mongoose": "^9.9.5",

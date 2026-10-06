@@ -7,8 +7,7 @@ import {
     type PortfolioProjectDetail,
 } from "../../portfolioTypes";
 import { demoProjectDetail } from "../demoProjects";
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
+import { apiUrl } from "../../apiConfig";
 
 export const dynamic = "force-dynamic";
 

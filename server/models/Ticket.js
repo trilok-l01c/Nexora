@@ -36,15 +36,22 @@ const ticketSchema = new mongoose.Schema(
     { timestamps: true },
 );
 
-ticketSchema.pre("save", async function assignTicketNumber(next) {
-    if (this.number) return next();
-    const latest = await this.constructor
-        .findOne()
-        .sort({ number: -1 })
-        .select("number")
-        .lean();
-    this.number = (latest?.number || 1041) + 1;
-    next();
+// Ticket numbers are allocated from a dedicated counter document and claimed
+// with a single atomic `$inc`. The previous "find the highest number, then add
+// one" read-then-write was not atomic, so two tickets created at the same
+// moment were handed the same number and the insert failed on the unique index.
+// `pre("save")` is declared without a `next` parameter so Mongoose awaits the
+// returned promise; mixing `async` with `next` risks an unhandled rejection.
+ticketSchema.pre("save", async function assignTicketNumber() {
+    if (this.number) return;
+    const counter = await this.db.collection("counters").findOneAndUpdate(
+        { _id: "ticketNumber" },
+        { $inc: { seq: 1 } },
+        { upsert: true, returnDocument: "after" },
+    );
+    // A fresh counter starts at 1; seed it past the 1041 the previous
+    // implementation used so existing tickets keep their numbers.
+    this.number = counter?.seq ?? 1042;
 });
 
 export const Ticket = mongoose.model("Ticket", ticketSchema);

@@ -44,6 +44,10 @@ All admin endpoints require the admin session cookie or Bearer JWT.
 - `PATCH /api/admin/projects/:id` updates staff-controlled status, progress, dates, team, technologies, milestones, and updates. Company ownership and client request fields are not changed here.
 - `GET/PATCH /api/admin/home` manages editable homepage content.
 - `POST /api/admin/logout` clears the admin session.
+- `GET /api/admin/tickets` lists every client support request, newest first, with the company, related project, and requester populated.
+- `PATCH /api/admin/tickets/:id` triages a support request. Only `status` (`Open`, `In Progress`, `Resolved`) and `priority` (`Low`, `Normal`, `High`, `Urgent`) are writable, at least one must be provided, and an invalid value returns `400`. The description, company link, and author are never modified.
+- `GET /api/admin/companies` returns the client company roster with client contacts, project counts, and last activity. Read-only.
+- `GET /api/admin/team` returns staff accounts (`admin`, `staff`) that can be assigned to project teams. Client accounts are never included.
 
 ## Admin lead endpoints
 

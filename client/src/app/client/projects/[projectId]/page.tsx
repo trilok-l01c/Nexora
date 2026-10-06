@@ -4,8 +4,8 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import styles from "../../portal.module.css";
+import { apiUrl } from "../../../apiConfig";
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
 type Member = {
     _id: string;
     name?: string;

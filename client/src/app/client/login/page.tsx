@@ -4,8 +4,7 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useClientAuth } from "../ClientAuthContext";
 import styles from "../portal.module.css";
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
+import { apiUrl } from "../../apiConfig";
 
 export default function ClientLogin() {
     const router = useRouter();

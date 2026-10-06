@@ -566,6 +566,113 @@ test("lead conversion rejects invalid client names", async () => {
     assert.equal(body.message, "Please enter the client's full name.");
 });
 
+test("contact rejects an oversized name instead of failing as a server error", async () => {
+    const { response, body } = await request("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            name: "A".repeat(150),
+            email: "client@example.com",
+            service: "Software development",
+            message: "Project details",
+        }),
+    });
+    assert.equal(response.status, 400);
+    assert.equal(body.success, false);
+    assert.equal(body.message, "Name is too long.");
+});
+
+test("contact rejects an oversized email instead of failing as a server error", async () => {
+    const { response, body } = await request("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            name: "Client",
+            email: `${"b".repeat(250)}@example.com`,
+            service: "Software development",
+            message: "Project details",
+        }),
+    });
+    assert.equal(response.status, 400);
+    assert.equal(body.success, false);
+    assert.equal(body.message, "Email address is too long.");
+});
+
+test("admin project routes report an unavailable database instead of hanging", async () => {
+    const adminToken = jwt.sign(
+        { sub: "admin-user-id", role: "admin" },
+        env.jwtSecret,
+    );
+    // These handlers used to query without a connection guard, so Mongoose
+    // buffered for 10s and then failed with a 500.
+    for (const path of ["/api/admin/projects", "/api/home"]) {
+        const { response } = await request(path, {
+            headers: { Authorization: `Bearer ${adminToken}` },
+        });
+        assert.equal(response.status, 503, `${path} should answer 503`);
+    }
+});
+
+test("portfolio upload is charged a single rate-limit request", async () => {
+    const adminToken = jwt.sign(
+        { sub: "admin-user-id", role: "admin" },
+        env.jwtSecret,
+    );
+    const send = () =>
+        request("/api/admin/portfolio/upload", {
+            method: "POST",
+            headers: { Authorization: `Bearer ${adminToken}` },
+        });
+    const first = await send();
+    const second = await send();
+    assert.equal(first.response.status, 400);
+    assert.equal(second.response.status, 400);
+    // Mounted after `/api/admin`, the upload path fell through that router too,
+    // so both limiters charged it and the remaining budget dropped by 4 over
+    // two requests. Exactly 2 must be consumed.
+    const remaining = (res) => Number(res.headers.get("ratelimit").match(/r=(\d+)/)[1]);
+    // Mounted after `/api/admin`, the upload path fell through that router too,
+    // so both limiters charged it and one request cost two units of budget.
+    const before = remaining(first.response);
+    const after = remaining(second.response);
+    assert.equal(before - after, 1, `expected 1 charge, got ${before - after}`);
+});
+
+test("session and logout are never charged against the login budget", async () => {
+    // These answer 503 while the database is down, and a 503 counts as a
+    // failure. Without an explicit exemption the per-page-load session check
+    // drained the whole budget and visitors saw "Too many login attempts".
+    for (let i = 0; i < 8; i += 1) {
+        const { response } = await request("/api/auth/session");
+        assert.notEqual(response.status, 429, "session must not be rate limited");
+        await request("/api/auth/logout", { method: "POST" });
+    }
+});
+
+test("the session endpoint fails fast when the database is unavailable", async () => {
+    const orphanToken = jwt.sign(
+        {
+            sub: "000000000000000000000009",
+            role: "client",
+            email: "deleted@example.com",
+            companyId: "000000000000000000000008",
+        },
+        env.jwtSecret,
+    );
+    // Verifying the account behind the token means a database read, so this
+    // endpoint now guards on the connection. Without the guard it buffered for
+    // 10 seconds; the assertion also fails the test if that regresses.
+    const startedAt = Date.now();
+    const { response } = await request("/api/auth/session", {
+        headers: { Cookie: `nexora_client_token=${encodeURIComponent(orphanToken)}` },
+    });
+    assert.equal(response.status, 503);
+    assert.ok(
+        Date.now() - startedAt < 1000,
+        "the session check must not block on the database",
+    );
+});
+
 test("lead lifecycle keeps the converted state out of manual transitions", () => {
     // `completed` means a client account exists, so it must only ever be set by
     // the conversion workflow — never by a status change, which would mark a
@@ -609,4 +716,136 @@ test("every lead status has a lifecycle rule and a timeline label", () => {
         );
     }
     assert.equal(statusLabels.completed, "Converted to client");
+});
+
+// ---------------------------------------------------------------------------
+// Admin workspace views: support queries, company roster, and team list.
+// These endpoints were added for the tabbed admin workspace; they are guarded
+// by the same `authenticateAdmin` middleware as every other admin route.
+// ---------------------------------------------------------------------------
+
+test("support query routes require authentication", async () => {
+    const { response, body } = await request("/api/admin/tickets");
+    assert.equal(response.status, 401);
+    assert.equal(body.message, "Authentication required.");
+});
+
+test("company and team routes require authentication", async () => {
+    for (const path of ["/api/admin/companies", "/api/admin/team"]) {
+        const { response, body } = await request(path);
+        assert.equal(response.status, 401);
+        assert.equal(body.message, "Authentication required.");
+    }
+});
+
+test("client sessions cannot reach the admin workspace views", async () => {
+    const token = jwt.sign(
+        { sub: "client-id", role: "client", email: "c@example.com" },
+        env.jwtSecret,
+    );
+    const headers = { Authorization: `Bearer ${token}` };
+    for (const path of [
+        "/api/admin/tickets",
+        "/api/admin/companies",
+        "/api/admin/team",
+    ]) {
+        const { response, body } = await request(path, { headers });
+        assert.equal(response.status, 403);
+        assert.equal(body.message, "Admin access required.");
+    }
+});
+
+test("support query triage rejects an unknown status", async () => {
+    const token = jwt.sign(
+        { sub: "admin-id", role: "admin", email: "a@example.com" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request(
+        "/api/admin/tickets/000000000000000000000000",
+        {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ status: "Closed" }),
+        },
+    );
+    assert.equal(response.status, 400);
+    assert.equal(body.message, "Invalid support query status.");
+});
+
+test("support query triage rejects an unknown priority", async () => {
+    const token = jwt.sign(
+        { sub: "admin-id", role: "admin", email: "a@example.com" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request(
+        "/api/admin/tickets/000000000000000000000000",
+        {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ priority: "Whenever" }),
+        },
+    );
+    assert.equal(response.status, 400);
+    assert.equal(body.message, "Invalid support query priority.");
+});
+
+test("support query triage requires at least one field", async () => {
+    const token = jwt.sign(
+        { sub: "admin-id", role: "admin", email: "a@example.com" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request(
+        "/api/admin/tickets/000000000000000000000000",
+        {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({}),
+        },
+    );
+    assert.equal(response.status, 400);
+    assert.equal(body.message, "Provide a status or priority to update.");
+});
+
+test("support query triage rejects malformed ids", async () => {
+    const token = jwt.sign(
+        { sub: "admin-id", role: "admin", email: "a@example.com" },
+        env.jwtSecret,
+    );
+    const { response, body } = await request("/api/admin/tickets/not-an-id", {
+        method: "PATCH",
+        headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: "Resolved" }),
+    });
+    assert.equal(response.status, 404);
+    assert.equal(body.message, "Support query not found.");
+});
+
+test("workspace views wait for the database instead of leaking an error", async () => {
+    const token = jwt.sign(
+        { sub: "admin-id", role: "admin", email: "a@example.com" },
+        env.jwtSecret,
+    );
+    const headers = { Authorization: `Bearer ${token}` };
+    const expected = {
+        "/api/admin/tickets": "Support queries are temporarily unavailable.",
+        "/api/admin/companies": "Client companies are temporarily unavailable.",
+        "/api/admin/team": "Team members are temporarily unavailable.",
+    };
+    for (const [path, message] of Object.entries(expected)) {
+        const { response, body } = await request(path, { headers });
+        assert.equal(response.status, 503);
+        assert.equal(body.message, message);
+    }
 });

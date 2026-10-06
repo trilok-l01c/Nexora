@@ -28,9 +28,11 @@ export default function WhoWeArePage() {
             <section className={styles.hero}>
                 <div data-motion="hero-copy">
                     <p className={styles.kicker}>Who we are</p>
-                    <h1>
+                    <h1 style={{ color: "var(--section-light-text)" }}>
                         Practical people building{" "}
-                        <em>useful digital things.</em>
+                        <em style={{ color: "var(--section-light-kicker)" }}>
+                            useful digital things.
+                        </em>
                     </h1>
                     <p>
                         We believe technology should help good businesses do
@@ -107,9 +109,11 @@ export default function WhoWeArePage() {
                 <p className={styles.kicker}>
                     A conversation is a good place to start
                 </p>
-                <h2>
+                <h2 style={{ color: "var(--section-light-text)" }}>
                     Let&apos;s make your next digital move feel{" "}
-                    <em>straightforward.</em>
+                    <em style={{ color: "var(--section-light-kicker)" }}>
+                        straightforward.
+                    </em>
                 </h2>
                 <Link
                     href="/#contact"

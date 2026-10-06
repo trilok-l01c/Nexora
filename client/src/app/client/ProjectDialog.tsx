@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { allServices } from "../services";
 import styles from "./portal.module.css";
+import { apiUrl } from "../apiConfig";
 
 type ProjectForm = {
     name: string;
@@ -14,7 +15,6 @@ type ProjectForm = {
     expectedBudget: string;
 };
 
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
 const initialForm: ProjectForm = {
     name: "",
     description: "",

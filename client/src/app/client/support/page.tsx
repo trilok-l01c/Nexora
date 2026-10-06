@@ -3,8 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import styles from "../portal.module.css";
-
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4292";
+import { apiUrl } from "../../apiConfig";
 
 type Ticket = {
     number: number;

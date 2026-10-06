@@ -124,18 +124,58 @@ function sessionFromRequest(req) {
     return null;
 }
 
-export function getSession(req, res) {
-    if (!env.jwtSecret) {
+// A signature check alone is not enough to report "signed in": a token issued
+// before the account was deleted or deactivated stays cryptographically valid
+// until it expires, so the site kept rendering the signed-in navigation for a
+// user who could no longer authenticate. Confirm the account still exists and
+// is active, and treat anything else as signed out. A database that cannot be
+// reached is reported as signed out rather than throwing, because a temporary
+// outage must not look like a valid session.
+export async function getSession(req, res) {
+    // Same connection guard as every other data handler: without it the lookup
+    // below buffered for 10 seconds before timing out, and this endpoint runs on
+    // every page load for every visitor.
+    if (!isDatabaseReady() || !env.jwtSecret) {
         return res.status(503).json({
             success: false,
             message: "Authentication is temporarily unavailable.",
         });
     }
-    const user = sessionFromRequest(req);
-    return res.status(200).json({
-        success: true,
-        data: { authenticated: Boolean(user), user: user ?? null },
-    });
+    const session = sessionFromRequest(req);
+    if (!session) {
+        return res.status(200).json({
+            success: true,
+            data: { authenticated: false, user: null },
+        });
+    }
+    try {
+        const user = await User.findById(session.id)
+            .select("email role companyId active")
+            .lean();
+        if (!user || !user.active) {
+            return res.status(200).json({
+                success: true,
+                data: { authenticated: false, user: null },
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            data: {
+                authenticated: true,
+                user: {
+                    id: user._id.toString(),
+                    email: user.email,
+                    role: user.role,
+                    companyId: user.companyId?.toString(),
+                },
+            },
+        });
+    } catch {
+        return res.status(200).json({
+            success: true,
+            data: { authenticated: false, user: null },
+        });
+    }
 }
 
 export function loginAdmin(req, res, next) {
