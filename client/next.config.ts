@@ -10,6 +10,12 @@ const backendOrigin =
 
 const nextConfig: NextConfig = {
   reactCompiler: true,
+  // Next 16 defaults to parsing `tsc --showConfig` output through its CLI
+  // integration. TypeScript 5.9 emits output that this Next version cannot
+  // parse here; using TypeScript's API is the supported compatible path.
+  experimental: {
+    useTypeScriptCli: false,
+  },
   async rewrites() {
     return [
       {

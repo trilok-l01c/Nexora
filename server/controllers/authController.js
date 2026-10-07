@@ -6,8 +6,11 @@ import { User } from "../models/User.js";
 import { Company } from "../models/Company.js";
 
 function serializeAuthCookie(name, value, maxAge) {
-    const secure = env.nodeEnv === "production" ? "; Secure" : "";
-    return `${name}=${encodeURIComponent(value)}; Max-Age=${maxAge}; Path=/; HttpOnly; SameSite=Lax${secure}`;
+    const sameSite = env.cookieSameSite;
+    // Secure is mandatory for SameSite=None and for every production cookie.
+    const secure = env.nodeEnv === "production" || sameSite === "none" ? "; Secure" : "";
+    const domain = env.cookieDomain ? `; Domain=${env.cookieDomain}` : "";
+    return `${name}=${encodeURIComponent(value)}; Max-Age=${maxAge}; Path=/; HttpOnly; SameSite=${sameSite[0].toUpperCase()}${sameSite.slice(1)}${secure}${domain}`;
 }
 
 export async function login(req, res, next, requiredRole) {

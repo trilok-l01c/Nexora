@@ -13,12 +13,20 @@ let server;
 let baseUrl;
 
 before(async () => {
-    server = app.listen(0);
-    await new Promise((resolve) => server.once("listening", resolve));
+    // Express 5 passes bind errors to the listen callback. Handling that
+    // callback directly avoids both the old missed-event race and a pending
+    // setup promise when a port cannot be opened.
+    await new Promise((resolve, reject) => {
+        server = app.listen(0, "127.0.0.1", (error) => {
+            if (error) reject(error);
+            else resolve();
+        });
+    });
     baseUrl = `http://127.0.0.1:${server.address().port}`;
 });
 
 after(async () => {
+    if (!server?.listening) return;
     await new Promise((resolve, reject) =>
         server.close((error) => (error ? reject(error) : resolve())),
     );

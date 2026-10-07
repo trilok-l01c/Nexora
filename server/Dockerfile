@@ -1,4 +1,4 @@
-FROM node:20-alpine
+FROM node:20-alpine AS production
 
 WORKDIR /app
 
@@ -9,9 +9,12 @@ RUN npm ci --omit=dev
 # Copy application source.
 COPY . .
 
-# Create uploads directory.
-RUN mkdir -p storage/uploads
+# Only used by the local-development storage adapter. Production validates that
+# S3-compatible storage is configured before the service starts.
+RUN mkdir -p storage/uploads && chown -R node:node /app
+
+USER node
 
 EXPOSE 4292
 
-CMD ["node", "server.js"]
+CMD ["npm", "start"]

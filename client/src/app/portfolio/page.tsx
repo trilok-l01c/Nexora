@@ -286,8 +286,16 @@ function ProjectShowcase({
 
     useEffect(() => {
         if (phase !== null || shownIndex === requestedIndex) return;
-        directionRef.current = Math.sign(requestedIndex - shownIndex);
-        setPhase("out");
+
+        const nextDirection = Math.sign(requestedIndex - shownIndex);
+        if (nextDirection === 0) return;
+
+        directionRef.current = nextDirection;
+        const timeoutId = window.setTimeout(() => {
+            setPhase("out");
+        }, 0);
+
+        return () => window.clearTimeout(timeoutId);
     }, [phase, requestedIndex, shownIndex]);
 
     useEffect(() => {

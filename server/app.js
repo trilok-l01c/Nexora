@@ -4,7 +4,7 @@ import rateLimit from "express-rate-limit";
 import helmet from "helmet";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { env } from "./config/env.js";
+import { corsOrigins, env } from "./config/env.js";
 import { errorHandler, notFound } from "./middleware/errorHandler.js";
 import authRoutes from "./routes/authRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
@@ -41,7 +41,14 @@ app.use(
 );
 app.use(
     cors({
-        origin: env.corsOrigin.split(",").map((origin) => origin.trim()),
+        // Do not use wildcard CORS with credentials. Requests with no Origin
+        // (health checks and server-to-server calls) are intentionally allowed.
+        origin(origin, callback) {
+            if (!origin || corsOrigins.includes(origin.replace(/\/+$/, ""))) {
+                return callback(null, true);
+            }
+            return callback(new Error("Origin is not allowed by CORS."));
+        },
         methods: ["GET", "POST", "PATCH", "DELETE"],
         allowedHeaders: ["Content-Type", "Authorization"],
         credentials: true,
@@ -157,8 +164,11 @@ app.use("/api/contact", contactLimiter, contactRoutes);
 app.use("/api/client", writeLimiter, clientRoutes);
 app.use("/api/projects", writeLimiter, projectRoutes);
 
-// Serve uploaded portfolio images statically.
-app.use("/uploads", express.static(path.join(__dirname, "storage", "uploads")));
+// Local development uploads remain available at /uploads. Production uses
+// S3-compatible object storage and stores public object URLs in MongoDB.
+if (env.storageDriver === "local") {
+    app.use("/uploads", express.static(path.join(__dirname, "storage", "uploads")));
+}
 
 app.use(notFound);
 app.use(errorHandler);

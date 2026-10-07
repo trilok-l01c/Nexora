@@ -1,14 +1,9 @@
 import { Router } from "express";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
 import { authenticateAdmin } from "../middleware/authenticateAdmin.js";
+import { storeUpload } from "../services/uploadStorage.js";
 
 // Note: multer is dynamically imported in the route handler to keep the
 // dependency optional for environments that don't need file uploads.
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const UPLOAD_DIR = path.join(__dirname, "..", "storage", "uploads");
 
 const ALLOWED_MIMES = new Set([
     "image/jpeg",
@@ -25,19 +20,10 @@ router.post("/", authenticateAdmin, async (req, res) => {
     try {
         const multer = (await import("multer")).default;
 
-        const storage = multer.diskStorage({
-            destination: UPLOAD_DIR,
-            filename: (_req, file, cb) => {
-                const ext = path.extname(file.originalname).toLowerCase();
-                const unique = `${Date.now()}-${Math.random()
-                    .toString(36)
-                    .slice(2, 10)}`;
-                cb(null, `${unique}${ext}`);
-            },
-        });
-
         const upload = multer({
-            storage,
+            // Buffer once, then pass it to either the local development
+            // adapter or the configured persistent object-storage adapter.
+            storage: multer.memoryStorage(),
             limits: { fileSize: MAX_FILE_SIZE },
             fileFilter: (_req, file, cb) => {
                 if (ALLOWED_MIMES.has(file.mimetype)) {
@@ -48,7 +34,7 @@ router.post("/", authenticateAdmin, async (req, res) => {
             },
         }).single("image");
 
-        upload(req, res, (err) => {
+        upload(req, res, async (err) => {
             if (err) {
                 const message =
                     err.code === "LIMIT_FILE_SIZE"
@@ -62,11 +48,19 @@ router.post("/", authenticateAdmin, async (req, res) => {
                     message: "No image file provided.",
                 });
             }
-            const imageUrl = `/uploads/${req.file.filename}`;
-            return res.status(201).json({
-                success: true,
-                data: { imageUrl },
-            });
+            try {
+                const imageUrl = await storeUpload(req.file);
+                return res.status(201).json({
+                    success: true,
+                    data: { imageUrl },
+                });
+            } catch (error) {
+                console.error("Portfolio upload storage failed:", error.message);
+                return res.status(503).json({
+                    success: false,
+                    message: "Upload storage is temporarily unavailable.",
+                });
+            }
         });
     } catch (error) {
         res.status(500).json({
