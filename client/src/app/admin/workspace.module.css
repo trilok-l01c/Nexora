@@ -450,7 +450,8 @@
 
 .content {
     flex: 1;
-    padding: 26px 28px 64px;
+    overflow: overlay;
+    padding: 0 28px 64px;
 }
 
 .contentInner {
@@ -1475,7 +1476,7 @@
     }
 
     .content {
-        padding: 18px 16px 56px;
+        padding: 0 16px 56px;
     }
 
     .grid2,
@@ -2207,6 +2208,44 @@
     .authCard {
         padding: 40px 24px;
     }
+}
+
+@media (max-width: 900px) {
+    .editorGrid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+html[data-theme="dark"] .workspace {
+    --w-canvas: #0f172a;
+    --w-surface: #1e293b;
+    --w-surface-alt: #1a2740;
+    --w-surface-muted: #273449;
+    --w-border: #334155;
+    --w-border-strong: #475569;
+    --w-ink: #f1f5f9;
+    --w-ink-soft: #cbd5e1;
+    --w-muted: #94a3b8;
+    --w-faint: #64748b;
+    --w-green: #4ade80;
+    --w-green-dark: #86efac;
+    --w-green-soft: rgba(74, 222, 128, 0.14);
+    --w-green-ring: rgba(74, 222, 128, 0.22);
+    --w-blue: #60a5fa;
+    --w-blue-dark: #93c5fd;
+    --w-blue-soft: rgba(96, 165, 250, 0.14);
+    --w-amber: #fbbf24;
+    --w-amber-soft: rgba(251, 191, 36, 0.14);
+    --w-red: #f87171;
+    --w-red-soft: rgba(248, 113, 113, 0.14);
+    --w-slate-soft: #273449;
+    --w-navy-900: #0f172a;
+    --w-navy-800: #1e293b;
+    --w-navy-700: #273449;
+    --w-navy-line: #334155;
+    --w-navy-muted: #94a3b8;
+    --w-shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 8px 24px rgba(0, 0, 0, 0.2);
+    --w-shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.45);
 }
 
 @media (max-width: 900px) {

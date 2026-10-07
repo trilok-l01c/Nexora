@@ -269,7 +269,11 @@ html {
     /* In-page anchors glide instead of jumping, and hash targets clear the
        fixed navbar so a heading is never hidden underneath it. */
     scroll-behavior: smooth;
-    scroll-padding-top: 112px;
+    /* No fixed top bar on the root layout: the admin panel renders its own
+       topbar, and the public client pages inject padding via their own
+       section headers. Keeping this value avoids extra space above the
+       admin panel content. */
+    scroll-padding-top: 0;
 }
 
 html,

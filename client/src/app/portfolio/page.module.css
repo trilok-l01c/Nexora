@@ -450,7 +450,7 @@
     transition: filter 0.4s var(--ease-out);
 }
 
-/* ---- Active case-study progress rail ---- */
+/* ---- Active case-study progress label ---- */
 .progress {
     position: sticky;
     top: 0;
@@ -458,9 +458,12 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 16px max(5vw, 32px);
-    border-bottom: 1px solid var(--line);
-    background: var(--paper);
+    /* Extra bottom padding reserves room for the absolute scroll track so
+       the category label and the bar never paint on top of each other. */
+    padding: 96px max(5vw, 32px) 20px;
+    border-bottom: 0;
+    margin-bottom: 40px;
+    background: transparent;
 }
 
 .progressKicker {
@@ -487,6 +490,11 @@
 }
 
 .progressCategory {
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     font:
         600 10px var(--font-geist-mono),
         monospace;
@@ -501,8 +509,12 @@
 
 .progressTrack {
     position: absolute;
+    top: 0px;
     left: 0;
     right: 0;
+    /* Pin to the bottom edge of the sticky rail (inside the reserved
+       bottom padding above) instead of floating over the row content. */
+    bottom: 0;
     height: 2px;
     background: var(--line);
     overflow: hidden;
@@ -782,7 +794,7 @@
     }
 
     .progress {
-        padding: 14px 20px;
+        padding: 14px 20px 18px;
         gap: 12px;
     }
 
