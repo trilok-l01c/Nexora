@@ -1,13 +1,5 @@
 import "dotenv/config";
 
-const required = (name) => {
-    const value = process.env[name];
-    if (!value) {
-        throw new Error(`${name} is not configured`);
-    }
-    return value;
-};
-
 export const env = {
     port: Number(process.env.PORT || 4292),
     mongoUri: process.env.MONGODB_URI || "",
@@ -40,5 +32,3 @@ export function assertProductionEnv() {
         throw new Error("CORS_ORIGIN must not use localhost in production.");
     }
 }
-
-export { required };
