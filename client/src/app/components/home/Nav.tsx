@@ -16,10 +16,9 @@ const links = [
 export default function Nav() {
     const pathname = usePathname();
     const router = useRouter();
-    const { status, user, logout } = useClientAuth();
+    const { status, logout } = useClientAuth();
     const { theme, toggleTheme } = useTheme();
     const [open, setOpen] = useState(false);
-    const isClient = status === "authenticated" && user?.role === "client";
     const isSignedIn = status === "authenticated";
 
     async function handleLogout() {
@@ -88,16 +87,9 @@ export default function Nav() {
                             )}
                         </span>
                     </button>
-                    {isClient ? (
-                        <Link
-                            className={styles.portal}
-                            href="/client/dashboard"
-                        >
-                            Client portal
-                        </Link>
-                    ) : !isSignedIn ? (
+                    {!isSignedIn ? (
                         <Link className={styles.signIn} href="/client/login">
-                            Sign in
+                            Already client
                         </Link>
                     ) : null}
                     {isSignedIn && (
@@ -139,7 +131,7 @@ export default function Nav() {
                             href="/client/login"
                             onClick={() => setOpen(false)}
                         >
-                            Sign in
+                            Already client
                         </Link>
                     )}
                     <Link href="/#contact" onClick={() => setOpen(false)}>
