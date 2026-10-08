@@ -1,132 +1,45 @@
 export type HomeContent = {
-    hero: {
-        eyebrow: string;
-        title: string;
-        titleEmphasis: string;
-        titleSuffix: string;
-        text: string;
-    };
-    ticker: string[];
-    solutions: {
-        number: string;
-        label: string;
-        title: string;
-        titleSecondLine: string;
-        text: string;
-        href: string;
-        link: string;
-        featured?: boolean;
-    }[];
-    industries: {
-        number: string;
-        name: string;
-        title: string;
-        text: string;
-        outcomes: string;
-    }[];
+    heroSlides: { image: string; alt: string; phrase: string }[];
+    intro: { kicker: string; title: string; emphasis: string; text: string };
+    services: { title: string; text: string; image: string; alt: string }[];
+    story: { kicker: string; title: string; emphasis: string; text: string; image: string; imageAlt: string; linkLabel: string };
+    work: { kicker: string; title: string; linkLabel: string; primary: ContentFeature; secondary: ContentFeature };
+    reasons: { kicker: string; items: { title: string; text: string }[] };
 };
 
+type ContentFeature = { label: string; title: string; image: string; alt: string };
+
 export const defaultHomeContent: HomeContent = {
-    hero: {
-        eyebrow: "Independent digital studio / 2026",
-        title: "Build what",
-        titleEmphasis: "moves",
-        titleSuffix: "people.",
-        text: "Nexora turns ambitious ideas into intelligent digital products, from the first line of code to the last meaningful interaction.",
-    },
-    ticker: [
-        "website developement",
-        "App development",
-        "Data Analysis",
-        "AI agents",
-        "WORKFLOWS",
-        "automations",
-        "UI/UX",
+    heroSlides: [
+        { image: "/HERO-SLIDE-IMAGES/ACCOUNT-HERO.jpg", alt: "Client portal dashboard for local Indian businesses", phrase: "choose" },
+        { image: "/HERO-SLIDE-IMAGES/AI-HERO.jpg", alt: "AI automation for Indian small businesses", phrase: "grow" },
+        { image: "/HERO-SLIDE-IMAGES/GARAGE-HERO.jpg", alt: "Local garage workshop with digital management", phrase: "run" },
+        { image: "/HERO-SLIDE-IMAGES/IT-HERO.jpg", alt: "IT support for local Indian businesses", phrase: "trust" },
+        { image: "/HERO-SLIDE-IMAGES/RESTO-HERO.jpg", alt: "Restaurant digital presence solutions", phrase: "attract" },
     ],
-    solutions: [
-        {
-            number: "01",
-            label: "Build",
-            title: "Digital products",
-            titleSecondLine: "with a pulse.",
-            text: "End-to-end web and mobile products engineered for speed, scale, and the people using them.",
-            href: "/services/software-development",
-            link: "See how we build",
-            featured: true,
-        },
-        {
-            number: "02",
-            label: "Multiply",
-            title: "AI that works",
-            titleSecondLine: "for your team.",
-            text: "AI agents and practical integrations that remove friction and create room for better work.",
-            href: "/services/ai-systems",
-            link: "Explore AI systems",
-        },
-        {
-            number: "03",
-            label: "Understand",
-            title: "Data into",
-            titleSecondLine: "direction.",
-            text: "Data analysis and clear decision tools that reveal what is happening and what to do next.",
-            href: "/services/data-analysis",
-            link: "Find your signal",
-        },
-        {
-            number: "04",
-            label: "Connect",
-            title: "Presence that",
-            titleSecondLine: "gets noticed.",
-            text: "Social media management and content systems that make your brand impossible to scroll past.",
-            href: "/services/digital-presence",
-            link: "Shape your story",
-        },
+    intro: { kicker: "What Nexora brings to the table", title: "Technology should feel like a", emphasis: "good business decision.", text: "We turn a business need into a useful digital experience—without making you learn a new language first." },
+    services: [
+        { title: "Websites that bring in enquiries", text: "A clear, credible home for your business—fast on every screen and easy to update.", image: "/Home-page-services/WEBSITE.png", alt: "Restaurant website with an online table-booking button" },
+        { title: "Apps that keep customers close", text: "Make booking, ordering, updates, and everyday service feel effortless.", image: "/Home-page-services/APPS.jpg", alt: "Smartphone home screen filled with mobile app icons" },
+        { title: "Systems that save your team time", text: "Replace scattered spreadsheets and repetitive tasks with a simpler way to work.", image: "/Home-page-services/AI.jpg", alt: "AI assistant on a screen listing what it can do" },
     ],
-    industries: [
-        {
-            number: "01",
-            name: "Hospitals & healthcare",
-            title: "Better care starts with clearer systems.",
-            text: "Connect patient information, simplify staff workflows, and give healthcare teams the reliable tools they need to spend more time caring.",
-            outcomes:
-                "Patient portals · Operations dashboards · Secure infrastructure",
-        },
-        {
-            number: "02",
-            name: "Restaurants & hospitality",
-            title: "Make every service run smoother.",
-            text: "From online ordering to stock visibility, we help hospitality teams reduce friction for staff and create more memorable guest experiences.",
-            outcomes: "Ordering systems · Inventory tools · Digital presence",
-        },
-        {
-            number: "03",
-            name: "Schools & education",
-            title: "Give learning more room to happen.",
-            text: "Bring students, parents, teachers, and administrators into simpler digital experiences that make communication and progress easier to manage.",
-            outcomes:
-                "Learning platforms · Parent communication · Data reporting",
-        },
-        {
-            number: "04",
-            name: "Supermarkets & retail",
-            title: "Turn busy operations into useful insight.",
-            text: "See what is selling, keep shelves moving, and make the customer journey more convenient across stores and digital channels.",
-            outcomes:
-                "Stock analytics · Customer experiences · Workflow automation",
-        },
-        {
-            number: "05",
-            name: "Professional services",
-            title: "Make expertise easier to deliver.",
-            text: "We help firms organize knowledge, automate repeatable work, and build digital touchpoints that earn client confidence.",
-            outcomes: "Client portals · AI assistants · Process automation",
-        },
-        {
-            number: "06",
-            name: "Logistics & operations",
-            title: "Keep decisions moving with the work.",
-            text: "Connect teams, assets, and data so operational leaders can respond faster and plan with a clearer view of what is happening.",
-            outcomes: "Tracking tools · Performance dashboards · Cloud systems",
-        },
-    ],
+    story: { kicker: "A partner, not a jargon machine", title: "We start with your day-to-day, then make it", emphasis: "work better.", text: "Whether you need a stronger first impression, a smoother customer journey, or a system behind the scenes, we keep the process straightforward and focused on what matters.", image: "/team-work.jpg", imageAlt: "Team discussing a project together", linkLabel: "Meet Nexora" },
+    work: { kicker: "Ideas made real", title: "Work with a purpose, not just a pretty screen.", linkLabel: "View our work", primary: { label: "Digital solutions", title: "Better experiences begin with a better plan.", image: "/health-tech.jpg", alt: "Healthcare technology workspace" }, secondary: { label: "Local business", title: "Everyday business, made easier.", image: "/for-grocery-shop.jpg", alt: "Local grocery shop" } },
+    reasons: { kicker: "Why businesses choose Nexora", items: [
+        { title: "Business-first thinking", text: "We speak in outcomes, not technical acronyms." },
+        { title: "One connected team", text: "Strategy, design, build, and support work together." },
+        { title: "Built to be useful", text: "Every decision earns its place in your business." },
+    ] },
 };
+
+export function normaliseHomeContent(content: Partial<HomeContent> | null | undefined): HomeContent {
+    const source = content ?? {};
+    return {
+        heroSlides: Array.isArray(source.heroSlides) && source.heroSlides.length ? source.heroSlides : defaultHomeContent.heroSlides,
+        intro: { ...defaultHomeContent.intro, ...(source.intro ?? {}) },
+        services: Array.isArray(source.services) && source.services.length ? source.services : defaultHomeContent.services,
+        story: { ...defaultHomeContent.story, ...(source.story ?? {}) },
+        work: { ...defaultHomeContent.work, ...(source.work ?? {}), primary: { ...defaultHomeContent.work.primary, ...(source.work?.primary ?? {}) }, secondary: { ...defaultHomeContent.work.secondary, ...(source.work?.secondary ?? {}) } },
+        reasons: { ...defaultHomeContent.reasons, ...(source.reasons ?? {}), items: Array.isArray(source.reasons?.items) && source.reasons.items.length ? source.reasons.items : defaultHomeContent.reasons.items },
+    };
+}

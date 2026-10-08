@@ -245,7 +245,7 @@ export default function OverviewSection({
                     icon={<LeadsIcon />}
                     label="New leads"
                     value={stats.newLeads}
-                    meta={`${stats.convertedLeads} converted to clients`}
+                    meta={` converted to clients`}
                     onClick={() => onNavigate("leads")}
                 />
                 <StatCard
@@ -253,7 +253,7 @@ export default function OverviewSection({
                     icon={<ProjectsIcon />}
                     label="Active projects"
                     value={stats.activeProjects}
-                    meta={`${projects.length} total · ${stats.averageProgress}% average progress`}
+                    meta={` total · ${stats.averageProgress}% average progress`}
                     onClick={() => onNavigate("projects")}
                 />
                 <StatCard
@@ -263,8 +263,8 @@ export default function OverviewSection({
                     value={stats.openTickets}
                     meta={
                         stats.urgentTickets
-                            ? `${stats.urgentTickets} marked urgent`
-                            : "No urgent queries"
+                            ? ` marked urgent`
+                            : " urgent queries"
                     }
                     onClick={() => onNavigate("queries")}
                 />
@@ -273,7 +273,7 @@ export default function OverviewSection({
                     icon={<CompaniesIcon />}
                     label="Client companies"
                     value={stats.companyCount}
-                    meta={`${stats.inProgress} leads in progress`}
+                    meta={` leads in progress`}
                     onClick={() => onNavigate("clients")}
                 />
             </div>
@@ -560,12 +560,11 @@ function Shortcut({
     return (
         <button
             type="button"
-            className={`${styles.miniItem} ${styles.btn}`}
-            style={{ cursor: "pointer", textAlign: "left" }}
+            className={`${styles.shortcutButton} ${styles.btn}`}
             onClick={onClick}
         >
             <span className={styles.statIcon}>{icon}</span>
-            <span className={styles.miniItemMain}>
+            <span className={`${styles.miniItemMain} ${styles.shortcutCopy}`}>
                 <span className={styles.miniItemTitle}>{label}</span>
                 <span className={styles.miniItemMeta}>{hint}</span>
             </span>

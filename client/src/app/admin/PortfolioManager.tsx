@@ -579,6 +579,13 @@ export default function PortfolioManager() {
         }
     }
 
+    const publishedCount = projects.filter(
+        (project) => project.status === "Published",
+    ).length;
+    const draftCount = projects.filter(
+        (project) => project.status === "Draft",
+    ).length;
+
     return (
         <section className={styles.contentEditor}>
             <div className={styles.editorHeader}>
@@ -606,6 +613,18 @@ export default function PortfolioManager() {
                         Add project
                     </button>
                 </div>
+            </div>
+            <div className={styles.portfolioSummary} aria-label="Portfolio summary">
+                <span>
+                    <strong>{projects.length}</strong> project
+                    {projects.length === 1 ? "" : "s"}
+                </span>
+                <span>
+                    <strong>{publishedCount}</strong> published
+                </span>
+                <span>
+                    <strong>{draftCount}</strong> draft{draftCount === 1 ? "" : "s"}
+                </span>
             </div>
             {message ? (
                 <p className={styles.message} aria-live="polite">

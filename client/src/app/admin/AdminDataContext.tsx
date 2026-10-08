@@ -19,7 +19,11 @@ import {
     type SetStateAction,
 } from "react";
 import { adminJson, adminRequest } from "./adminApi";
-import { defaultHomeContent, type HomeContent } from "../homeContent";
+import {
+    defaultHomeContent,
+    normaliseHomeContent,
+    type HomeContent,
+} from "../homeContent";
 import type {
     AdminProject,
     CompanyRosterEntry,
@@ -232,17 +236,9 @@ export function AdminDataProvider({ children }: { children: ReactNode }) {
             const result = await adminRequest<ApiResult<Partial<HomeContent>>>(
                 "/api/admin/home",
             );
-            // Merge onto the shipped defaults so a partially populated document
-            // still renders a complete editor, exactly as before.
-            setHomeContent({
-                ...defaultHomeContent,
-                ...result.data,
-                hero: { ...defaultHomeContent.hero, ...result.data.hero },
-                ticker: result.data.ticker || defaultHomeContent.ticker,
-                solutions: result.data.solutions || defaultHomeContent.solutions,
-                industries:
-                    result.data.industries || defaultHomeContent.industries,
-            });
+            // Legacy homepage documents used a different layout. Normalising
+            // here safely falls back to the current page's editable sections.
+            setHomeContent(normaliseHomeContent(result.data));
             finish("home");
         } catch (error) {
             fail("home", error);

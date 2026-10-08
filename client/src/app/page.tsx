@@ -1,89 +1,44 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import Contact from "./components/home/Contact";
 import Footer from "./components/home/Footer";
 import Reveal from "./components/motion/Reveal";
 import HeroSlider from "./components/home/HeroSlider";
 import styles from "./page.module.css";
-
-// Each card leads with the supplied artwork from `public/Home-page-services`,
-// which is what a visitor recognises before reading the headline.
-const services = [
-    {
-        number: "01",
-        title: "Websites that bring in enquiries",
-        text: "A clear, credible home for your business—fast on every screen and easy to update.",
-        image: "/Home-page-services/WEBSITE.png",
-        alt: "Restaurant website with an online table-booking button",
-    },
-    {
-        number: "02",
-        title: "Apps that keep customers close",
-        text: "Make booking, ordering, updates, and everyday service feel effortless.",
-        image: "/Home-page-services/APPS.jpg",
-        alt: "Smartphone home screen filled with mobile app icons",
-    },
-    {
-        number: "03",
-        title: "Systems that save your team time",
-        text: "Replace scattered spreadsheets and repetitive tasks with a simpler way to work.",
-        image: "/Home-page-services/AI.jpg",
-        alt: "AI assistant on a screen listing what it can do",
-    },
-];
-
-const heroSlides = [
-    {
-        image: "/HERO-SLIDE-IMAGES/ACCOUNT-HERO.jpg",
-        alt: "Client portal dashboard for local Indian businesses",
-        phrase: "choose",
-    },
-    {
-        image: "/HERO-SLIDE-IMAGES/AI-HERO.jpg",
-        alt: "AI automation for Indian small businesses",
-        phrase: "grow",
-    },
-    {
-        image: "/HERO-SLIDE-IMAGES/GARAGE-HERO.jpg",
-        alt: "Local garage workshop with digital management",
-        phrase: "run",
-    },
-    {
-        image: "/HERO-SLIDE-IMAGES/IT-HERO.jpg",
-        alt: "IT support for local Indian businesses",
-        phrase: "trust",
-    },
-    {
-        image: "/HERO-SLIDE-IMAGES/RESTO-HERO.jpg",
-        alt: "Restaurant digital presence solutions",
-        phrase: "attract",
-    },
-];
+import { apiUrl } from "./apiConfig";
+import { defaultHomeContent, normaliseHomeContent } from "./homeContent";
 
 export default function Home() {
+    const [content, setContent] = useState(defaultHomeContent);
+    useEffect(() => {
+        fetch(`${apiUrl}/api/home`, { cache: "no-store" })
+            .then((response) => response.ok ? response.json() : null)
+            .then((result) => result?.success && setContent(normaliseHomeContent(result.data)))
+            .catch(() => undefined);
+    }, []);
     return (
         <main className={styles.page} data-motion-page>
-            <HeroSlider slides={heroSlides} />
+            <HeroSlider slides={content.heroSlides} />
             <section className={styles.intro}>
                 <Reveal variant="up">
                     <p className={styles.kicker}>
-                        What Nexora brings to the table
+                        {content.intro.kicker}
                     </p>
                 </Reveal>
                 <Reveal variant="up" delay={100}>
                     <h2>
-                        Technology should feel like a{" "}
-                        <em>good business decision.</em>
+                        {content.intro.title}{" "}<em>{content.intro.emphasis}</em>
                     </h2>
                     <p>
-                        We turn a business need into a useful digital
-                        experience—without making you learn a new language
-                        first.
+                        {content.intro.text}
                     </p>
                 </Reveal>
             </section>
             <section className={styles.services}>
-                {services.map(({ number, title, text, image, alt }, index) => (
-                    <Reveal key={number} delay={index * 90}>
+                {content.services.map(({ title, text, image, alt }, index) => (
+                    <Reveal key={`${title}-${index}`} delay={index * 90}>
                         <article className={styles.service}>
                             <div className={styles.serviceMedia}>
                                 <img
@@ -94,7 +49,7 @@ export default function Home() {
                                 />
                             </div>
                             <div className={styles.serviceMeta}>
-                                <span>{number}</span>
+                                <span>{String(index + 1).padStart(2, "0")}</span>
                                 <div className={styles.icon} aria-hidden="true">
                                     ✦
                                 </div>
@@ -110,10 +65,7 @@ export default function Home() {
             </section>
             <section className={styles.story}>
                 <Reveal className={styles.storyPhoto} variant="left">
-                    <img
-                        src="/team-work.jpg"
-                        alt="Team discussing a project together"
-                    />
+                        <img src={content.story.image} alt={content.story.imageAlt} />
                 </Reveal>
                 <Reveal
                     className={styles.storyCopy}
@@ -121,56 +73,51 @@ export default function Home() {
                     delay={100}
                 >
                     <p className={styles.kicker}>
-                        A partner, not a jargon machine
+                        {content.story.kicker}
                     </p>
                     <h2>
-                        We start with your day-to-day, then make it{" "}
-                        <em>work better.</em>
+                        {content.story.title}{" "}<em>{content.story.emphasis}</em>
                     </h2>
                     <p>
-                        Whether you need a stronger first impression, a smoother
-                        customer journey, or a system behind the scenes, we keep
-                        the process straightforward and focused on what matters.
+                        {content.story.text}
                     </p>
                     <Link href="/who-we-are" className={styles.secondary}>
-                        Meet Nexora <span>&#8594;</span>
+                        {content.story.linkLabel} <span>&#8594;</span>
                     </Link>
                 </Reveal>
             </section>
             <section className={styles.work}>
                 <Reveal className={styles.sectionHeading}>
                     <div>
-                        <p className={styles.kicker}>Ideas made real</p>
-                        <h2>Work with a purpose, not just a pretty screen.</h2>
+                        <p className={styles.kicker}>{content.work.kicker}</p>
+                        <h2>{content.work.title}</h2>
                     </div>
                     <Link href="/portfolio" className={styles.textLink}>
-                        View our work <span>&#8594;</span>
+                        {content.work.linkLabel} <span>&#8594;</span>
                     </Link>
                 </Reveal>
                 <div className={styles.workGrid}>
                     <Reveal variant="left">
                         <article className={styles.workLarge}>
                             <img
-                                src="/health-tech.jpg"
-                                alt="Healthcare technology workspace"
+                                src={content.work.primary.image}
+                                alt={content.work.primary.alt}
                             />
                             <div>
-                                <p>Digital solutions</p>
-                                <h3>
-                                    Better experiences begin with a better plan.
-                                </h3>
+                                <p>{content.work.primary.label}</p>
+                                <h3>{content.work.primary.title}</h3>
                             </div>
                         </article>
                     </Reveal>
                     <Reveal variant="right" delay={100}>
                         <article className={styles.workSmall}>
                             <img
-                                src="/for-grocery-shop.jpg"
-                                alt="Local grocery shop"
+                                src={content.work.secondary.image}
+                                alt={content.work.secondary.alt}
                             />
                             <div>
-                                <p>Local business</p>
-                                <h3>Everyday business, made easier.</h3>
+                                <p>{content.work.secondary.label}</p>
+                                <h3>{content.work.secondary.title}</h3>
                             </div>
                         </article>
                     </Reveal>
@@ -179,16 +126,11 @@ export default function Home() {
             <section className={styles.reasons}>
                 <Reveal>
                     <p className={styles.kicker}>
-                        Why businesses choose Nexora
+                        {content.reasons.kicker}
                     </p>
                 </Reveal>
                 <div className={styles.reasonGrid}>
-                    {[
-                        "Business-first thinking|We speak in outcomes, not technical acronyms.",
-                        "One connected team|Strategy, design, build, and support work together.",
-                        "Built to be useful|Every decision earns its place in your business.",
-                    ].map((item, index) => {
-                        const [title, text] = item.split("|");
+                    {content.reasons.items.map(({ title, text }, index) => {
                         return (
                             <Reveal key={title} delay={index * 100}>
                                 <div>

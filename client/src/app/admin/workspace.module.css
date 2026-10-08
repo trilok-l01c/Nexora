@@ -40,7 +40,11 @@
     --w-shadow-lg: 0 24px 60px rgba(2, 6, 23, 0.22);
 
     display: flex;
+    z-index: 100;
+    position: absolute;
+    top: 0;
     min-height: 100vh;
+    min-width: 100vw;
     background: var(--w-canvas);
     color: var(--w-ink);
     font-family: var(--font-geist-sans), system-ui, sans-serif;
@@ -477,7 +481,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    margin: 0 0 8px;
+    margin: 10px 0 8px;
     padding: 4px 10px;
     border-radius: 999px;
     background: var(--w-green-soft);
@@ -611,14 +615,14 @@
 
 .statGrid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
     gap: 14px;
     margin-bottom: 20px;
 }
 
 .statCard {
     position: relative;
-    padding: 18px;
+    padding: 20px;
     border: 1px solid var(--w-border);
     border-radius: var(--w-radius-lg);
     background: var(--w-surface);
@@ -689,14 +693,15 @@
 }
 
 .statValue {
-    font-size: 30px;
+    font-size: 32px;
     font-weight: 700;
     line-height: 1.05;
-    letter-spacing: -0.03em;
+    letter-spacing: -0.01em;
 }
 
 .statMeta {
     margin-top: 6px;
+    margin-left: 2px;
     color: var(--w-muted);
     font-size: 12px;
 }
@@ -1745,6 +1750,71 @@
     min-width: 0;
 }
 
+/* Shortcut buttons use the same compact card primitive as recent activity,
+   /* but their label and hint need a deliberate vertical reading order. */
+.shortcutCopy {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+}
+
+.shortcutCopy .miniItemMeta {
+    margin: 0;
+}
+
+.shortcutButton {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 12px;
+    align-items: center;
+    min-height: 72px;
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--w-border);
+    border-radius: var(--w-radius);
+    background: var(--w-surface-alt);
+    color: var(--w-ink);
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+    transition:
+        border-color 0.15s ease,
+        background 0.15s ease,
+        box-shadow 0.15s ease,
+        transform 0.15s ease;
+}
+
+.shortcutButton .statIcon {
+    width: 34px;
+    height: 34px;
+}
+
+.shortcutButton .miniItemMain {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    min-width: 0;
+}
+
+.shortcutButton .miniItemTitle {
+    line-height: 1.25;
+}
+
+.shortcutButton .miniItemMeta {
+    margin: 0;
+    font-size: 0.85em;
+    line-height: 1.35;
+}
+
+.shortcutButton:hover {
+    border-color: rgba(46, 133, 64, 0.42);
+    background: var(--w-surface);
+    box-shadow: 0 5px 14px rgba(15, 23, 42, 0.07);
+    transform: translateY(-1px);
+}
+
 .miniItemTitle {
     margin: 0;
     font-size: 13px;
@@ -2066,12 +2136,214 @@
     color: var(--w-ink-soft);
 }
 
+/* Portfolio workspace: give the editor, project cards, and nested update
+   records their own visual rhythm instead of letting one long card run into
+   the next. */
+.portfolioSummary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px 18px;
+    border-bottom: 1px solid var(--w-border);
+    background: var(--w-surface-alt);
+}
+
+.portfolioSummary span {
+    padding: 5px 9px;
+    border: 1px solid var(--w-border);
+    border-radius: 999px;
+    background: var(--w-surface);
+    color: var(--w-muted);
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+.portfolioSummary strong {
+    color: var(--w-ink);
+    font-weight: 750;
+}
+
+.contentEditor > .portfolioForm {
+    margin: 16px 18px;
+    padding: 18px;
+    border: 1px solid var(--w-border);
+    border-radius: var(--w-radius);
+    background: var(--w-surface-alt);
+}
+
+.contentEditor > .portfolioForm .editorCardHeader {
+    margin: -18px -18px 6px;
+    background: var(--w-surface);
+}
+
+.contentEditor > .projectList {
+    padding: 0 18px 18px;
+}
+
+.projectList .projectCard {
+    margin-bottom: 0;
+}
+
+.projectCard,
+.updatesPanel {
+    overflow: hidden;
+    box-shadow: none;
+}
+
+.projectCardTop {
+    background: linear-gradient(90deg, var(--w-surface-alt), var(--w-surface));
+}
+
+.projectCard > .projectMetaLine {
+    margin: 14px 18px 0;
+}
+
+.projectCard > p:not(.projectMetaLine) {
+    margin: 7px 18px 0;
+    color: var(--w-ink-soft);
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.projectCard > .imageNote {
+    display: block;
+    margin: 8px 18px 0;
+}
+
+.projectCard > .cardActions {
+    margin-top: 14px;
+    padding: 12px 18px;
+    border-top: 1px solid var(--w-border);
+    background: var(--w-surface-alt);
+}
+
+.cardActions > button:not(.submitButton):not(.removeButton) {
+    padding: 6px 10px;
+    border: 1px solid var(--w-border-strong);
+    border-radius: var(--w-radius-sm);
+    background: var(--w-surface);
+    color: var(--w-ink-soft);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cardActions > button:not(.submitButton):not(.removeButton):hover {
+    border-color: var(--w-green);
+    color: var(--w-green-dark);
+}
+
+.projectCard > .updatesPanel {
+    margin: 0 18px 18px;
+}
+
+.updatesPanel > .portfolioForm {
+    margin: 12px;
+    padding: 14px;
+    border: 1px solid var(--w-border);
+    border-radius: var(--w-radius);
+    background: var(--w-surface);
+}
+
+.updatesPanel > .empty {
+    margin: 0;
+}
+
+.updateItem {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px 16px;
+}
+
+.updateItemTop {
+    display: grid;
+    gap: 2px;
+}
+
+.updateItemTop time {
+    color: var(--w-muted);
+    font-size: 12px;
+}
+
+.updateItem > p {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: var(--w-ink-soft);
+    font-size: 12.5px;
+    line-height: 1.5;
+}
+
+.updateItem .chipRow {
+    align-self: center;
+}
+
+.updateActions {
+    grid-column: 2;
+    grid-row: 1;
+    justify-content: flex-end;
+}
+
+@media (max-width: 560px) {
+    .editorHeader {
+        align-items: flex-start;
+    }
+
+    .contentEditor > .portfolioForm,
+    .contentEditor > .projectList {
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+
+    .contentEditor > .projectList {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .projectCard > .updatesPanel {
+        margin-left: 12px;
+        margin-right: 12px;
+    }
+
+    .updateItem {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .updateActions {
+        grid-column: 1;
+        grid-row: auto;
+        justify-content: flex-start;
+    }
+}
+
 /* ---------- Split-screen sign-in ---------- */
 
 .authPage {
+    --w-canvas: #f4f6fb;
+    --w-surface: #ffffff;
+    --w-surface-alt: #f8fafc;
+    --w-border: #e3e8f0;
+    --w-border-strong: #cbd5e1;
+    --w-ink: #0f172a;
+    --w-ink-soft: #334155;
+    --w-muted: #64748b;
+    --w-faint: #94a3b8;
+    --w-green: #2e8540;
+    --w-on-accent: #ffffff;
+    --w-green-dark: #246b32;
+    --w-green-soft: #e9f6ec;
+    --w-green-ring: rgba(46, 133, 64, 0.16);
+    --w-blue: #2563eb;
+    --w-blue-dark: #1d4ed8;
+    --w-blue-soft: #e8effe;
+
+    position: fixed;
+    inset: 0;
+    z-index: 100;
     display: grid;
     grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-    min-height: 100vh;
+    min-height: 100dvh;
+    overflow: auto;
     background: var(--w-canvas);
     color: var(--w-ink);
 }
@@ -2248,6 +2520,26 @@ html[data-theme="dark"] .workspace {
     --w-navy-muted: #94a3b8;
     --w-shadow: 0 1px 2px rgba(0, 0, 0, 0.25), 0 8px 24px rgba(0, 0, 0, 0.2);
     --w-shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+html[data-theme="dark"] .authPage {
+    --w-canvas: #0f172a;
+    --w-surface: #1e293b;
+    --w-surface-alt: #1a2740;
+    --w-border: #334155;
+    --w-border-strong: #475569;
+    --w-ink: #f1f5f9;
+    --w-ink-soft: #cbd5e1;
+    --w-muted: #94a3b8;
+    --w-faint: #64748b;
+    --w-green: #4ade80;
+    --w-on-accent: #0f172a;
+    --w-green-dark: #86efac;
+    --w-green-soft: rgba(74, 222, 128, 0.14);
+    --w-green-ring: rgba(74, 222, 128, 0.22);
+    --w-blue: #60a5fa;
+    --w-blue-dark: #93c5fd;
+    --w-blue-soft: rgba(96, 165, 250, 0.14);
 }
 
 @media (max-width: 900px) {
