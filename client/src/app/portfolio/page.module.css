@@ -451,6 +451,17 @@
     transition: filter 0.4s var(--ease-out);
 }
 
+.demoNotice {
+    text-align: center;
+    padding: 5px 0;
+    background-color: #cb4f21;
+}
+
+.demoNotice strong::after {
+    content: ": ";
+    padding-right: 2px;
+}
+
 /* ---- Active case-study progress label ---- */
 .progress {
     position: sticky;
