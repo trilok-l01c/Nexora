@@ -35,7 +35,7 @@
     display: grid;
     place-items: center;
     border-radius: 9px;
-    color: white;
+    color: var(--button-text);
     font-size: 14px;
     background: var(--accent-gradient);
 }
@@ -60,7 +60,8 @@
     gap: 9px;
 }
 .portal,
-.signOut {
+.signOut,
+.themeToggle {
     padding: 9px 12px;
     color: var(--nav-links);
     background: transparent;
@@ -70,14 +71,46 @@
     font-weight: 700;
     cursor: pointer;
 }
+.themeToggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--toggle-border);
+    border-radius: 10px;
+    color: var(--toggle-text);
+    background: var(--surface);
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease,
+        color 0.2s ease;
+}
+.themeToggle:hover {
+    border-color: var(--accent-green);
+    color: var(--toggle-hover-text);
+    background: var(--toggle-hover-bg);
+}
+.themeToggle:focus-visible {
+    outline: 2px solid var(--focus-ring);
+    outline-offset: 2px;
+}
+.themeIcon {
+    display: grid;
+    width: 16px;
+    height: 16px;
+    place-items: center;
+}
+.themeIcon svg {
+    width: 16px;
+    height: 16px;
+}
 .signIn {
     display: inline-flex;
     align-items: center;
     padding: 10px 14px;
     border: 1px solid var(--toggle-border);
     border-radius: 10px;
-    color: var(--ink);
-    background: #fff;
+    color: var(--toggle-text);
+    background: var(--surface);
     font-size: 14px;
     font-weight: 800;
     transition:
@@ -96,7 +129,7 @@
     align-items: center;
     padding: 11px 15px;
     border-radius: 11px;
-    color: white;
+    color: var(--button-text);
     background: var(--accent-green);
     font-size: 16px;
     font-weight: 750;
@@ -135,6 +168,17 @@
         background: var(--toggle-hover-bg);
         cursor: pointer;
     }
+    .themeToggle {
+        padding: 9px 10px;
+    }
+    .themeLabel {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
+        white-space: nowrap;
+    }
     .menu span {
         width: 17px;
         height: 2px;
@@ -151,7 +195,7 @@
         gap: 5px;
         border: 1px solid var(--surface-border);
         border-radius: 16px;
-        background: white;
+        background: var(--surface);
         box-shadow: 0 16px 40px rgba(32, 33, 63, 0.15);
         pointer-events: auto;
     }

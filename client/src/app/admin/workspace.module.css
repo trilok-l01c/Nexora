@@ -15,6 +15,7 @@
     --w-muted: #64748b;
     --w-faint: #94a3b8;
     --w-green: #2e8540;
+    --w-on-accent: #ffffff;
     --w-green-dark: #246b32;
     --w-green-soft: #e9f6ec;
     --w-green-ring: rgba(46, 133, 64, 0.16);
@@ -81,7 +82,7 @@
     height: 34px;
     border-radius: 10px;
     background: linear-gradient(135deg, var(--w-green) 0%, var(--w-blue) 130%);
-    color: #ffffff;
+    color: var(--w-on-accent);
     font-size: 15px;
     font-weight: 800;
     box-shadow: 0 6px 16px rgba(46, 133, 64, 0.28);
@@ -181,12 +182,12 @@
 
 .navItemActive .navCount {
     background: var(--w-green-dark);
-    color: #ffffff;
+    color: var(--w-on-accent);
 }
 
 .navCountAlert {
     background: var(--w-red);
-    color: #ffffff;
+    color: var(--w-on-accent);
 }
 
 .sidebarFooter {
@@ -214,7 +215,7 @@
     height: 34px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--w-green) 0%, var(--w-blue) 140%);
-    color: #ffffff;
+    color: var(--w-on-accent);
     font-size: 12px;
     font-weight: 800;
     text-transform: uppercase;
@@ -736,7 +737,7 @@
 
 .btnPrimary {
     background: linear-gradient(180deg, #35944a 0%, var(--w-green) 100%);
-    color: #ffffff;
+    color: var(--w-on-accent);
     box-shadow:
         0 1px 2px rgba(36, 107, 50, 0.35),
         inset 0 1px 0 rgba(255, 255, 255, 0.18);
@@ -760,7 +761,7 @@
 
 .btnBlue {
     background: var(--w-blue);
-    color: #ffffff;
+    color: var(--w-on-accent);
 }
 
 .btnBlue:hover:not(:disabled) {
@@ -1611,7 +1612,7 @@
 /* Destructive actions never share styling with routine ones. */
 .btnDanger {
     background: linear-gradient(180deg, #e23d3d 0%, var(--w-red) 100%);
-    color: #ffffff;
+    color: var(--w-on-accent);
     box-shadow: 0 1px 2px rgba(220, 38, 38, 0.35);
 }
 
@@ -1845,7 +1846,7 @@
 .submitButton {
     padding: 9px 14px;
     background: var(--w-green);
-    color: #ffffff;
+    color: var(--w-on-accent);
     box-shadow: 0 1px 2px rgba(36, 107, 50, 0.35);
 }
 
@@ -2228,6 +2229,7 @@ html[data-theme="dark"] .workspace {
     --w-muted: #94a3b8;
     --w-faint: #64748b;
     --w-green: #4ade80;
+    --w-on-accent: #0f172a;
     --w-green-dark: #86efac;
     --w-green-soft: rgba(74, 222, 128, 0.14);
     --w-green-ring: rgba(74, 222, 128, 0.22);
@@ -2266,6 +2268,7 @@ html[data-theme="dark"] .workspace {
     --w-muted: #94a3b8;
     --w-faint: #64748b;
     --w-green: #4ade80;
+    --w-on-accent: #0f172a;
     --w-green-dark: #86efac;
     --w-green-soft: rgba(74, 222, 128, 0.14);
     --w-green-ring: rgba(74, 222, 128, 0.22);

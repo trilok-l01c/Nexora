@@ -51,7 +51,7 @@
 
 .hero h1 {
     margin: 22px 0 24px;
-    font-size: clamp(43px, 6.4vw, 94px);
+    font-size: clamp(043px, 6.4vw, 94px);
     line-height: 0.98;
     letter-spacing: -0.075em;
 }
@@ -84,7 +84,7 @@
     padding: 16px 19px;
     border-radius: 11px;
     background: var(--accent-green);
-    color: white;
+    color: var(--button-text);
     font-size: 13px;
     font-weight: 800;
     box-shadow: 0 12px 25px rgba(91, 75, 219, 0.24);
@@ -305,7 +305,12 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, transparent, var(--accent-green), transparent);
+    background: linear-gradient(
+        90deg,
+        transparent,
+        var(--accent-green),
+        transparent
+    );
     opacity: 0;
     transition: opacity 0.3s ease;
 }
@@ -466,7 +471,7 @@
 .secondary {
     margin-top: 14px;
     background: var(--accent-blue);
-    color: white;
+    color: var(--accent-blue-text);
     padding: 12px 20px;
     border-radius: 10px;
     font-weight: 700;

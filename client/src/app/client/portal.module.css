@@ -5,7 +5,8 @@
     --portal-line: #deddf0;
     --portal-green: #4338ca;
     --portal-card: #fff;
-    --portal-input-bg: #fcfbff;
+    --portal-input-bg: #ffffff;
+    --portal-input-border: #aaa6cc;
     --portal-hover: #f0efff;
     --portal-notice-bg: #f0eeff;
     --portal-badge-bg: #fff0ed;
@@ -31,7 +32,8 @@ html[data-theme="dark"] .portal {
     --portal-line: rgba(214, 210, 255, 0.16);
     --portal-green: #c4b5fd;
     --portal-card: #1b1a38;
-    --portal-input-bg: #1b1a38;
+    --portal-input-bg: #242145;
+    --portal-input-border: #6b6892;
     --portal-hover: #242145;
     --portal-notice-bg: rgba(169, 156, 255, 0.14);
     --portal-badge-bg: rgba(255, 154, 142, 0.14);
@@ -68,7 +70,7 @@ html[data-theme="dark"] .portal {
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    color: #e4f4df;
+    color: var(--portal-button-text);
     background: var(--portal-green);
     font-size: 14px;
 }
@@ -564,14 +566,24 @@ html[data-theme="dark"] .portal {
 .field textarea,
 .field select {
     width: 100%;
-    border: 1px solid var(--portal-line);
-    border-radius: 0;
+    border: 1px solid var(--portal-input-border);
+    border-radius: 6px;
     padding: 11px;
     color: var(--portal-ink);
     background: var(--portal-input-bg);
     font: inherit;
     font-size: 13px;
     text-transform: none;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+    border-color: var(--portal-green);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--portal-green) 28%, transparent);
+    outline: 0;
 }
 .field textarea {
     min-height: 90px;

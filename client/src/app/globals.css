@@ -12,6 +12,8 @@
     --accent-green-dark: #312e81;
     --accent-blue: #b9382b;
     --accent-blue-dark: #922f25;
+    --accent-blue-text: #ffffff;
+    --acid-text: #ffffff;
     --line: rgba(32, 33, 63, 0.1);
     --button-bg: var(--accent-green);
     --button-text: #ffffff;
@@ -130,6 +132,7 @@ html[data-theme="dark"] {
     --accent-green-dark: #ddd6fe;
     --accent-blue: #fca5a5;
     --accent-blue-dark: #fecaca;
+    --accent-blue-text: #16142c;
     --acid: #fca5a5;
     --line: rgba(214, 210, 255, 0.16);
     --button-bg: #c4b5fd;
@@ -140,6 +143,14 @@ html[data-theme="dark"] {
     --section-dark-kicker: #aaa8c5;
     --section-dark-muted: #aaa8c5;
     --section-dark-border: rgba(214, 210, 255, 0.17);
+    /* These tokens are also used by the public pages' inline headings.
+       Leaving their light values in place made dark-mode headings almost
+       disappear against their midnight sections. */
+    --section-light-bg: #17152e;
+    --section-light-text: #f7f5ff;
+    --section-light-muted: #c2bfda;
+    --section-light-kicker: #c4b5fd;
+    --section-light-border: rgba(214, 210, 255, 0.16);
     --brand-mark-bg: #c4b5fd;
     --brand-mark-text: #16142c;
     --nav-cta-border: rgba(214, 210, 255, 0.3);

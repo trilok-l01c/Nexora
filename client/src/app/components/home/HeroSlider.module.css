@@ -1,18 +1,19 @@
 .hero {
-    min-height: 680px;
+    min-height: 880px;
     max-width: 90%;
     margin: auto;
     padding: 100px 20px;
     display: grid;
-    grid-template-columns: 0.5fr 0.5fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(24px, 5vw, 80px);
     align-items: center;
-    gap: 200px;
 }
-
 .heroText {
     display: flex;
     flex-direction: column;
     gap: 30px;
+    container-type: inline-size; /* lets children size from the column width */
+    min-width: 0;
 }
 
 .eyebrow {
@@ -39,7 +40,8 @@
 
 .hero h1 {
     margin: 0;
-    font-size: clamp(58px, 7.5vw, 110px);
+    font-size: clamp(36px, 9cqw, 110px);
+    font-size: clamp(42px, 10.5cqw, 120px);
     line-height: 0.88;
     letter-spacing: -0.085em;
     font-weight: 700;
@@ -54,7 +56,13 @@
 .dynamicPhrase {
     display: inline-block;
     width: 100%;
-    min-height: 2em;
+    white-space: nowrap;
+    font-size: min(
+        1em,
+        7.5cqw
+    ); /* 100/11 ≈ 9cqw is the limit, 7.5 leaves margin */
+    min-height: 1.1em;
+    font-size: min(1em, 8.5cqw);
 }
 
 .cursor {
@@ -108,8 +116,8 @@
     background-image: var(--accent-gradient);
     background-size: 200% 100%;
     color: var(--button-text);
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 16px;
+    font-weight: 700;
     box-shadow: 0 10px 32px -14px var(--glow-cyan);
     transition:
         transform 0.25s var(--ease-out),
@@ -166,13 +174,18 @@
 
 .heroImageContainer {
     position: relative;
-    top: -90px;
     /* right: -165px; */
     width: 680px;
     aspect-ratio: 4 / 3;
     overflow: hidden;
     border-radius: 24px;
     box-shadow: 0 28px 56px rgba(20, 61, 81, 0.15);
+
+    position: relative; /* remove `top: -90px` */
+    width: 100%;
+    max-width: 680px;
+    justify-self: end;
+    max-height: calc(100svh - 240px); /* nav 103px + hero padding */
 }
 
 .heroImage {
@@ -249,7 +262,7 @@
 
     .heroImageContainer {
         width: 100%;
-        max-width: 100%;
+        max-width: none;
         min-width: 0;
     }
 
