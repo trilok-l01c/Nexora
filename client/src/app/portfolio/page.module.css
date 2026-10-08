@@ -166,6 +166,7 @@
     max-width: 540px;
     padding: 26px 24px 22px;
     background: var(--paper);
+    opacity: 86%;
     border: 1px solid var(--line);
     border-left: 5px solid var(--accent-green);
     border-radius: 18px;
@@ -454,7 +455,10 @@
 .progress {
     position: sticky;
     top: 0;
-    z-index: 40;
+    /* Stay below the pinned project frame (z-index: 2). This keeps the
+       category visible in open page space, but lets the frame mask it exactly
+       when their regions overlap. */
+    z-index: 1;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -547,11 +551,14 @@
 
 .projectSlot {
     position: relative;
-    height: 100svh;
+    /* Each sentinel changes the active project. Giving a project more than a
+       viewport of travel keeps high-resolution trackpad gestures from
+       skipping through case studies too quickly. */
+    height: 220svh;
 }
 
 .projectSlot:last-child {
-    height: 180svh;
+    height: 330svh;
 }
 
 .sentinel {
@@ -852,7 +859,7 @@
     }
 
     .description {
-        font-size: 15px;
+        display: none;
     }
 
     .contact {
@@ -862,6 +869,10 @@
     .primaryButton {
         gap: 18px;
         padding: 15px 18px;
+    }
+    .projectOverlay li,
+    .project {
+        display: none;
     }
 }
 
