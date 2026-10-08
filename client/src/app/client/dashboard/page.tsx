@@ -152,12 +152,8 @@ export default function ClientDashboard() {
                     <div>
                         <p className={styles.eyebrow}>Client workspace</p>
                         <h1 className={styles.title}>
-                            Good morning, {data?.company?.name || "there"}
+                            Welcome {data?.company?.name || "there"}
                         </h1>
-                        <p className={styles.subtle}>
-                            A clear view of everything Nexora is moving forward
-                            for you.
-                        </p>
                     </div>
                     <time className={styles.date}>
                         {date(new Date().toISOString())}
@@ -199,8 +195,10 @@ export default function ClientDashboard() {
                     {projects.length === 0 ? (
                         <div className={styles.emptyProjectState}>
                             <p className={styles.empty}>
-                                No projects yet. Start your next project with
-                                Nexora.
+                                No projects yet. <br />
+                                <strong>
+                                    Start your next project with Nexora.
+                                </strong>
                             </p>
                             <ProjectDialog />
                         </div>

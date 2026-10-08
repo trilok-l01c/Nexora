@@ -136,6 +136,16 @@ html[data-theme="dark"] .portal {
     padding: 24px clamp(24px, 5vw, 72px) 80px;
 }
 
+.loginShell {
+    display: block;
+    min-height: 100dvh;
+}
+
+.loginMain {
+    width: 100%;
+    min-height: 100dvh;
+}
+
 /* Mobile navigation */
 .mobileMenuButton {
     display: none;
@@ -946,26 +956,49 @@ html[data-theme="dark"] .portal {
     font-size: 12px;
 }
 .loginPage {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
     display: grid;
-    place-items: center;
-    min-height: 100vh;
-    padding: 24px;
+    grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+    height: 100dvh;
+    min-height: 0;
     background: var(--portal-paper);
 }
 .loginCard {
+    align-self: center;
     width: min(440px, 100%);
-    border: 1px solid var(--portal-line);
-    padding: 36px;
-    background: var(--portal-card);
+    margin: 0 auto;
+    padding: 40px;
 }
 .loginCard h1 {
-    margin: 45px 0 10px;
-    font-size: 40px;
-    letter-spacing: -0.08em;
+    margin: 28px 0 12px;
+    font-size: clamp(36px, 4vw, 48px);
+    line-height: 0.98;
+    letter-spacing: -0.065em;
 }
 .loginCard form {
-    margin-top: 30px;
+    display: grid;
+    gap: 16px;
+    margin-top: 32px;
 }
+.loginBrand { display: flex; align-items: center; gap: 11px; font-size: 16px; font-weight: 800; letter-spacing: -0.04em; }
+.loginBrand > span:last-child { display: grid; gap: 1px; }
+.loginBrand small { color: var(--portal-muted); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+.loginKicker { margin: 42px 0 0; color: var(--portal-green); font-size: 11px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
+.loginCard .subtle { max-width: 44ch; font-size: 14px; line-height: 1.65; }
+.loginCard .field { display: grid; gap: 7px; color: var(--portal-ink); font-size: 12px; font-weight: 700; }
+.loginCard .field input { width: 100%; padding: 12px 13px; border: 1px solid var(--portal-input-border); border-radius: 10px; background: var(--portal-input-bg); color: var(--portal-ink); font: inherit; font-size: 14px; outline: none; }
+.loginCard .field input:focus { border-color: var(--portal-green); box-shadow: 0 0 0 3px color-mix(in srgb, var(--portal-green) 16%, transparent); }
+.loginCard .button { width: 100%; margin-top: 4px; padding: 13px 16px; border-radius: 10px; font-weight: 750; }
+.loginFoot { margin: 2px 0 0; color: var(--portal-muted); font-size: 11.5px; line-height: 1.5; text-align: center; }
+.loginAside { display: flex; align-items: flex-end; min-height: 100%; overflow: hidden; background: radial-gradient(700px 380px at 90% 5%, rgba(196, 181, 253, 0.34), transparent 62%), radial-gradient(520px 360px at 10% 95%, rgba(185, 56, 43, 0.25), transparent 62%), linear-gradient(145deg, #20213f, #312e81); color: #fff; }
+.loginAsideInner { max-width: 560px; padding: clamp(40px, 7vw, 88px); }
+.loginAsideInner > p { margin: 0 0 16px; color: rgba(255,255,255,.7); font-size: 11px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
+.loginAside h2 { margin: 0; max-width: 12ch; font-size: clamp(32px, 4vw, 52px); line-height: .98; letter-spacing: -.065em; }
+.loginAside ul { display: grid; gap: 11px; margin: 30px 0 0; padding: 0; list-style: none; color: rgba(255,255,255,.82); font-size: 14px; line-height: 1.45; }
+.loginAside li { display: flex; gap: 10px; align-items: center; }
+.loginAside li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #c4b5fd; box-shadow: 0 0 0 4px rgba(196,181,253,.18); }
 
 @media (max-width: 860px) {
     .lowerGrid,
@@ -973,6 +1006,9 @@ html[data-theme="dark"] .portal {
         grid-template-columns: 1fr;
         gap: 38px;
     }
+    .loginPage { grid-template-columns: 1fr; height: auto; min-height: 100dvh; }
+    .loginAside { display: none; }
+    .loginCard { padding: 40px 24px; }
 }
 @media (max-width: 620px) {
     .topbar {

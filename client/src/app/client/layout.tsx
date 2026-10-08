@@ -35,6 +35,14 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
     const drawerOpen = drawer.open;
     const drawerVisible = drawer.visible;
 
+    // The public site reserves body space for its fixed navigation. Client
+    // routes use their own shell (and the public nav is absent), so remove
+    // that inherited gap for every portal page.
+    useEffect(() => {
+        document.body.classList.add("client-portal-page");
+        return () => document.body.classList.remove("client-portal-page");
+    }, []);
+
     function openDrawer() {
         setDrawer({ visible: true, open: false });
         requestAnimationFrame(() => {
@@ -96,13 +104,20 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
 
     return (
         <div className={styles.portal}>
-            <div className={styles.shell}>
+            <div
+                className={`${styles.shell} ${
+                    isLoginPage ? styles.loginShell : ""
+                }`}
+            >
                 {!isLoginPage && (
                     <aside className={styles.sidebar}>
                         <div className={styles.brand}>
                             <span className={styles.brandMark}>N</span> Nexora
                         </div>
-                        <nav className={styles.nav} aria-label="Client sections">
+                        <nav
+                            className={styles.nav}
+                            aria-label="Client sections"
+                        >
                             {navItems.map((item) => (
                                 <Link
                                     key={item.href}
@@ -120,7 +135,17 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
                             className={styles.logout}
                             onClick={handleLogout}
                         >
-                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <svg
+                                width="15"
+                                height="15"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                aria-hidden="true"
+                            >
                                 <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                                 <polyline points="16 17 21 12 16 7" />
                                 <line x1="21" y1="12" x2="9" y2="12" />
@@ -179,14 +204,19 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
                                     <span aria-hidden="true">✕</span>
                                 </button>
                             </div>
-                            <nav className={styles.drawerNav} aria-label="Client sections mobile">
+                            <nav
+                                className={styles.drawerNav}
+                                aria-label="Client sections mobile"
+                            >
                                 {navItems.map((item) => (
                                     <Link
                                         key={item.href}
                                         href={item.href}
                                         onClick={closeDrawer}
                                         className={
-                                            isActive(item.href) ? styles.active : ""
+                                            isActive(item.href)
+                                                ? styles.active
+                                                : ""
                                         }
                                     >
                                         {item.label}
@@ -199,7 +229,17 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
                                     className={`${styles.logout} ${styles.drawerLogout}`}
                                     onClick={handleLogout}
                                 >
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                    <svg
+                                        width="15"
+                                        height="15"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        aria-hidden="true"
+                                    >
                                         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
                                         <polyline points="16 17 21 12 16 7" />
                                         <line x1="21" y1="12" x2="9" y2="12" />
@@ -211,7 +251,9 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
                     </div>
                 )}
 
-                <main className={styles.main}>{children}</main>
+                <main className={isLoginPage ? styles.loginMain : styles.main}>
+                    {children}
+                </main>
             </div>
         </div>
     );

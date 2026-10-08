@@ -312,6 +312,12 @@ body {
         background 0.3s ease;
 }
 
+/* The client portal has its own navigation shell; it must not inherit the
+   vertical reservation for the public site's fixed header. */
+body.client-portal-page {
+    padding-top: 0;
+}
+
 @media (max-width: 760px) {
     body {
         padding-top: 72px;

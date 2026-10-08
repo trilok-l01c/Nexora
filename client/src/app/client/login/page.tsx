@@ -44,21 +44,22 @@ export default function ClientLogin() {
     return (
         <main className={styles.loginPage}>
             <section className={styles.loginCard}>
-                <div className={styles.brand}>
-                    <span className={styles.brandMark}>N</span> Nexora client
-                    portal
+                <div className={styles.loginBrand}>
+                    <span className={styles.brandMark}>N</span>
+                    <span>Nexora <small>Client portal</small></span>
                 </div>
-                <p className={styles.eyebrow}>Private workspace</p>
-                <h1>Welcome back.</h1>
+                <p className={styles.loginKicker}>Private workspace</p>
+                <h1>Your work, in one place.</h1>
                 <p className={styles.subtle}>
-                    Sign in to follow your projects, updates, and support
-                    requests.
+                    Sign in to follow project progress, see updates, and get
+                    support from the team.
                 </p>
                 <form onSubmit={submit}>
                     <label className={styles.field}>
-                        Email
+                        <span>Work email</span>
                         <input
                             type="email"
+                            placeholder="you@company.com"
                             value={email}
                             onChange={(event) => setEmail(event.target.value)}
                             required
@@ -66,9 +67,10 @@ export default function ClientLogin() {
                         />
                     </label>
                     <label className={styles.field}>
-                        Password
+                        <span>Password</span>
                         <input
                             type="password"
+                            placeholder="••••••••"
                             value={password}
                             onChange={(event) =>
                                 setPassword(event.target.value)
@@ -91,8 +93,22 @@ export default function ClientLogin() {
                     >
                         {loading ? "Signing in..." : "Sign in to portal"}
                     </button>
+                    <p className={styles.loginFoot}>
+                        Your workspace is protected with a secure session.
+                    </p>
                 </form>
             </section>
+            <aside className={styles.loginAside} aria-hidden="true">
+                <div className={styles.loginAsideInner}>
+                    <p>Built for clear collaboration</p>
+                    <h2>Stay close to the work that matters.</h2>
+                    <ul>
+                        <li>Track project progress in real time</li>
+                        <li>Review delivery updates and milestones</li>
+                        <li>Get help directly from the Nexora team</li>
+                    </ul>
+                </div>
+            </aside>
         </main>
     );
 }
