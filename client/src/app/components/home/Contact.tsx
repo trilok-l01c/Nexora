@@ -1,67 +1,167 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, KeyboardEvent, useEffect, useState } from "react";
 import { useReveal } from "../../useReveal";
 import styles from "./Contact.module.css";
 import { apiUrl } from "../../apiConfig";
 
+type Field = "name" | "company" | "email" | "phone" | "service" | "message";
+const prompts: {
+    field: Field;
+    question: string;
+    hint: string;
+    type: "text" | "email" | "tel" | "textarea";
+    required: boolean;
+    autoComplete?: string;
+}[] = [
+    {
+        field: "name",
+        question: "What is your name?",
+        hint: "Press Enter to continue",
+        type: "text",
+        required: true,
+        autoComplete: "name",
+    },
+    {
+        field: "company",
+        question: "Your company name?",
+        hint: "Press Enter to continue — optional",
+        type: "text",
+        required: false,
+        autoComplete: "organization",
+    },
+    {
+        field: "email",
+        question: "Your email?",
+        hint: "Press Enter to continue",
+        type: "email",
+        required: true,
+        autoComplete: "email",
+    },
+    {
+        field: "phone",
+        question: "Your phone number?",
+        hint: "Press Enter to continue — optional",
+        type: "tel",
+        required: false,
+        autoComplete: "tel",
+    },
+    {
+        field: "service",
+        question: "What service do you want?",
+        hint: "For example: website, AI automation, data analysis, or blockchain",
+        type: "text",
+        required: true,
+    },
+    {
+        field: "message",
+        question: "Briefly explain what you want?",
+        hint: "Press Enter to send your enquiry",
+        type: "textarea",
+        required: true,
+    },
+];
+const emptyForm = {
+    name: "",
+    company: "",
+    email: "",
+    phone: "",
+    service: "",
+    message: "",
+};
+
 export default function Contact() {
-    const [form, setForm] = useState({
-        name: "",
-        email: "",
-        phone: "",
-        company: "",
-        service: "",
-        message: "",
-    });
+    const [form, setForm] = useState(emptyForm);
+    const [step, setStep] = useState(0);
+    const [draft, setDraft] = useState("");
+    const [error, setError] = useState("");
     const [status, setStatus] = useState<
         "idle" | "sending" | "success" | "error"
     >("idle");
     const [statusMessage, setStatusMessage] = useState("");
     const introReveal = useReveal<HTMLDivElement>();
     const formReveal = useReveal<HTMLFormElement>({ delay: 120 });
+    const active = prompts[step];
+    const [typedQuestion, setTypedQuestion] = useState("");
 
-    function updateField(field: keyof typeof form, value: string) {
-        setForm((current) => ({ ...current, [field]: value }));
+    useEffect(() => {
+        if (!active) return;
+        setTypedQuestion("");
+        let character = 0;
+        const timer = window.setInterval(() => {
+            character += 1;
+            setTypedQuestion(active.question.slice(0, character));
+            if (character === active.question.length)
+                window.clearInterval(timer);
+        }, 28);
+        return () => window.clearInterval(timer);
+    }, [active]);
+
+    function validate() {
+        const value = draft.trim();
+        if (active.required && !value)
+            return "Please add a response before continuing.";
+        if (active.field === "email" && value && !/^\S+@\S+\.\S+$/.test(value))
+            return "Please enter a valid email address.";
+        if (
+            active.field === "phone" &&
+            value &&
+            !/^[+\d][\d\s().-]{6,29}$/.test(value)
+        )
+            return "Please enter a valid phone number, or leave this blank.";
+        return "";
     }
-
-    async function submitContact(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault();
+    function advance() {
+        const message = validate();
+        if (message) return setError(message);
+        setForm((current) => ({ ...current, [active.field]: draft.trim() }));
+        setDraft("");
+        setError("");
+        setStep((current) => current + 1);
+    }
+    async function submit() {
+        const message = validate();
+        if (message) return setError(message);
+        const completedForm = { ...form, [active.field]: draft.trim() };
         setStatus("sending");
         setStatusMessage("");
-
         try {
             const response = await fetch(`${apiUrl}/api/contact`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(form),
+                body: JSON.stringify(completedForm),
             });
             const result = await response.json();
-
-            if (!response.ok) {
+            if (!response.ok)
                 throw new Error(
                     result.message || "We could not send your message.",
                 );
-            }
-
+            setForm(completedForm);
+            setDraft("");
+            setStep(prompts.length);
             setStatus("success");
             setStatusMessage(result.message);
-            setForm({
-                name: "",
-                email: "",
-                phone: "",
-                company: "",
-                service: "",
-                message: "",
-            });
-        } catch (error) {
+        } catch (submissionError) {
             setStatus("error");
             setStatusMessage(
-                error instanceof Error
-                    ? error.message
+                submissionError instanceof Error
+                    ? submissionError.message
                     : "We could not send your message.",
             );
         }
+    }
+    function onKeyDown(
+        event: KeyboardEvent<HTMLInputElement | HTMLTextAreaElement>,
+    ) {
+        if (event.key !== "Enter" || event.shiftKey) return;
+        event.preventDefault();
+        if (step === prompts.length - 1) void submit();
+        else advance();
+    }
+    function onSubmit(event: FormEvent<HTMLFormElement>) {
+        event.preventDefault();
+        if (step < prompts.length - 1) advance();
+        else void submit();
     }
 
     return (
@@ -75,97 +175,69 @@ export default function Contact() {
                 </h2>
             </div>
             <form
-                className={styles.contactForm}
-                onSubmit={submitContact}
+                className={`${styles.contactForm} ${styles.conversationForm}`}
+                onSubmit={onSubmit}
                 {...formReveal}
             >
-                <div className={styles.formGrid}>
-                    <label>
-                        <span className={styles.fieldLabel}>
-                            Name<span aria-hidden="true">*</span>
-                        </span>
-                        <input
-                            value={form.name}
-                            onChange={(event) =>
-                                updateField("name", event.target.value)
-                            }
-                            required
-                            maxLength={100}
-                            autoComplete="name"
-                        />
-                    </label>
-                    <label>
-                        <span className={styles.fieldLabel}>
-                            Email<span aria-hidden="true">*</span>
-                        </span>
-                        <input
-                            type="email"
-                            value={form.email}
-                            onChange={(event) =>
-                                updateField("email", event.target.value)
-                            }
-                            required
-                            maxLength={254}
-                            autoComplete="email"
-                        />
-                    </label>
-                    <label>
-                        <span className={styles.fieldLabel}>Phone</span>
-                        <input
-                            type="tel"
-                            value={form.phone}
-                            onChange={(event) =>
-                                updateField("phone", event.target.value)
-                            }
-                            maxLength={30}
-                            autoComplete="tel"
-                        />
-                    </label>
-                    <label>
-                        <span className={styles.fieldLabel}>Company</span>
-                        <input
-                            value={form.company}
-                            onChange={(event) =>
-                                updateField("company", event.target.value)
-                            }
-                            maxLength={120}
-                            autoComplete="organization"
-                        />
-                    </label>
-                    <label className={styles.formWide}>
-                        <span className={styles.fieldLabel}>
-                            Service<span aria-hidden="true">*</span>
-                        </span>
-                        <select
-                            value={form.service}
-                            onChange={(event) =>
-                                updateField("service", event.target.value)
-                            }
-                            required
+                <div className={styles.conversationLog} aria-live="polite">
+                    <p className={styles.systemLine}>So, let&apos;s talk.</p>
+                    {prompts.slice(0, step).map((prompt) => (
+                        <div
+                            className={styles.completedLine}
+                            key={prompt.field}
                         >
-                            <option value="">Select a service</option>
-                            <option>Website &amp; web development</option>
-                            <option>Mobile applications</option>
-                            <option>Custom software</option>
-                            <option>AI &amp; automation</option>
-                            <option>Digital presence / marketing</option>
-                            <option>Cloud &amp; IT support</option>
-                        </select>
-                    </label>
-                    <label className={styles.formWide}>
-                        <span className={styles.fieldLabel}>
-                            Project details<span aria-hidden="true">*</span>
-                        </span>
-                        <textarea
-                            value={form.message}
-                            onChange={(event) =>
-                                updateField("message", event.target.value)
-                            }
-                            required
-                            maxLength={5000}
-                            rows={5}
-                        />
-                    </label>
+                            <p>{prompt.question}</p>
+                            <span>{form[prompt.field] || "—"}</span>
+                        </div>
+                    ))}
+                    {step < prompts.length ? (
+                        <div className={styles.activeLine} key={active.field}>
+                            <div className={styles.questionRow}>
+                                <label htmlFor={`contact-${active.field}`}>
+                                    {typedQuestion}
+                                    {typedQuestion.length <
+                                        active.question.length && (
+                                        <i aria-hidden="true" />
+                                    )}
+                                </label>
+                                {typedQuestion.length ===
+                                    active.question.length &&
+                                    (active.type === "textarea" ? (
+                                        <textarea
+                                            id={`contact-${active.field}`}
+                                            value={draft}
+                                            onChange={(event) => {
+                                                setDraft(event.target.value);
+                                                setError("");
+                                            }}
+                                            onKeyDown={onKeyDown}
+                                            rows={3}
+                                            autoFocus
+                                        />
+                                    ) : (
+                                        <input
+                                            id={`contact-${active.field}`}
+                                            type={active.type}
+                                            value={draft}
+                                            onChange={(event) => {
+                                                setDraft(event.target.value);
+                                                setError("");
+                                            }}
+                                            onKeyDown={onKeyDown}
+                                            autoComplete={active.autoComplete}
+                                            autoFocus
+                                        />
+                                    ))}
+                            </div>
+                            <small>
+                                {active.hint} <kbd>↵</kbd>
+                            </small>
+                        </div>
+                    ) : (
+                        <p className={styles.successLine}>
+                            ✦ Thank you. We&apos;ll be in touch soon.
+                        </p>
+                    )}
                 </div>
                 <div className={styles.formFooter}>
                     <p
@@ -173,24 +245,22 @@ export default function Contact() {
                         data-status={status}
                         aria-live="polite"
                     >
-                        {statusMessage}
+                        {error || statusMessage}
                     </p>
-                    <button
-                        className={styles.contactButton}
-                        type="submit"
-                        disabled={status === "sending"}
-                    >
-                        {status === "sending" ? "Sending..." : "Send enquiry"}{" "}
-                        <span aria-hidden="true">↗</span>
-                    </button>
+                    {step < prompts.length &&
+                        typedQuestion.length === active.question.length && (
+                            <button
+                                className={styles.conversationSubmit}
+                                type="submit"
+                            >
+                                {step === prompts.length - 1
+                                    ? "Send enquiry"
+                                    : "Continue"}{" "}
+                                <span>↵</span>
+                            </button>
+                        )}
                 </div>
             </form>
-            <a
-                className={styles.contactButton}
-                href="mailto:hello@nexora.studio"
-            >
-                hello@nexora.studio <span>↗</span>
-            </a>
         </section>
     );
 }

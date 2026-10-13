@@ -1,7 +1,4 @@
-/* Nexora Operations Console — redesigned.
-   Light-first internal tool aligned with the public brand: white surfaces,
-   Nexora green primary, blue information. Tokens live on `.workspace` so the
-   tool stays independent of the public site theme. */
+/* Nexora Operations Console — a self-contained workspace palette. */
 
 .workspace {
     --w-canvas: #f4f6fb;
@@ -51,7 +48,7 @@
     -webkit-font-smoothing: antialiased;
 }
 
-/* ---------- Sidebar: clean light rail ---------- */
+/* ---------- Sidebar ---------- */
 
 .sidebar {
     position: sticky;
@@ -150,7 +147,7 @@
     color: var(--w-ink);
 }
 
-/* Active tab: soft green pill on the light rail. */
+/* Active tab */
 .navItemActive,
 .navItemActive:hover {
     background: var(--w-green-soft);
@@ -464,7 +461,7 @@
     margin: 0 auto;
 }
 
-/* ---------- Page header: light editorial header ---------- */
+/* ---------- Page header ---------- */
 
 .pageHeader {
     display: flex;

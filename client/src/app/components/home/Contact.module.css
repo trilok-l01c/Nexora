@@ -168,6 +168,247 @@
     cursor: wait;
     opacity: 0.6;
 }
+
+.conversationProgress {
+    display: grid;
+    gap: 10px;
+    margin-bottom: 34px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+.conversationProgress i {
+    display: block;
+    height: 2px;
+    overflow: hidden;
+    background: var(--contact-border);
+}
+.conversationProgress b {
+    display: block;
+    height: 100%;
+    background: var(--accent-gradient);
+    transition: width 0.35s var(--ease-out);
+}
+.conversationWelcome,
+.conversationQuestion {
+    min-height: 255px;
+    animation: nxFadeUp 0.35s var(--ease-out) both;
+}
+.conversationWelcome > span,
+.conversationQuestion > p {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    margin: 0 0 22px;
+    border-radius: 12px;
+    background: var(--featured-bg);
+    color: var(--accent-green);
+    font-size: 13px;
+    font-weight: 800;
+}
+.conversationWelcome h3,
+.conversationQuestion label > span {
+    display: block;
+    color: var(--ink);
+    font-size: clamp(25px, 3.2vw, 36px);
+    font-weight: 750;
+    line-height: 1.08;
+    letter-spacing: -0.055em;
+}
+.conversationWelcome p,
+.conversationQuestion small {
+    display: block;
+    max-width: 510px;
+    margin-top: 14px;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+}
+.conversationQuestion label b {
+    color: var(--accent-blue);
+}
+.conversationQuestion input,
+.conversationQuestion select,
+.conversationQuestion textarea {
+    width: 100%;
+    margin-top: 28px;
+    border: 0;
+    border-bottom: 2px solid var(--contact-input-border);
+    border-radius: 0;
+    padding: 12px 0;
+    color: var(--ink);
+    background: transparent;
+    font:
+        20px var(--font-geist-sans),
+        sans-serif;
+    outline: none;
+    transition: border-color 0.2s ease;
+}
+.conversationQuestion textarea {
+    resize: vertical;
+}
+.conversationQuestion input:focus,
+.conversationQuestion select:focus,
+.conversationQuestion textarea:focus {
+    border-color: var(--accent-green);
+}
+.conversationActions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.backButton {
+    padding: 12px 6px;
+    border: 0;
+    color: var(--muted);
+    background: transparent;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+.backButton:hover {
+    color: var(--ink);
+}
+
+.conversationForm {
+    max-width: 980px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+.conversationLog {
+    display: grid;
+    gap: 18px;
+    text-align: left;
+}
+.systemLine,
+.completedLine p,
+.activeLine label {
+    margin: 0;
+    color: var(--ink);
+    font-size: clamp(20px, 2.8vw, 32px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.045em;
+}
+.systemLine {
+    animation: nxFadeUp 0.45s var(--ease-out) both;
+}
+.systemLine strong {
+    color: var(--accent-green);
+}
+.completedLine,
+.activeLine {
+    animation: nxFadeUp 0.35s var(--ease-out) both;
+}
+.completedLine {
+    display: grid;
+    grid-template-columns: fit-content(58%) minmax(50px, 1fr);
+    align-items: baseline;
+    column-gap: 0.45ch;
+}
+.completedLine span {
+    color: var(--accent-green);
+    font-size: clamp(20px, 2.8vw, 32px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.045em;
+}
+.activeLine {
+    margin-top: 4px;
+    padding: 18px 0 8px;
+    border-top: 1px solid var(--contact-border);
+}
+.activeLine label {
+    display: grid;
+    grid-template-columns: fit-content(58%) minmax(8px, 0.5fr);
+    column-gap: 0.45ch;
+    align-items: baseline;
+}
+.activeLine label > span {
+    display: inline;
+}
+.activeLine input,
+.activeLine textarea {
+    width: 100%;
+    min-width: 0;
+    margin-top: 0;
+    border: 0;
+    border-bottom: 2px solid var(--accent-green);
+    padding: 8px 0 13px;
+    color: var(--ink);
+    background: transparent;
+    font:
+        18px var(--font-geist-sans),
+        sans-serif;
+    outline: none;
+}
+.activeLine textarea {
+    min-height: 54px;
+    resize: vertical;
+}
+.activeLine small {
+    display: block;
+    margin-top: 11px;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+}
+.activeLine kbd {
+    margin-left: 5px;
+    padding: 2px 5px;
+    border: 1px solid var(--contact-border);
+    border-radius: 4px;
+    color: var(--ink);
+    font: inherit;
+}
+.conversationSubmit {
+    border: 0;
+    padding: 11px 0;
+    color: var(--accent-green);
+    background: transparent;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+}
+.conversationSubmit:hover {
+    color: var(--accent-blue);
+}
+.conversationSubmit span {
+    margin-left: 8px;
+}
+.successLine {
+    margin: 10px 0 0;
+    color: var(--accent-green);
+    font-size: 20px;
+    font-weight: 700;
+    animation: nxFadeUp 0.45s var(--ease-out) both;
+}
+
+@media (max-width: 620px) {
+    .completedLine,
+    .activeLine label {
+        display: block;
+    }
+    .completedLine span {
+        display: block;
+        margin-top: 7px;
+    }
+    .activeLine input,
+    .activeLine textarea {
+        display: block;
+        width: 100%;
+        margin-top: 13px;
+    }
+}
 @media (max-width: 760px) {
     .contactForm {
         padding: 20px;
@@ -300,5 +541,88 @@
     }
     .contactButton:hover::after {
         animation: none;
+    }
+}
+
+/* The conversation deliberately lives in the page canvas rather than a card. */
+.contactForm.conversationForm {
+    width: min(100%, 1280px);
+    margin: 0 auto 35px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
+/* Prompt and response are deliberately separate elements so they always
+   share one conversational line on desktop. */
+.questionRow {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: baseline;
+    gap: 1ch;
+}
+.questionRow label {
+    flex: 0 0 max-content;
+    width: max-content;
+    margin: 0;
+    color: var(--ink);
+    font-size: clamp(25px, 3.3vw, 44px);
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.045em;
+    white-space: nowrap;
+}
+.questionRow label i {
+    display: inline-block;
+    width: 2px;
+    height: 0.95em;
+    margin-left: 3px;
+    vertical-align: -0.1em;
+    background: var(--accent-green);
+    animation: nxGlowPulse 0.8s steps(2, jump-none) infinite;
+}
+.questionRow input,
+.questionRow textarea {
+    flex: 0 1 24ch;
+    width: 24ch;
+    min-width: 120px;
+    margin: 0;
+    border: 0;
+    padding: 4px 0 8px;
+    color: var(--accent-green);
+    background: transparent;
+    caret-color: var(--accent-green);
+    font:
+        700 clamp(25px, 3.3vw, 44px) var(--font-geist-sans),
+        sans-serif;
+    line-height: 1.2;
+    letter-spacing: -0.045em;
+    outline: none;
+}
+.questionRow textarea {
+    min-height: 1.5em;
+    resize: vertical;
+}
+.questionRow:has(textarea) {
+    display: block;
+}
+.questionRow:has(textarea) textarea {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    margin-top: 14px;
+}
+
+@media (max-width: 620px) {
+    .questionRow {
+        display: block;
+    }
+    .questionRow input,
+    .questionRow textarea {
+        display: block;
+        margin-top: 12px;
     }
 }

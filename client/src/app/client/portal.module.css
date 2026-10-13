@@ -1,31 +1,4 @@
 .portal {
-    --portal-ink: #20213f;
-    --portal-muted: #686a87;
-    --portal-paper: #f7f7ff;
-    --portal-line: #deddf0;
-    --portal-green: #4338ca;
-    --portal-card: #fff;
-    --portal-input-bg: #ffffff;
-    --portal-input-border: #aaa6cc;
-    --portal-hover: #f0efff;
-    --portal-notice-bg: #f0eeff;
-    --portal-badge-bg: #fff0ed;
-    --portal-track: #e8e6f4;
-    --portal-modal-shadow: #c9c3f2;
-    --portal-empty-border: #c8c4e4;
-    --portal-error: #c64f54;
-    --portal-button-text: #ffffff;
-    --portal-button-hover: #312e81;
-    --portal-milestone-border: #b8b4d3;
-    min-height: 100vh;
-    color: var(--portal-ink);
-    background: var(--portal-paper);
-    transition:
-        color 0.3s ease,
-        background 0.3s ease;
-}
-
-.portal {
     --portal-ink: #f0efff;
     --portal-muted: #aaa8c5;
     --portal-paper: #111127;
@@ -44,6 +17,9 @@
     --portal-button-text: #16142c;
     --portal-button-hover: #ddd6fe;
     --portal-milestone-border: #414065;
+    min-height: 100vh;
+    color: var(--portal-ink);
+    background: var(--portal-paper);
 }
 .navbar {
     position: sticky;
