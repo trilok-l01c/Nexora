@@ -18,7 +18,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 6vw;
     align-items: center;
-    background: linear-gradient(115deg, #f4f2ff 0%, #ffffff 58%, #fff4f1 100%);
+    background: var(--hero-blend);
 }
 
 .heroCopy {
@@ -715,7 +715,7 @@
 
 html[data-theme="dark"] .hero,
 html[data-theme="dark"] .reasons {
-    background: linear-gradient(115deg, #1b1a38 0%, #101022 58%, #241a31 100%);
+    background: var(--hero-blend);
 }
 
 html[data-theme="dark"] .floatingCard {

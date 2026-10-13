@@ -2,7 +2,7 @@
     min-height: 100vh;
     overflow: clip;
     color: var(--ink);
-    background: var(--paper);
+    background: var(--background);
 }
 .nav {
     position: sticky;

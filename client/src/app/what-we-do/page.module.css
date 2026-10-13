@@ -15,7 +15,7 @@
     grid-template-columns: 1.1fr 0.9fr;
     gap: 8vw;
     align-items: center;
-    background: linear-gradient(135deg, #f1efff, #fff5f2);
+    background: var(--hero-blend);
 }
 .kicker {
     margin: 0;

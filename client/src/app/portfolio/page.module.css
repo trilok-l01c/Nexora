@@ -2,7 +2,7 @@
 .showcase {
     min-height: 100vh;
     color: var(--ink);
-    background: var(--paper);
+    background: var(--background);
 }
 
 /* ---- Hero / overview ---- */
@@ -14,7 +14,7 @@
     gap: 6vw;
     min-height: 100vh;
     padding: clamp(90px, 12vw, 150px) max(5vw, 32px) 90px;
-    background: linear-gradient(125deg, #f4f2ff, #fff4f1);
+    background: var(--hero-blend);
     overflow: hidden;
 }
 
@@ -793,7 +793,7 @@
         padding-top: 120px;
         padding-bottom: 60px;
         gap: 36px;
-        background: linear-gradient(125deg, #f4f2ff, #fff4f1);
+        background: var(--hero-blend);
     }
 
     .heroCopy {
@@ -888,5 +888,5 @@
 }
 
 html[data-theme="dark"] .hero {
-    background: linear-gradient(125deg, #1b1a38, #241a31);
+    background: var(--hero-blend);
 }

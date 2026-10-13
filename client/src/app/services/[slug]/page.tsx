@@ -32,7 +32,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
     }
 
     return (
-        <main className={styles.page}>
+        <main className={styles.page} data-motion-page>
             <section className={styles.hero}>
                 <div className={styles.heroMeta}>
                     <p>NX / {service.category}</p>

@@ -77,7 +77,7 @@ export default async function PortfolioProjectPage({
         0;
 
     return (
-        <main className={styles.page}>
+        <main className={styles.page} data-motion-page>
             <div className={styles.backBar}>
                 <Link className={styles.backLink} href="/portfolio">
                     ← Portfolio

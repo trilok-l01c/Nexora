@@ -3,7 +3,18 @@
    coordinated midnight version is used by the theme toggle. */
 :root {
     color-scheme: light;
-    --background: #ffffff;
+    /* A loose, colour-wash canvas keeps the public site feeling handcrafted
+       rather than like a rigid interface. */
+    --background:
+        radial-gradient(55rem 36rem at -12% 2%, rgba(118, 92, 236, 0.23), transparent 63%),
+        radial-gradient(48rem 36rem at 105% 9%, rgba(242, 119, 93, 0.2), transparent 61%),
+        radial-gradient(38rem 30rem at 52% 108%, rgba(149, 123, 238, 0.12), transparent 66%),
+        linear-gradient(135deg, #fbfaff 0%, #fffefe 49%, #fff8f5 100%);
+    --hero-blend:
+        radial-gradient(50rem 31rem at -8% 8%, rgba(113, 91, 238, 0.28), transparent 64%),
+        radial-gradient(43rem 34rem at 104% 88%, rgba(242, 107, 91, 0.22), transparent 62%),
+        radial-gradient(28rem 22rem at 57% -8%, rgba(255, 198, 168, 0.18), transparent 68%),
+        linear-gradient(118deg, #f7f5ff 0%, #fffefe 50%, #fff4ef 100%);
     --foreground: #20213f;
     --ink: #20213f;
     --muted: #686a87;
@@ -18,7 +29,9 @@
     --button-bg: var(--accent-green);
     --button-text: #ffffff;
     --button-hover-bg: var(--accent-green-dark);
-    --section-light-bg: #f7f7ff;
+    --section-light-bg:
+        radial-gradient(42rem 26rem at 100% 0%, rgba(185, 56, 43, 0.09), transparent 66%),
+        linear-gradient(135deg, #f8f8ff 0%, #f4f3ff 100%);
     --section-light-text: #29294a;
     --section-light-muted: #72738e;
     --section-light-kicker: #5b4bdb;
@@ -39,19 +52,27 @@
     --dropdown-bg: #ffffff;
     --dropdown-shadow: rgba(32, 33, 63, 0.14);
     --dropdown-border: rgba(32, 33, 63, 0.1);
-    --featured-bg: #f3f0ff;
-    --industries-bg: #fff3f0;
+    --featured-bg:
+        radial-gradient(32rem 20rem at 0% 0%, rgba(91, 75, 219, 0.12), transparent 70%),
+        linear-gradient(135deg, #f7f4ff, #f1efff);
+    --industries-bg:
+        radial-gradient(34rem 24rem at 100% 15%, rgba(185, 56, 43, 0.12), transparent 68%),
+        linear-gradient(135deg, #fff8f5, #fff1ed);
     --industries-line: rgba(32, 33, 63, 0.08);
     --industries-muted: #72738e;
     --industries-accent: var(--accent-blue);
     --industries-text: #4e4f70;
-    --contact-bg: #f5f3ff;
+    --contact-bg:
+        radial-gradient(42rem 30rem at 0% 100%, rgba(91, 75, 219, 0.14), transparent 65%),
+        linear-gradient(135deg, #f7f5ff, #f3f0ff);
     --contact-form-bg: rgba(255, 255, 255, 0.85);
     --contact-input-bg: #ffffff;
     --contact-border: rgba(32, 33, 63, 0.12);
     --contact-input-border: rgba(32, 33, 63, 0.18);
-    --details-bg: #fff3f0;
-    --content-bg: #f7f7ff;
+    --details-bg:
+        radial-gradient(38rem 25rem at 100% 0%, rgba(185, 56, 43, 0.13), transparent 68%),
+        linear-gradient(135deg, #fff9f7, #fff0ec);
+    --content-bg: var(--section-light-bg);
     --card-top: #9a99b3;
     --card-top-accent: var(--accent-blue);
     --project-disclaimer: #72738e;
@@ -123,7 +144,16 @@
 
 html[data-theme="dark"] {
     color-scheme: dark;
-    --background: #101022;
+    --background:
+        radial-gradient(55rem 38rem at -12% 2%, rgba(135, 105, 244, 0.38), transparent 63%),
+        radial-gradient(49rem 36rem at 106% 8%, rgba(244, 117, 112, 0.26), transparent 61%),
+        radial-gradient(40rem 30rem at 52% 110%, rgba(117, 89, 211, 0.23), transparent 66%),
+        linear-gradient(135deg, #121126 0%, #101022 48%, #1c1329 100%);
+    --hero-blend:
+        radial-gradient(51rem 33rem at -8% 6%, rgba(139, 113, 243, 0.42), transparent 63%),
+        radial-gradient(45rem 32rem at 105% 88%, rgba(252, 165, 165, 0.27), transparent 61%),
+        radial-gradient(28rem 22rem at 55% -10%, rgba(227, 158, 255, 0.16), transparent 68%),
+        linear-gradient(118deg, #1d1a3e 0%, #111124 53%, #2a192f 100%);
     --foreground: #f0efff;
     --ink: #f7f5ff;
     --muted: #aaa8c5;
@@ -146,7 +176,9 @@ html[data-theme="dark"] {
     /* These tokens are also used by the public pages' inline headings.
        Leaving their light values in place made dark-mode headings almost
        disappear against their midnight sections. */
-    --section-light-bg: #17152e;
+    --section-light-bg:
+        radial-gradient(42rem 28rem at 100% 0%, rgba(252, 165, 165, 0.12), transparent 66%),
+        linear-gradient(135deg, #191733, #15142c);
     --section-light-text: #f7f5ff;
     --section-light-muted: #c2bfda;
     --section-light-kicker: #c4b5fd;
@@ -178,19 +210,27 @@ html[data-theme="dark"] {
     --dropdown-bg: #1b1a38;
     --dropdown-shadow: rgba(2, 6, 16, 0.7);
     --dropdown-border: rgba(214, 210, 255, 0.14);
-    --featured-bg: #201d43;
-    --industries-bg: #211a35;
+    --featured-bg:
+        radial-gradient(34rem 23rem at 0% 0%, rgba(196, 181, 253, 0.15), transparent 68%),
+        linear-gradient(135deg, #242047, #1d1a3d);
+    --industries-bg:
+        radial-gradient(34rem 24rem at 100% 15%, rgba(252, 165, 165, 0.13), transparent 68%),
+        linear-gradient(135deg, #261c3a, #1f1933);
     --industries-line: rgba(214, 210, 255, 0.13);
     --industries-muted: #aaa8c5;
     --industries-accent: #fca5a5;
     --industries-text: #c2bfda;
-    --contact-bg: #17152e;
+    --contact-bg:
+        radial-gradient(42rem 30rem at 0% 100%, rgba(196, 181, 253, 0.18), transparent 65%),
+        linear-gradient(135deg, #191733, #15142d);
     --contact-form-bg: rgba(29, 27, 58, 0.72);
     --contact-input-bg: rgba(24, 23, 50, 0.9);
     --contact-border: rgba(214, 210, 255, 0.14);
     --contact-input-border: rgba(214, 210, 255, 0.18);
-    --details-bg: #211a35;
-    --content-bg: #17152e;
+    --details-bg:
+        radial-gradient(38rem 25rem at 100% 0%, rgba(252, 165, 165, 0.15), transparent 68%),
+        linear-gradient(135deg, #281d3a, #211a35);
+    --content-bg: var(--section-light-bg);
     --card-top: #aaa8c5;
     --card-top-accent: #fca5a5;
     --project-disclaimer: #aaa8c5;
@@ -304,6 +344,7 @@ body {
     padding-top: 103px;
     color: var(--foreground);
     background: var(--background);
+    background-attachment: fixed;
     font-family: var(--font-geist-sans), sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -311,6 +352,7 @@ body {
         color 0.3s ease,
         background 0.3s ease;
 }
+
 
 /* The client portal has its own navigation shell; it must not inherit the
    vertical reservation for the public site's fixed header. */
@@ -435,6 +477,15 @@ a {
         transform: translate3d(0, 0, 0) scale(1);
     }
 }
+@keyframes nxPaintDrift {
+    0%,
+    100% {
+        background-position: 0% 0%;
+    }
+    50% {
+        background-position: 100% 75%;
+    }
+}
 @keyframes nxGlowPulse {
     0%,
     100% {
@@ -529,6 +580,14 @@ a {
     animation-name: nxPopIn;
 }
 
+/* Move the colour washes at an almost imperceptible pace. This keeps the
+   homepage expressive without asking visitors to track a visual effect. */
+[data-motion-page],
+[data-motion-page] > section:first-child {
+    background-size: 135% 135%;
+    animation: nxPaintDrift 24s ease-in-out infinite alternate;
+}
+
 /* Reduced motion ---------------------------------------------------------
    Everything that moves is neutralised, and reveal elements are forced
    visible so no content can hide behind a disabled animation. */
@@ -541,6 +600,11 @@ a {
         opacity: 1 !important;
         transform: none !important;
         animation: none !important;
+    }
+    [data-motion-page],
+    [data-motion-page] > section:first-child {
+        animation: none;
+        background-size: auto;
     }
 }
 
