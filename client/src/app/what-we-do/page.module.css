@@ -173,10 +173,10 @@
         padding-top: 80px;
     }
 }
-html[data-theme="dark"] .hero {
+.hero {
     background: linear-gradient(135deg, #1b1a38, #241a31);
 }
-html[data-theme="dark"] .banner a {
+.banner a {
     background: var(--surface);
     color: var(--accent-green);
 }

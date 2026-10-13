@@ -1,8 +1,6 @@
-/* Nexora design tokens — indigo and coral.
-   The public site, dialogs, and shared controls draw from this palette; a
-   coordinated midnight version is used by the theme toggle. */
+/* Nexora design tokens — a permanent midnight indigo and coral palette. */
 :root {
-    color-scheme: light;
+    color-scheme: dark;
     /* A loose, colour-wash canvas keeps the public site feeling handcrafted
        rather than like a rigid interface. */
     --background:
@@ -142,7 +140,7 @@
     --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-html[data-theme="dark"] {
+:root {
     color-scheme: dark;
     --background:
         radial-gradient(55rem 38rem at -12% 2%, rgba(135, 105, 244, 0.38), transparent 63%),

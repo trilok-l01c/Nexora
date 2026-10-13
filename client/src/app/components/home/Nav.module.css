@@ -60,8 +60,7 @@
     gap: 9px;
 }
 .portal,
-.signOut,
-.themeToggle {
+.signOut {
     padding: 9px 12px;
     color: var(--nav-links);
     background: transparent;
@@ -70,38 +69,6 @@
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
-}
-.themeToggle {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    border: 1px solid var(--toggle-border);
-    border-radius: 10px;
-    color: var(--toggle-text);
-    background: var(--surface);
-    transition:
-        border-color 0.2s ease,
-        background 0.2s ease,
-        color 0.2s ease;
-}
-.themeToggle:hover {
-    border-color: var(--accent-green);
-    color: var(--toggle-hover-text);
-    background: var(--toggle-hover-bg);
-}
-.themeToggle:focus-visible {
-    outline: 2px solid var(--focus-ring);
-    outline-offset: 2px;
-}
-.themeIcon {
-    display: grid;
-    width: 16px;
-    height: 16px;
-    place-items: center;
-}
-.themeIcon svg {
-    width: 16px;
-    height: 16px;
 }
 .signIn {
     display: inline-flex;
@@ -168,17 +135,6 @@
         background: var(--toggle-hover-bg);
         cursor: pointer;
     }
-    .themeToggle {
-        padding: 9px 10px;
-    }
-    .themeLabel {
-        position: absolute;
-        width: 1px;
-        height: 1px;
-        overflow: hidden;
-        clip: rect(0 0 0 0);
-        white-space: nowrap;
-    }
     .menu span {
         width: 17px;
         height: 2px;
@@ -217,33 +173,33 @@
     }
 }
 
-html[data-theme="dark"] .nav {
+.nav {
     background: rgba(27, 26, 56, 0.9);
 }
 
-html[data-theme="dark"] .signIn,
-html[data-theme="dark"] .mobile {
+.signIn,
+.mobile {
     color: var(--ink);
     background: var(--surface);
 }
 
-html[data-theme="dark"] .menu {
+.menu {
     background: #29274c;
 }
 
-html[data-theme="dark"] .menu span {
+.menu span {
     background: var(--ink);
 }
 
-html[data-theme="dark"] .mobile {
+.mobile {
     border-color: var(--surface-border);
 }
 
-html[data-theme="dark"] .mobile a {
+.mobile a {
     color: var(--nav-links);
 }
 
-html[data-theme="dark"] .mobile a:hover {
+.mobile a:hover {
     color: var(--accent-green);
     background: #29274c;
 }

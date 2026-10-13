@@ -21,6 +21,34 @@ export default function Home() {
     return (
         <main className={styles.page} data-motion-page>
             <HeroSlider slides={content.heroSlides} />
+            <section className={styles.clientProof} aria-labelledby="client-proof-title">
+                <div className={styles.proofIntro}>
+                    <p className={styles.kicker}>Illustrative client feedback</p>
+                    <h2 id="client-proof-title">
+                        Good work should feel <em>good to work with.</em>
+                    </h2>
+                    <div className={styles.sampleReview}>
+                        <div className={styles.reviewAvatars} aria-hidden="true">
+                            <span>AK</span><span>SR</span><span>PM</span>
+                        </div>
+                        <p>“Nexora made a complicated process feel straightforward from the first call.”</p>
+                    </div>
+                </div>
+                <dl className={styles.proofStats}>
+                    <div>
+                        <dt>92.6%</dt>
+                        <dd>Satisfaction rate</dd>
+                    </div>
+                    <div>
+                        <dt>24+</dt>
+                        <dd>Clients worked with</dd>
+                    </div>
+                    <div>
+                        <dt>4.9/5</dt>
+                        <dd>Average review score</dd>
+                    </div>
+                </dl>
+            </section>
             <section className={styles.intro}>
                 <Reveal variant="up">
                     <p className={styles.kicker}>

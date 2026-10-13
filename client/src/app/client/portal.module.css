@@ -25,7 +25,7 @@
         background 0.3s ease;
 }
 
-html[data-theme="dark"] .portal {
+.portal {
     --portal-ink: #f0efff;
     --portal-muted: #aaa8c5;
     --portal-paper: #111127;

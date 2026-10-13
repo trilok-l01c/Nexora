@@ -3,7 +3,6 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import ConditionalNav from "./ConditionalNav";
-import { ThemeProvider } from "./ThemeProvider";
 import { ClientAuthProvider } from "./client/ClientAuthContext";
 
 const geistSans = GeistSans;
@@ -58,23 +57,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             className={`${geistSans.variable} ${geistMono.variable}`}
         >
             <head>
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `
-                            (function() {
-                                try {
-                                    var stored = localStorage.getItem("nexora-theme");
-                                    var theme = stored === "light" || stored === "dark"
-                                        ? stored
-                                        : "light";
-                                    document.documentElement.setAttribute("data-theme", theme);
-                                } catch (e) {
-                                    document.documentElement.setAttribute("data-theme", "dark");
-                                }
-                            })();
-                        `,
-                    }}
-                />
                 {/* Scroll reveals ship hidden so they can animate in. Without
                     JS they must stay visible, otherwise the page would render
                     blank for no-JS users and non-executing crawlers. */}
@@ -87,12 +69,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </noscript>
             </head>
             <body>
-                <ThemeProvider>
-                    <ClientAuthProvider>
-                        <ConditionalNav />
-                        {children}
-                    </ClientAuthProvider>
-                </ThemeProvider>
+                <ClientAuthProvider>
+                    <ConditionalNav />
+                    {children}
+                </ClientAuthProvider>
             </body>
         </html>
     );

@@ -2489,7 +2489,7 @@
     }
 }
 
-html[data-theme="dark"] .workspace {
+.workspace {
     --w-canvas: #0f172a;
     --w-surface: #1e293b;
     --w-surface-alt: #1a2740;
@@ -2522,7 +2522,7 @@ html[data-theme="dark"] .workspace {
     --w-shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.45);
 }
 
-html[data-theme="dark"] .authPage {
+.authPage {
     --w-canvas: #0f172a;
     --w-surface: #1e293b;
     --w-surface-alt: #1a2740;
@@ -2548,7 +2548,7 @@ html[data-theme="dark"] .authPage {
     }
 }
 
-html[data-theme="dark"] .workspace {
+.workspace {
     --w-canvas: #0f172a;
     --w-surface: #1e293b;
     --w-surface-alt: #1a2740;
@@ -2581,6 +2581,6 @@ html[data-theme="dark"] .workspace {
     --w-shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.45);
 }
 
-html[data-theme="dark"] .topbar {
+.topbar {
     background: rgba(30, 41, 59, 0.9);
 }

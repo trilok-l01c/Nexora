@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useClientAuth } from "../../client/ClientAuthContext";
-import { useTheme } from "../../ThemeProvider";
 import styles from "./Nav.module.css";
 
 const links = [
@@ -17,7 +16,6 @@ export default function Nav() {
     const pathname = usePathname();
     const router = useRouter();
     const { status, logout } = useClientAuth();
-    const { theme, toggleTheme } = useTheme();
     const [open, setOpen] = useState(false);
     const isSignedIn = status === "authenticated";
 
@@ -53,40 +51,6 @@ export default function Nav() {
                     ))}
                 </div>
                 <div className={styles.actions}>
-                    <button
-                        className={styles.themeToggle}
-                        type="button"
-                        aria-label={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-                        aria-pressed={theme === "dark"}
-                        title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
-                        onClick={toggleTheme}
-                    >
-                        <span className={styles.themeIcon} aria-hidden="true">
-                            {theme === "light" ? (
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M21 12.8A8.5 8.5 0 1 1 11.2 3 6.7 6.7 0 0 0 21 12.8Z" />
-                                </svg>
-                            ) : (
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                >
-                                    <circle cx="12" cy="12" r="4" />
-                                    <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-                                </svg>
-                            )}
-                        </span>
-                    </button>
                     {!isSignedIn ? (
                         <Link className={styles.signIn} href="/client/login">
                             Already client

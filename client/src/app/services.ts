@@ -64,6 +64,24 @@ export const categories = [
         alt: "Support specialist helping a business with IT systems",
         href: "/what-we-do#cloud-support",
     },
+    {
+        slug: "data-analysis",
+        title: "Data Analysis",
+        shortDescription:
+            "Turn everyday business data into clear dashboards, useful reports, and decisions your team can act on.",
+        image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=70",
+        alt: "Business analytics dashboard with performance data",
+        href: "/what-we-do#data-analysis",
+    },
+    {
+        slug: "blockchain-solutions",
+        title: "Blockchain Solutions",
+        shortDescription:
+            "Trusted digital records and blockchain tools designed around a real business use case—not the hype.",
+        image: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&w=1200&q=70",
+        alt: "Abstract blockchain network visualisation",
+        href: "/what-we-do#blockchain-solutions",
+    },
 ];
 
 export const serviceGroups: Record<"services" | "solutions", Service[]> = {
@@ -168,6 +186,26 @@ export const serviceGroups: Record<"services" | "solutions", Service[]> = {
                 "Dashboards and decision tools",
                 "Customer and operational analysis",
                 "Forecasting and performance measurement",
+            ],
+        },
+        {
+            slug: "blockchain-solutions",
+            title: "Blockchain solutions",
+            category: "Trust",
+            shortDescription: "Useful systems for verifiable work.",
+            headline: "Trust built into the system.",
+            description:
+                "We design practical blockchain products for organisations that need clearer records, stronger traceability, or trusted digital transactions—always led by the real problem, never by hype.",
+            outcomes: [
+                "Make records easier to verify",
+                "Reduce friction between trusted parties",
+                "Build a foundation for transparent transactions",
+            ],
+            capabilities: [
+                "Blockchain use-case discovery",
+                "Smart-contract and token workflow design",
+                "Wallet, identity, and payment integrations",
+                "Traceability and ledger-based applications",
             ],
         },
         {
