@@ -12,7 +12,7 @@ export type Service = {
 export const categories = [
     {
         slug: "websites",
-        title: "Website & Web Development",
+        title: "Website Development",
         shortDescription:
             "A professional website that brings you customers — fast, mobile-friendly, and easy to find on Google.",
         image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200&q=70",
@@ -21,7 +21,7 @@ export const categories = [
     },
     {
         slug: "mobile-apps",
-        title: "Mobile Apps",
+        title: "App development",
         shortDescription:
             "Simple, useful apps your customers actually enjoy using — on both iPhone and Android.",
         image: "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1200&q=70",
@@ -48,7 +48,7 @@ export const categories = [
     },
     {
         slug: "online-presence",
-        title: "Digital Marketing & Online Presence",
+        title: "Digital Marketing",
         shortDescription:
             "Get found, look great, and turn attention into enquiries — Google, social media, and content that works.",
         image: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?auto=format&fit=crop&w=1200&q=70",
@@ -57,7 +57,7 @@ export const categories = [
     },
     {
         slug: "cloud-support",
-        title: "Cloud, Hosting & IT Support",
+        title: "Cloud hosting",
         shortDescription:
             "Reliable hosting, secure systems, and friendly help when something needs fixing — so you never lose a day to tech problems.",
         image: "https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&w=1200&q=70",
