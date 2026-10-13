@@ -68,13 +68,6 @@ export default function PortfolioPage() {
     const { ready: gsapReady, reducedMotion } = useGSAP();
 
     const sentinelRefs = useRef<(HTMLDivElement | null)[]>([]);
-    const featured = projects.length > 0 ? projects[0] : null;
-    const heroMedia = featured
-        ? resolveAssetUrl(featured.coverImage) ||
-          (featured.images?.[0] && resolveAssetUrl(featured.images[0])) ||
-          fallbackImage
-        : "";
-
     useEffect(() => {
         const root = pageRef.current;
         if (!gsapReady || !root || loading || projects.length === 0) {
@@ -104,11 +97,7 @@ export default function PortfolioPage() {
 
     return (
         <main className={styles.showcase} data-motion-page ref={pageRef}>
-            <ShowcaseHero
-                projects={projects}
-                loading={loading}
-                heroMedia={heroMedia}
-            />
+            <ShowcaseHero projects={projects} loading={loading} />
 
             {usingDemo ? (
                 <p className={styles.demoNotice} role="note" data-demo-notice>
@@ -165,9 +154,7 @@ export default function PortfolioPage() {
 
 /* --------------------------------------------------------------------------
  * Hero entrance (GSAP)
- * A single timeline for the hero: copy fades/slides in, the media image
- * scales in, and the project count fades up after the intro. This keeps
- * the hero feeling cinematic without touching every element in the page.
+ * A single timeline brings the hero copy and project count into view.
  * -------------------------------------------------------------------------- */
 
 function animateHero(root: HTMLElement) {
@@ -179,20 +166,16 @@ function animateHero(root: HTMLElement) {
     const title = root.querySelector<HTMLElement>("[data-hero-title]");
     const intro = root.querySelector<HTMLElement>("[data-hero-intro]");
     const count = root.querySelector<HTMLElement>("[data-hero-count]");
-    const media = root.querySelector<HTMLElement>("[data-hero-media]");
-    const mediaImg = root.querySelector<HTMLElement>("[data-hero-media] img");
 
     const copyTargets = [copy, title, intro, count].filter(
         (el): el is HTMLElement => !!el,
     );
 
-    if (copyTargets.length === 0 && !media) return;
+    if (copyTargets.length === 0) return;
 
     if (reducedMotion) {
         gsap.set(
-            [...copyTargets, media, mediaImg].filter(
-                (el): el is HTMLElement => !!el,
-            ),
+            copyTargets,
             {
                 autoAlpha: 1,
                 y: 0,
@@ -203,12 +186,6 @@ function animateHero(root: HTMLElement) {
     }
 
     gsap.set(copyTargets, { autoAlpha: 0, y: 24 });
-    if (media) {
-        gsap.set(media, { autoAlpha: 0 });
-    }
-    if (mediaImg) {
-        gsap.set(mediaImg, { autoAlpha: 0, scale: 1.06 });
-    }
 
     const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
 
@@ -216,16 +193,6 @@ function animateHero(root: HTMLElement) {
         tl.to(el, { autoAlpha: 1, y: 0, duration: 0.7 }, i * 0.06);
     });
 
-    if (mediaImg) {
-        tl.to(
-            mediaImg,
-            { autoAlpha: 1, scale: 1, duration: 0.95, overwrite: "auto" },
-            0.1,
-        );
-    }
-    if (media) {
-        tl.to(media, { autoAlpha: 1, duration: 0.5 }, 0.12);
-    }
 }
 
 /* --------------------------------------------------------------------------
@@ -506,20 +473,18 @@ function ProjectShowcase({
 function ShowcaseHero({
     projects,
     loading,
-    heroMedia,
 }: {
     projects: PortfolioProject[];
     loading: boolean;
-    heroMedia: string;
 }) {
     return (
         <section className={styles.hero} data-hero-root>
             <div className={styles.heroCopy} data-hero-copy>
                 <p className={styles.kicker}>Selected work</p>
                 <h1 data-hero-title>
-                    Built for businesses that
+                    Work that moves
                     <br />
-                    mean it.
+                    businesses <em>forward.</em>
                 </h1>
                 <p className={styles.intro} data-hero-intro>
                     A look at the products, platforms, and digital presence
@@ -535,21 +500,6 @@ function ShowcaseHero({
                 ) : null}
             </div>
 
-            <div className={styles.heroMedia} data-hero-media>
-                {heroMedia ? (
-                    /* eslint-disable-next-line @next/next/no-img-element */
-                    <img
-                        className={styles.heroMediaImg}
-                        src={heroMedia}
-                        alt={projects[0]?.title ?? "Selected work"}
-                        loading="eager"
-                    />
-                ) : (
-                    <div className={styles.mediaPlaceholder} aria-hidden="true">
-                        Project imagery
-                    </div>
-                )}
-            </div>
         </section>
     );
 }
