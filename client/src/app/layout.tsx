@@ -4,12 +4,13 @@ import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 import ConditionalNav from "./ConditionalNav";
 import { ClientAuthProvider } from "./client/ClientAuthContext";
+import { siteUrl } from "./siteUrl";
 
 const geistSans = GeistSans;
 const geistMono = GeistMono;
 
 export const metadata: Metadata = {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://ravaite.studio"),
+    metadataBase: new URL(siteUrl),
     title: {
         default: "Ravaite | Digital growth for real businesses",
         template: "%s | Ravaite",

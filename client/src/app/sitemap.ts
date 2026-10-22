@@ -1,9 +1,9 @@
 import type { MetadataRoute } from "next";
 import { allServices } from "./services";
+import { siteUrl } from "./siteUrl";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-    const baseUrl =
-        process.env.NEXT_PUBLIC_SITE_URL || "https://ravaite.studio";
+    const baseUrl = siteUrl;
     const now = new Date();
 
     const serviceUrls = allServices.map((service) => ({
