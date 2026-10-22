@@ -1,159 +1,172 @@
 :root {
     color-scheme: dark;
+    /* Clean navy, teal and ice palette — bright without losing depth. */
+    --jet-black: #022b3a;
+    --teal: #1f7a8c;
+    --pale-sky: #bfdbf7;
+    --lavender: #e1e5f2;
+    --white: #ffffff;
+    /* Compatibility aliases keep the semantic theme rules below readable. */
+    --indigo-velvet: var(--jet-black);
+    --velvet-purple: var(--teal);
+    --smoky-rose: var(--pale-sky);
+    --dusty-rose: var(--lavender);
+    --sandy-brown: var(--white);
     --background:
-        radial-gradient(55rem 38rem at -12% 2%, rgba(135, 105, 244, 0.38), transparent 63%),
-        radial-gradient(49rem 36rem at 106% 8%, rgba(244, 117, 112, 0.26), transparent 61%),
-        radial-gradient(40rem 30rem at 52% 110%, rgba(117, 89, 211, 0.23), transparent 66%),
-        linear-gradient(135deg, #121126 0%, #101022 48%, #1c1329 100%);
+        radial-gradient(55rem 38rem at -12% 2%, rgba(31, 122, 140, 0.54), transparent 63%),
+        radial-gradient(49rem 36rem at 106% 8%, rgba(191, 219, 247, 0.32), transparent 61%),
+        radial-gradient(40rem 30rem at 52% 110%, rgba(225, 229, 242, 0.25), transparent 66%),
+        linear-gradient(135deg, var(--indigo-velvet) 0%, var(--velvet-purple) 100%);
     --hero-blend:
-        radial-gradient(51rem 33rem at -8% 6%, rgba(139, 113, 243, 0.42), transparent 63%),
-        radial-gradient(45rem 32rem at 105% 88%, rgba(252, 165, 165, 0.27), transparent 61%),
-        radial-gradient(28rem 22rem at 55% -10%, rgba(227, 158, 255, 0.16), transparent 68%),
-        linear-gradient(118deg, #1d1a3e 0%, #111124 53%, #2a192f 100%);
-    --foreground: #f0efff;
-    --ink: #f7f5ff;
-    --muted: #aaa8c5;
-    --paper: #181832;
-    --accent-green: #c4b5fd;
-    --accent-green-dark: #ddd6fe;
-    --accent-blue: #fca5a5;
-    --accent-blue-dark: #fecaca;
-    --accent-blue-text: #16142c;
-    --acid: #fca5a5;
-    --line: rgba(214, 210, 255, 0.16);
-    --button-bg: #c4b5fd;
-    --button-text: #16142c;
-    --button-hover-bg: #ddd6fe;
-    --section-dark-bg: #0d0d20;
-    --section-dark-text: #f7f5ff;
-    --section-dark-kicker: #aaa8c5;
-    --section-dark-muted: #aaa8c5;
-    --section-dark-border: rgba(214, 210, 255, 0.17);
+        radial-gradient(51rem 33rem at -8% 6%, rgba(31, 122, 140, 0.58), transparent 63%),
+        radial-gradient(45rem 32rem at 105% 88%, rgba(191, 219, 247, 0.36), transparent 61%),
+        radial-gradient(28rem 22rem at 55% -10%, rgba(225, 229, 242, 0.27), transparent 68%),
+        linear-gradient(118deg, var(--indigo-velvet) 0%, var(--velvet-purple) 100%);
+    --foreground: var(--lavender);
+    --ink: var(--white);
+    --muted: var(--dusty-rose);
+    --paper: var(--velvet-purple);
+    --accent-green: var(--sandy-brown);
+    --accent-green-dark: var(--dusty-rose);
+    --accent-blue: var(--dusty-rose);
+    --accent-blue-dark: var(--sandy-brown);
+    --accent-blue-text: var(--indigo-velvet);
+    --acid: var(--sandy-brown);
+    --line: rgba(250, 174, 123, 0.24);
+    --button-bg: var(--sandy-brown);
+    --button-text: var(--indigo-velvet);
+    --button-hover-bg: var(--lavender);
+    --section-dark-bg: var(--indigo-velvet);
+    --section-dark-text: var(--white);
+    --section-dark-kicker: var(--dusty-rose);
+    --section-dark-muted: var(--dusty-rose);
+    --section-dark-border: rgba(250, 174, 123, 0.22);
     /* These tokens are also used by the public pages' inline headings.
        Leaving their light values in place made dark-mode headings almost
        disappear against their midnight sections. */
     --section-light-bg:
-        radial-gradient(42rem 28rem at 100% 0%, rgba(252, 165, 165, 0.12), transparent 66%),
-        linear-gradient(135deg, #191733, #15142c);
-    --section-light-text: #f7f5ff;
-    --section-light-muted: #c2bfda;
-    --section-light-kicker: #c4b5fd;
-    --section-light-border: rgba(214, 210, 255, 0.16);
-    --brand-mark-bg: #c4b5fd;
-    --brand-mark-text: #16142c;
-    --nav-cta-border: rgba(214, 210, 255, 0.3);
-    --toggle-border: rgba(214, 210, 255, 0.3);
-    --toggle-text: #f0efff;
-    --toggle-hover-bg: #29274c;
-    --toggle-hover-text: #f7f5ff;
-    --auth-trigger-border: rgba(214, 210, 255, 0.3);
-    --auth-trigger-text: #f0efff;
-    --auth-trigger-hover-bg: #29274c;
-    --auth-trigger-hover-text: #f7f5ff;
-    --signal-bg: #17152e;
-    --signal-text: #f7f5ff;
-    --signal-shadow: #242145;
-    --signal-border: rgba(214, 210, 255, 0.22);
-    --signal-chart-border: rgba(214, 210, 255, 0.16);
-    --signal-bottom-border: rgba(214, 210, 255, 0.12);
-    --signal-orb-glow: rgba(196, 181, 253, 0.45);
-    --signal-orb-border: rgba(196, 181, 253, 0.6);
-    --signal-orb-dot: rgba(196, 181, 253, 0.9);
-    --signal-orb-text: #16142c;
-    --signal-inner-border: rgba(196, 181, 253, 0.18);
-    --signal-muted: #aaa8c5;
-    --nav-links: #c2bfda;
-    --dropdown-bg: #1b1a38;
-    --dropdown-shadow: rgba(2, 6, 16, 0.7);
-    --dropdown-border: rgba(214, 210, 255, 0.14);
+        radial-gradient(42rem 28rem at 100% 0%, rgba(191, 219, 247, 0.25), transparent 66%),
+        linear-gradient(135deg, var(--velvet-purple), var(--smoky-rose));
+    --section-light-text: var(--white);
+    --section-light-muted: var(--lavender);
+    --section-light-kicker: var(--sandy-brown);
+    --section-light-border: rgba(250, 174, 123, 0.2);
+    --brand-mark-bg: var(--sandy-brown);
+    --brand-mark-text: var(--indigo-velvet);
+    --nav-cta-border: rgba(250, 174, 123, 0.4);
+    --toggle-border: rgba(250, 174, 123, 0.4);
+    --toggle-text: var(--lavender);
+    --toggle-hover-bg: var(--smoky-rose);
+    --toggle-hover-text: var(--white);
+    --auth-trigger-border: rgba(250, 174, 123, 0.4);
+    --auth-trigger-text: var(--lavender);
+    --auth-trigger-hover-bg: var(--smoky-rose);
+    --auth-trigger-hover-text: var(--white);
+    --signal-bg: var(--velvet-purple);
+    --signal-text: var(--white);
+    --signal-shadow: var(--indigo-velvet);
+    --signal-border: rgba(250, 174, 123, 0.3);
+    --signal-chart-border: rgba(250, 174, 123, 0.22);
+    --signal-bottom-border: rgba(250, 174, 123, 0.16);
+    --signal-orb-glow: rgba(250, 174, 123, 0.46);
+    --signal-orb-border: rgba(250, 174, 123, 0.65);
+    --signal-orb-dot: rgba(250, 174, 123, 0.92);
+    --signal-orb-text: var(--indigo-velvet);
+    --signal-inner-border: rgba(250, 174, 123, 0.22);
+    --signal-muted: var(--dusty-rose);
+    --nav-links: var(--lavender);
+    --dropdown-bg: var(--velvet-purple);
+    --dropdown-shadow: rgba(35, 16, 53, 0.68);
+    --dropdown-border: rgba(250, 174, 123, 0.2);
     --featured-bg:
-        radial-gradient(34rem 23rem at 0% 0%, rgba(196, 181, 253, 0.15), transparent 68%),
-        linear-gradient(135deg, #242047, #1d1a3d);
+        radial-gradient(34rem 23rem at 0% 0%, rgba(191, 219, 247, 0.28), transparent 68%),
+        linear-gradient(135deg, var(--velvet-purple), var(--smoky-rose));
     --industries-bg:
-        radial-gradient(34rem 24rem at 100% 15%, rgba(252, 165, 165, 0.13), transparent 68%),
-        linear-gradient(135deg, #261c3a, #1f1933);
-    --industries-line: rgba(214, 210, 255, 0.13);
-    --industries-muted: #aaa8c5;
-    --industries-accent: #fca5a5;
-    --industries-text: #c2bfda;
+        radial-gradient(34rem 24rem at 100% 15%, rgba(191, 219, 247, 0.28), transparent 68%),
+        linear-gradient(135deg, var(--velvet-purple), var(--smoky-rose));
+    --industries-line: rgba(250, 174, 123, 0.18);
+    --industries-muted: var(--dusty-rose);
+    --industries-accent: var(--sandy-brown);
+    --industries-text: #ffd9bf;
     --contact-bg:
-        radial-gradient(42rem 30rem at 0% 100%, rgba(196, 181, 253, 0.18), transparent 65%),
-        linear-gradient(135deg, #191733, #15142d);
-    --contact-form-bg: rgba(29, 27, 58, 0.72);
-    --contact-input-bg: rgba(24, 23, 50, 0.9);
-    --contact-border: rgba(214, 210, 255, 0.14);
-    --contact-input-border: rgba(214, 210, 255, 0.18);
+        radial-gradient(42rem 30rem at 0% 100%, rgba(31, 122, 140, 0.48), transparent 65%),
+        linear-gradient(135deg, var(--velvet-purple), var(--smoky-rose));
+    --contact-form-bg: rgba(2, 43, 58, 0.78);
+    --contact-input-bg: rgba(31, 122, 140, 0.58);
+    --contact-border: rgba(250, 174, 123, 0.2);
+    --contact-input-border: rgba(250, 174, 123, 0.3);
     --details-bg:
-        radial-gradient(38rem 25rem at 100% 0%, rgba(252, 165, 165, 0.15), transparent 68%),
-        linear-gradient(135deg, #281d3a, #211a35);
+        radial-gradient(38rem 25rem at 100% 0%, rgba(191, 219, 247, 0.3), transparent 68%),
+        linear-gradient(135deg, var(--velvet-purple), var(--smoky-rose));
     --content-bg: var(--section-light-bg);
-    --card-top: #aaa8c5;
-    --card-top-accent: #fca5a5;
-    --project-disclaimer: #aaa8c5;
-    --project-border: rgba(214, 210, 255, 0.18);
-    --project-summary: #d0cde3;
-    --capability-text: #d0cde3;
-    --capability-border: rgba(214, 210, 255, 0.18);
-    --ticker-text: #f7f5ff;
-    --ticker-star: #402b54;
-    --auth-dialog-bg: #1b1a38;
-    --auth-dialog-shadow: rgba(196, 181, 253, 0.3);
-    --auth-field-border: rgba(214, 210, 255, 0.2);
-    --auth-muted: #aaa8c5;
-    --auth-accent: #c4b5fd;
-    --auth-error: #fca5a5;
-    --auth-success: #5eead4;
-    --button-hover: #ddd6fe;
-    --link-hover: #fecaca;
-    --hero-emphasis: #c4b5fd;
-    --hero-emphasis-dark: #ddd6fe;
-    --eyebrow-dot: #fca5a5;
-    --eyebrow-dot-glow: rgba(252, 165, 165, 0.25);
-    --card-number: #aaa8c5;
-    --card-label: #c4b5fd;
-    --card-pattern: #fca5a5;
-    --board-bg: #17152e;
-    --board-text: #f7f5ff;
-    --board-muted: #aaa8c5;
-    --board-border: rgba(214, 210, 255, 0.22);
-    --board-chart-border: rgba(214, 210, 255, 0.16);
-    --board-bottom-border: rgba(214, 210, 255, 0.12);
-    --board-orb-glow: rgba(196, 181, 253, 0.45);
-    --board-orb-border: rgba(196, 181, 253, 0.6);
-    --board-orb-dot: rgba(196, 181, 253, 0.9);
-    --board-inner-border: rgba(196, 181, 253, 0.18);
+    --card-top: var(--dusty-rose);
+    --card-top-accent: var(--sandy-brown);
+    --project-disclaimer: var(--dusty-rose);
+    --project-border: rgba(250, 174, 123, 0.26);
+    --project-summary: #ffd9bf;
+    --capability-text: #ffd9bf;
+    --capability-border: rgba(250, 174, 123, 0.26);
+    --ticker-text: var(--white);
+    --ticker-star: var(--velvet-purple);
+    --auth-dialog-bg: var(--velvet-purple);
+    --auth-dialog-shadow: rgba(250, 174, 123, 0.28);
+    --auth-field-border: rgba(250, 174, 123, 0.3);
+    --auth-muted: var(--dusty-rose);
+    --auth-accent: var(--sandy-brown);
+    --auth-error: var(--sandy-brown);
+    --auth-success: var(--sandy-brown);
+    --button-hover: #ffd0a8;
+    --link-hover: var(--sandy-brown);
+    --hero-emphasis: var(--sandy-brown);
+    --hero-emphasis-dark: #ffd0a8;
+    --eyebrow-dot: var(--sandy-brown);
+    --eyebrow-dot-glow: rgba(250, 174, 123, 0.3);
+    --card-number: var(--dusty-rose);
+    --card-label: var(--sandy-brown);
+    --card-pattern: var(--dusty-rose);
+    --board-bg: var(--velvet-purple);
+    --board-text: var(--white);
+    --board-muted: var(--dusty-rose);
+    --board-border: rgba(250, 174, 123, 0.3);
+    --board-chart-border: rgba(250, 174, 123, 0.22);
+    --board-bottom-border: rgba(250, 174, 123, 0.16);
+    --board-orb-glow: rgba(250, 174, 123, 0.46);
+    --board-orb-border: rgba(250, 174, 123, 0.65);
+    --board-orb-dot: rgba(250, 174, 123, 0.92);
+    --board-inner-border: rgba(250, 174, 123, 0.22);
     /* Accent (primary) and quiet (secondary) control colors */
-    --acid-text: #16142c;
-    --primary-button-bg: #c4b5fd;
-    --primary-button-text: #16142c;
-    --primary-button-hover-bg: #ddd6fe;
-    --secondary-button-bg: rgba(214, 210, 255, 0.08);
-    --secondary-button-text: #f0efff;
-    --secondary-button-border: rgba(214, 210, 255, 0.2);
-    --secondary-button-hover-bg: rgba(196, 181, 253, 0.16);
-    --secondary-button-active-text: #fecaca;
+    --acid-text: var(--indigo-velvet);
+    --primary-button-bg: var(--sandy-brown);
+    --primary-button-text: var(--indigo-velvet);
+    --primary-button-hover-bg: var(--lavender);
+    --secondary-button-bg: rgba(250, 174, 123, 0.1);
+    --secondary-button-text: var(--lavender);
+    --secondary-button-border: rgba(250, 174, 123, 0.34);
+    --secondary-button-hover-bg: rgba(250, 174, 123, 0.2);
+    --secondary-button-active-text: var(--sandy-brown);
     /* Midnight indigo/coral accent, surface, depth and motion tokens. */
-    --accent: #c4b5fd;
-    --accent-cyan: #fca5a5;
-    --accent-violet: #c4b5fd;
-    --accent-gradient: linear-gradient(115deg, #c4b5fd, #fca5a5);
+    --accent: var(--sandy-brown);
+    --accent-cyan: var(--dusty-rose);
+    --accent-violet: var(--smoky-rose);
+    --accent-gradient: linear-gradient(115deg, var(--dusty-rose), var(--sandy-brown));
     --accent-gradient-soft: linear-gradient(
         115deg,
-        rgba(196, 181, 253, 0.16),
-        rgba(252, 165, 165, 0.16)
+        rgba(204, 139, 121, 0.2),
+        rgba(250, 174, 123, 0.2)
     );
-    --glow-cyan: rgba(196, 181, 253, 0.4);
-    --glow-violet: rgba(252, 165, 165, 0.4);
-    --aurora-one: rgba(196, 181, 253, 0.3);
-    --aurora-two: rgba(252, 165, 165, 0.28);
-    --surface: #1b1a38;
-    --surface-raised: #242145;
-    --surface-border: rgba(214, 210, 255, 0.16);
-    --glass-bg: rgba(27, 26, 56, 0.72);
+    --glow-cyan: rgba(250, 174, 123, 0.42);
+    --glow-violet: rgba(204, 139, 121, 0.42);
+    --glow-green: rgba(250, 174, 123, 0.4);
+    --aurora-one: rgba(204, 139, 121, 0.36);
+    --aurora-two: rgba(250, 174, 123, 0.34);
+    --surface: var(--velvet-purple);
+    --surface-raised: var(--smoky-rose);
+    --surface-border: rgba(250, 174, 123, 0.22);
+    --glass-bg: rgba(2, 43, 58, 0.76);
     --elevation-1:
         0 1px 2px rgba(2, 6, 16, 0.5), 0 8px 28px rgba(2, 6, 16, 0.45);
     --elevation-2: 0 16px 50px rgba(2, 6, 16, 0.6);
-    --focus-ring: rgba(196, 181, 253, 0.55);
+    --focus-ring: rgba(250, 174, 123, 0.78);
     --radius-sm: 6px;
     --radius-md: 12px;
     --radius-lg: 20px;
@@ -558,7 +571,7 @@ a {
     grid-template-columns: 1fr 0.85fr;
     gap: 8vw;
     align-items: center;
-    background: linear-gradient(125deg, #f4f2ff, #fff4f1);
+    background: linear-gradient(125deg, var(--velvet-purple), var(--smoky-rose));
 }
 
 .portfolio-heroCopy {

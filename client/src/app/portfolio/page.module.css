@@ -24,8 +24,8 @@
 }
 
 .hero h1 {
-    margin: 24px 0 24px;
-    max-width: 780px;
+    margin: 0 auto;
+    max-width: 80vw;
     font-size: clamp(64px, 9vw, 142px);
     font-weight: 700;
     line-height: 0.94;
@@ -372,15 +372,15 @@
     background:
         radial-gradient(
             1200px 600px at 80% -10%,
-            rgba(185, 56, 43, 0.08),
+            rgba(191, 219, 247, 0.3),
             transparent 60%
         ),
         radial-gradient(
             900px 500px at 0% 10%,
-            rgba(67, 56, 202, 0.08),
+            rgba(31, 122, 140, 0.3),
             transparent 60%
         ),
-        linear-gradient(125deg, #f4f2ff, #fff4f1);
+        linear-gradient(125deg, var(--velvet-purple), var(--smoky-rose));
     overflow: hidden;
 }
 
@@ -454,7 +454,7 @@
 .demoNotice {
     text-align: center;
     padding: 5px 0;
-    background-color: #cb4f21;
+    background-color: var(--sandy-brown);
 }
 
 .demoNotice strong::after {

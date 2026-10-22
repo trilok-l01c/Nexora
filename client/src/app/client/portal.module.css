@@ -1,22 +1,22 @@
 .portal {
-    --portal-ink: #f0efff;
-    --portal-muted: #aaa8c5;
-    --portal-paper: #111127;
-    --portal-line: rgba(214, 210, 255, 0.16);
-    --portal-green: #c4b5fd;
-    --portal-card: #1b1a38;
-    --portal-input-bg: #242145;
-    --portal-input-border: #6b6892;
-    --portal-hover: #242145;
-    --portal-notice-bg: rgba(169, 156, 255, 0.14);
-    --portal-badge-bg: rgba(255, 154, 142, 0.14);
-    --portal-track: #302d54;
-    --portal-modal-shadow: #302d54;
-    --portal-empty-border: #302d54;
-    --portal-error: #ff9a8e;
-    --portal-button-text: #16142c;
-    --portal-button-hover: #ddd6fe;
-    --portal-milestone-border: #414065;
+    --portal-ink: #fff7ef;
+    --portal-muted: var(--dusty-rose);
+    --portal-paper: var(--indigo-velvet);
+    --portal-line: rgba(250, 174, 123, 0.2);
+    --portal-green: var(--sandy-brown);
+    --portal-card: var(--velvet-purple);
+    --portal-input-bg: var(--smoky-rose);
+    --portal-input-border: var(--dusty-rose);
+    --portal-hover: var(--smoky-rose);
+    --portal-notice-bg: rgba(250, 174, 123, 0.16);
+    --portal-badge-bg: rgba(204, 139, 121, 0.2);
+    --portal-track: var(--smoky-rose);
+    --portal-modal-shadow: var(--smoky-rose);
+    --portal-empty-border: var(--smoky-rose);
+    --portal-error: var(--sandy-brown);
+    --portal-button-text: var(--indigo-velvet);
+    --portal-button-hover: #ffd0a8;
+    --portal-milestone-border: var(--dusty-rose);
     min-height: 100vh;
     color: var(--portal-ink);
     background: var(--portal-paper);
@@ -968,13 +968,13 @@
 .loginCard .field input:focus { border-color: var(--portal-green); box-shadow: 0 0 0 3px color-mix(in srgb, var(--portal-green) 16%, transparent); }
 .loginCard .button { width: 100%; margin-top: 4px; padding: 13px 16px; border-radius: 10px; font-weight: 750; }
 .loginFoot { margin: 2px 0 0; color: var(--portal-muted); font-size: 11.5px; line-height: 1.5; text-align: center; }
-.loginAside { display: flex; align-items: flex-end; min-height: 100%; overflow: hidden; background: radial-gradient(700px 380px at 90% 5%, rgba(196, 181, 253, 0.34), transparent 62%), radial-gradient(520px 360px at 10% 95%, rgba(185, 56, 43, 0.25), transparent 62%), linear-gradient(145deg, #20213f, #312e81); color: #fff; }
+.loginAside { display: flex; align-items: flex-end; min-height: 100%; overflow: hidden; background: radial-gradient(700px 380px at 90% 5%, rgba(191, 219, 247, 0.36), transparent 62%), radial-gradient(520px 360px at 10% 95%, rgba(31, 122, 140, 0.34), transparent 62%), linear-gradient(145deg, var(--jet-black), var(--teal)); color: var(--white); }
 .loginAsideInner { max-width: 560px; padding: clamp(40px, 7vw, 88px); }
 .loginAsideInner > p { margin: 0 0 16px; color: rgba(255,255,255,.7); font-size: 11px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; }
 .loginAside h2 { margin: 0; max-width: 12ch; font-size: clamp(32px, 4vw, 52px); line-height: .98; letter-spacing: -.065em; }
 .loginAside ul { display: grid; gap: 11px; margin: 30px 0 0; padding: 0; list-style: none; color: rgba(255,255,255,.82); font-size: 14px; line-height: 1.45; }
 .loginAside li { display: flex; gap: 10px; align-items: center; }
-.loginAside li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #c4b5fd; box-shadow: 0 0 0 4px rgba(196,181,253,.18); }
+.loginAside li::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--pale-sky); box-shadow: 0 0 0 4px rgba(191,219,247,.2); }
 
 @media (max-width: 860px) {
     .lowerGrid,
