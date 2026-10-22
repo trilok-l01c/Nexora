@@ -32,7 +32,11 @@ export default function Nav() {
                     className={styles.brand}
                     onClick={() => setOpen(false)}
                 >
-                    <span className={styles.brandMark}>N</span>
+                    <img
+                        className={styles.brandMark}
+                        src="/ravaite-logo-transparent.svg"
+                        alt=""
+                    />
                     <span>Ravaite</span>
                 </Link>
                 <div className={styles.links}>

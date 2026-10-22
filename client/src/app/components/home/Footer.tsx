@@ -10,9 +10,11 @@ export default function Footer() {
     return (
         <footer className={styles.footer} id="about" {...reveal}>
             <Link className={styles.brand} href="#top">
-                <span className={styles.brandMark} aria-hidden="true">
-                    N
-                </span>
+                <img
+                    className={styles.brandMark}
+                    src="/ravaite-logo-transparent.svg"
+                    alt=""
+                />
                 <span>Ravaite</span>
             </Link>
             <span>Digital solutions for growing businesses</span>

@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, KeyboardEvent, useEffect, useState } from "react";
+import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { useReveal } from "../../useReveal";
 import styles from "./Contact.module.css";
 import { apiUrl } from "../../apiConfig";
@@ -83,6 +83,25 @@ export default function Contact() {
     const formReveal = useReveal<HTMLFormElement>({ delay: 120 });
     const active = prompts[step];
     const [typedQuestion, setTypedQuestion] = useState("");
+    const contactSectionRef = useRef<HTMLElement>(null);
+    const activeFieldRef = useRef<HTMLInputElement | HTMLTextAreaElement>(null);
+    const [hasReachedContact, setHasReachedContact] = useState(false);
+
+    useEffect(() => {
+        const section = contactSectionRef.current;
+        if (!section || !("IntersectionObserver" in window)) return;
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (!entry.isIntersecting) return;
+                setHasReachedContact(true);
+                observer.disconnect();
+            },
+            { threshold: 0.2 },
+        );
+        observer.observe(section);
+        return () => observer.disconnect();
+    }, []);
 
     useEffect(() => {
         if (!active) return;
@@ -97,6 +116,11 @@ export default function Contact() {
         }, 28);
         return () => window.clearInterval(timer);
     }, [active]);
+
+    useEffect(() => {
+        if (!hasReachedContact || typedQuestion !== active?.question) return;
+        activeFieldRef.current?.focus({ preventScroll: true });
+    }, [active, hasReachedContact, typedQuestion]);
 
     function validate() {
         const value = draft.trim();
@@ -166,7 +190,7 @@ export default function Contact() {
     }
 
     return (
-        <section className={styles.contact} id="contact">
+        <section className={styles.contact} id="contact" ref={contactSectionRef}>
             <div {...introReveal}>
                 <p className={styles.kicker}>03 / Make a move</p>
                 <h2>
@@ -196,16 +220,17 @@ export default function Contact() {
                             <div className={styles.questionRow}>
                                 <label htmlFor={`contact-${active.field}`}>
                                     {typedQuestion}
-                                    {typedQuestion.length <
-                                        active.question.length && (
+                                    {typedQuestion !== active.question && (
                                         <i aria-hidden="true" />
                                     )}
                                 </label>
-                                {typedQuestion.length ===
-                                    active.question.length &&
+                                {typedQuestion === active.question &&
                                     (active.type === "textarea" ? (
                                         <textarea
                                             id={`contact-${active.field}`}
+                                            ref={(field) => {
+                                                activeFieldRef.current = field;
+                                            }}
                                             value={draft}
                                             onChange={(event) => {
                                                 setDraft(event.target.value);
@@ -213,11 +238,13 @@ export default function Contact() {
                                             }}
                                             onKeyDown={onKeyDown}
                                             rows={3}
-                                            autoFocus
                                         />
                                     ) : (
                                         <input
                                             id={`contact-${active.field}`}
+                                            ref={(field) => {
+                                                activeFieldRef.current = field;
+                                            }}
                                             type={active.type}
                                             value={draft}
                                             onChange={(event) => {
@@ -226,7 +253,6 @@ export default function Contact() {
                                             }}
                                             onKeyDown={onKeyDown}
                                             autoComplete={active.autoComplete}
-                                            autoFocus
                                         />
                                     ))}
                             </div>
@@ -249,7 +275,7 @@ export default function Contact() {
                         {error || statusMessage}
                     </p>
                     {step < prompts.length &&
-                        typedQuestion.length === active.question.length && (
+                        typedQuestion === active.question && (
                             <button
                                 className={styles.conversationSubmit}
                                 type="submit"

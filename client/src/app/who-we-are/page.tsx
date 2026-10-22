@@ -70,7 +70,13 @@ export default function WhoWeArePage() {
                 <div className={styles.brand}>
                     <span>Digital solutions business</span>
                     <strong>
-                        <i>N</i> Ravaite
+                        <img
+                            src="/ravaite-logo-transparent.svg"
+                            alt=""
+                            width={40}
+                            height={40}
+                            style={{ marginRight: 10, objectFit: "contain", verticalAlign: "middle" }}
+                        /> Ravaite
                     </strong>
                 </div>
             </section>

@@ -43,17 +43,10 @@
     letter-spacing: -0.04em;
 }
 .brandMark {
-    display: grid;
-    place-items: center;
-    width: 27px;
-    height: 27px;
-    border-radius: 50%;
-    background: var(--brand-mark-bg);
-    background-image: var(--accent-gradient);
-    color: var(--brand-mark-text);
-    font:
-        13px var(--font-geist-sans),
-        sans-serif;
+    width: 35px;
+    height: 35px;
+    object-fit: contain;
+    flex: 0 0 auto;
 }
 @media (max-width: 760px) {
     .footer {

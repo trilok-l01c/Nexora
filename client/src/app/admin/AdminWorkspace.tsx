@@ -148,7 +148,7 @@ export default function AdminWorkspace({
         <div className={styles.workspace}>
             <aside className={styles.sidebar}>
                 <Link className={styles.sidebarBrand} href="/">
-                    <span className={styles.brandMark}>N</span>
+                    <img className={styles.brandMark} src="/ravaite-logo-transparent.svg" alt="" />
                     <span className={styles.brandText}>
                         Ravaite
                         <small>Admin workspace</small>
@@ -175,7 +175,7 @@ export default function AdminWorkspace({
                             href="/"
                             onClick={() => setDrawerOpen(false)}
                         >
-                            <span className={styles.brandMark}>N</span>
+                            <img className={styles.brandMark} src="/ravaite-logo-transparent.svg" alt="" />
                             <span className={styles.brandText}>
                                 Ravaite
                                 <small>Admin workspace</small>

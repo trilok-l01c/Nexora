@@ -77,16 +77,10 @@
 }
 
 .brandMark {
-    display: grid;
-    place-items: center;
-    width: 34px;
-    height: 34px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, var(--w-green) 0%, var(--w-blue) 130%);
-    color: var(--w-on-accent);
-    font-size: 15px;
-    font-weight: 800;
-    box-shadow: 0 6px 16px rgba(46, 133, 64, 0.28);
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+    flex: 0 0 auto;
 }
 
 .brandText {

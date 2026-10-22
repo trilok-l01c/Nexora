@@ -41,14 +41,10 @@
     letter-spacing: -0.04em;
 }
 .brandMark {
-    display: grid;
-    place-items: center;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    color: var(--portal-button-text);
-    background: var(--portal-green);
-    font-size: 14px;
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    flex: 0 0 auto;
 }
 .navLinks {
     display: flex;

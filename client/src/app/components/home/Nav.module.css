@@ -30,14 +30,10 @@
     letter-spacing: -0.05em;
 }
 .brandMark {
-    width: 30px;
-    height: 30px;
-    display: grid;
-    place-items: center;
-    border-radius: 9px;
-    color: var(--button-text);
-    font-size: 14px;
-    background: var(--accent-gradient);
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    flex: 0 0 auto;
 }
 .links {
     display: flex;

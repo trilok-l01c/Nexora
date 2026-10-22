@@ -95,7 +95,7 @@ function LoginPanel({ onAuthenticated }: { onAuthenticated: () => void }) {
         <main className={styles.authPage}>
             <section className={styles.authCard}>
                 <div className={styles.authBrand}>
-                    <span className={styles.brandMark}>N</span>
+                    <img className={styles.brandMark} src="/ravaite-logo-transparent.svg" alt="" />
                     <span className={styles.brandText}>
                         Ravaite
                         <small>Operations console</small>

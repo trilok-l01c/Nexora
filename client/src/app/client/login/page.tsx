@@ -45,7 +45,7 @@ export default function ClientLogin() {
         <main className={styles.loginPage}>
             <section className={styles.loginCard}>
                 <div className={styles.loginBrand}>
-                    <span className={styles.brandMark}>N</span>
+                    <img className={styles.brandMark} src="/ravaite-logo-transparent.svg" alt="" />
                     <span>Ravaite <small>Client portal</small></span>
                 </div>
                 <p className={styles.loginKicker}>Private workspace</p>
