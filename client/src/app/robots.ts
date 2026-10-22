@@ -1,14 +1,13 @@
 import type { MetadataRoute } from "next";
+import { siteUrl } from "./siteUrl";
 
 export default function robots(): MetadataRoute.Robots {
-    const baseUrl =
-        process.env.NEXT_PUBLIC_SITE_URL || "https://ravaite.studio";
     return {
         rules: {
             userAgent: "*",
             allow: "/",
             disallow: ["/admin", "/client", "/api"],
         },
-        sitemap: `${baseUrl}/sitemap.xml`,
+        sitemap: `${siteUrl}/sitemap.xml`,
     };
 }
