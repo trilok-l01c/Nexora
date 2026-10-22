@@ -26,6 +26,15 @@ export const metadata: Metadata = {
     ],
     authors: [{ name: "Ravaite" }],
     creator: "Ravaite",
+    icons: {
+        icon: [
+            {
+                url: "/ravaite-logo-transparent.svg",
+                type: "image/svg+xml",
+            },
+        ],
+        shortcut: ["/ravaite-logo-transparent.svg"],
+    },
     openGraph: {
         type: "website",
         locale: "en_GB",
