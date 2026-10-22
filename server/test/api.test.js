@@ -672,7 +672,7 @@ test("the session endpoint fails fast when the database is unavailable", async (
     // 10 seconds; the assertion also fails the test if that regresses.
     const startedAt = Date.now();
     const { response } = await request("/api/auth/session", {
-        headers: { Cookie: `nexora_client_token=${encodeURIComponent(orphanToken)}` },
+        headers: { Cookie: `ravaite_client_token=${encodeURIComponent(orphanToken)}` },
     });
     assert.equal(response.status, 503);
     assert.ok(

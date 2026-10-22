@@ -127,7 +127,7 @@ export default function ProjectDetails() {
                                 {project?.status === "Pending Review" && (
                                     <p className={styles.requestNotice}>
                                         Your project request has been submitted.
-                                        The Nexora team will review the
+                                        The Ravaite team will review the
                                         requirements and update the project
                                         status.
                                     </p>
@@ -228,7 +228,7 @@ export default function ProjectDetails() {
                                                     <span>
                                                         Updated by{" "}
                                                         {update.author?.name ||
-                                                            "Nexora team"}
+                                                            "Ravaite team"}
                                                     </span>
                                                 </div>
                                                 <h3>{update.title}</h3>
@@ -263,7 +263,7 @@ export default function ProjectDetails() {
                                                 <div>
                                                     <h3>
                                                         {member.name ||
-                                                            "Nexora team member"}
+                                                            "Ravaite team member"}
                                                     </h3>
                                                     <p>
                                                         <strong>
@@ -273,7 +273,7 @@ export default function ProjectDetails() {
                                                     </p>
                                                     <p>
                                                         {member.professionalBio ||
-                                                            "Working with the Nexora team on this project."}
+                                                            "Working with the Ravaite team on this project."}
                                                     </p>
                                                 </div>
                                             </article>

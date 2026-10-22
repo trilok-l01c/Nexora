@@ -11,7 +11,7 @@ import {
 } from "../middleware/validateLeadStatus.js";
 
 function authorName(req) {
-    return req.user?.email || "Nexora team";
+    return req.user?.email || "Ravaite team";
 }
 
 // Timeline entries record who did what. Admin JWTs carry the user id in
@@ -37,7 +37,7 @@ export async function createLead(req, res, next) {
         await Lead.create(req.leadInput);
         return res.status(201).json({
             success: true,
-            message: "Your message has been sent to Nexora.",
+            message: "Your message has been sent to Ravaite.",
         });
     } catch (error) {
         next(error);
@@ -379,4 +379,3 @@ export async function convertLead(req, res, next) {
         next(error);
     }
 }
-

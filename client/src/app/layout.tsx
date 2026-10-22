@@ -9,34 +9,34 @@ const geistSans = GeistSans;
 const geistMono = GeistMono;
 
 export const metadata: Metadata = {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://nexora.studio"),
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://ravaite.studio"),
     title: {
-        default: "Nexora | Digital growth for real businesses",
-        template: "%s | Nexora",
+        default: "Ravaite | Digital growth for real businesses",
+        template: "%s | Ravaite",
     },
     description:
-        "Nexora helps local and growing businesses build a stronger digital presence, useful software, and practical systems.",
+        "Ravaite helps local and growing businesses build a stronger digital presence, useful software, and practical systems.",
     keywords: [
         "small business websites",
         "business software",
         "AI automation",
         "IT support",
         "web development",
-        "Nexora",
+        "Ravaite",
     ],
-    authors: [{ name: "Nexora" }],
-    creator: "Nexora",
+    authors: [{ name: "Ravaite" }],
+    creator: "Ravaite",
     openGraph: {
         type: "website",
         locale: "en_GB",
-        siteName: "Nexora",
-        title: "Nexora | Digital growth for real businesses",
+        siteName: "Ravaite",
+        title: "Ravaite | Digital growth for real businesses",
         description:
             "Practical digital solutions for local and growing businesses.",
     },
     twitter: {
         card: "summary_large_image",
-        title: "Nexora | Digital growth for real businesses",
+        title: "Ravaite | Digital growth for real businesses",
         description:
             "Practical digital solutions for local and growing businesses.",
     },

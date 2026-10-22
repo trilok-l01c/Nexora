@@ -31,7 +31,7 @@ export default function Home() {
                         <div className={styles.reviewAvatars} aria-hidden="true">
                             <span>AK</span><span>SR</span><span>PM</span>
                         </div>
-                        <p>“Nexora made a complicated process feel straightforward from the first call.”</p>
+                        <p>“Ravaite made a complicated process feel straightforward from the first call.”</p>
                     </div>
                 </div>
                 <dl className={styles.proofStats}>

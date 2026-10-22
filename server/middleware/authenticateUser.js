@@ -7,7 +7,7 @@ function tokenFromRequest(req) {
     const cookieToken = req.headers.cookie
         ?.split(";")
         .map((part) => part.trim())
-        .find((part) => part.startsWith("nexora_client_token="))
+        .find((part) => part.startsWith("ravaite_client_token="))
         ?.split("=")[1];
     return scheme === "Bearer" ? bearerToken || cookieToken : cookieToken;
 }

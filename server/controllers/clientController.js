@@ -47,7 +47,7 @@ export async function getDashboard(req, res, next) {
                     ...item,
                     projectId: project._id,
                     projectName: project.name,
-                    actor: item.actor?.name || "Nexora team",
+                    actor: item.actor?.name || "Ravaite team",
                 })),
             )
             .sort(

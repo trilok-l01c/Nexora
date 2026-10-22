@@ -193,7 +193,7 @@ export default function AccountSection({
             <section className={styles.panel}>
                 <div className={styles.panelBody}>
                     <Alert tone="blue">
-                        <strong>Password changes are handled by the Nexora
+                        <strong>Password changes are handled by the Ravaite
                         team.</strong> Contact an administrator to rotate
                         credentials for admin and staff accounts.
                     </Alert>

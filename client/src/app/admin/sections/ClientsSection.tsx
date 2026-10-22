@@ -56,7 +56,7 @@ export default function ClientsSection() {
                     <p className={styles.pageKicker}>Accounts</p>
                     <h1 className={styles.pageTitle}>Clients &amp; Companies</h1>
                     <p className={styles.pageSubtitle}>
-                        Every company with a Nexora portal account, the people
+                        Every company with a Ravaite portal account, the people
                         who can sign in, and the projects they have with us.
                     </p>
                 </div>

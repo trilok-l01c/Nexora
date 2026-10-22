@@ -197,7 +197,7 @@ export default function ClientDashboard() {
                             <p className={styles.empty}>
                                 No projects yet. <br />
                                 <strong>
-                                    Start your next project with Nexora.
+                                    Start your next project with Ravaite.
                                 </strong>
                             </p>
                             <ProjectDialog />

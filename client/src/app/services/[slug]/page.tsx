@@ -18,7 +18,7 @@ export async function generateMetadata({
     const service = allServices.find((item) => item.slug === slug);
 
     return {
-        title: service ? `${service.title} | Nexora` : "Service | Nexora",
+        title: service ? `${service.title} | Ravaite` : "Service | Ravaite",
         description: service?.description,
     };
 }
@@ -40,7 +40,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
                 </div>
                 <div className={styles.heroContent}>
                     <p className={styles.eyebrow}>
-                        {service.category} / Nexora capability
+                        {service.category} / Ravaite capability
                     </p>
                     <h1>{service.headline}</h1>
                     <p className={styles.intro}>{service.description}</p>
@@ -52,7 +52,7 @@ export default async function ServicePage({ params }: ServicePageProps) {
                     </a>
                 </div>
                 <div className={styles.signal} aria-hidden="true">
-                    <span className={styles.signalLabel}>NEXORA / SIGNAL</span>
+                    <span className={styles.signalLabel}>RAVAITE / SIGNAL</span>
                     <strong>
                         {service.category.slice(0, 2).toUpperCase()}
                     </strong>
@@ -102,9 +102,9 @@ export default async function ServicePage({ params }: ServicePageProps) {
                 </h2>
                 <a
                     className={styles.primaryButton}
-                    href="mailto:hello@nexora.studio"
+                    href="mailto:hello@ravaite.studio"
                 >
-                    hello@nexora.studio <span aria-hidden="true">↗</span>
+                    hello@ravaite.studio <span aria-hidden="true">↗</span>
                 </a>
             </section>
         </main>

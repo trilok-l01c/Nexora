@@ -13,10 +13,10 @@ export default function Footer() {
                 <span className={styles.brandMark} aria-hidden="true">
                     N
                 </span>
-                <span>Nexora</span>
+                <span>Ravaite</span>
             </Link>
             <span>Digital solutions for growing businesses</span>
-            <span>© 2026 Nexora</span>
+            <span>© 2026 Ravaite</span>
         </footer>
     );
 }

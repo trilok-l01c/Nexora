@@ -583,9 +583,9 @@ function ShowcaseContact() {
             </h2>
             <a
                 className={styles.primaryButton}
-                href="mailto:hello@nexora.studio"
+                href="mailto:hello@ravaite.studio"
             >
-                hello@nexora.studio <span aria-hidden="true">↗</span>
+                hello@ravaite.studio <span aria-hidden="true">↗</span>
             </a>
         </section>
     );

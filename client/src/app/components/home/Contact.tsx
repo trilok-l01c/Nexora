@@ -86,13 +86,14 @@ export default function Contact() {
 
     useEffect(() => {
         if (!active) return;
-        setTypedQuestion("");
         let character = 0;
         const timer = window.setInterval(() => {
-            character += 1;
             setTypedQuestion(active.question.slice(0, character));
-            if (character === active.question.length)
+            if (character === active.question.length) {
                 window.clearInterval(timer);
+                return;
+            }
+            character += 1;
         }, 28);
         return () => window.clearInterval(timer);
     }, [active]);

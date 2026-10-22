@@ -1,6 +1,6 @@
-# Nexora
+# Ravaite
 
-Nexora is an IT solutions company website with a Next.js frontend, Express API, MongoDB lead and project storage, a private admin workspace, and a company-scoped client portal. The primary workflow is public website -> enquiry/lead -> follow-up -> converted client -> company -> projects -> team, progress, technology, updates, and support.
+Ravaite is an IT solutions company website with a Next.js frontend, Express API, MongoDB lead and project storage, a private admin workspace, and a company-scoped client portal. The primary workflow is public website -> enquiry/lead -> follow-up -> converted client -> company -> projects -> team, progress, technology, updates, and support.
 
 ## Stack and structure
 
@@ -106,7 +106,7 @@ Client routes live under `/client`: `/client/login`, `/client/dashboard`, and `/
 
 The data relationship is `User.companyId -> Company -> Project.companyId`. Projects contain references to professional team users plus embedded milestones, updates, activity, and grouped technologies. Tickets reference the company, creator, and optional project. Admin project endpoints are the staff write path for project status, progress, dates, team, milestones, updates, and technologies.
 
-Client sessions use a separate HttpOnly `nexora_client_token` cookie. The client middleware requires a `client` JWT with a company id. Every project read and ticket project association filters by both the requested project id and the authenticated user's company id, returning `404` when the project is not in that company. Team population is restricted to name, professional title, professional bio, and avatar URL; private credentials and personal contact data are never returned.
+Client sessions use a separate HttpOnly `ravaite_client_token` cookie. The client middleware requires a `client` JWT with a company id. Every project read and ticket project association filters by both the requested project id and the authenticated user's company id, returning `404` when the project is not in that company. Team population is restricted to name, professional title, professional bio, and avatar URL; private credentials and personal contact data are never returned.
 
 Admin login uses a short-lived JWT in an HttpOnly cookie. The public website includes a modal client sign-in/sign-up flow. `POST /api/auth/signup` validates name, work email, company, password, and confirmation, always assigns the `client` role, reuses an existing company by name, and never grants project access until staff assigns projects. Duplicate emails return `409`. Admin/staff accounts are not created through public signup and the existing `/admin` workflow remains separate. See [docs/api.md](docs/api.md) and [docs/authentication.md](docs/authentication.md) for request details.
 

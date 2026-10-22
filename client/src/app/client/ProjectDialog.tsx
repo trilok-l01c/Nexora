@@ -134,7 +134,7 @@ export default function ProjectDialog() {
                             Start something useful.
                         </h2>
                         <p className={styles.subtle}>
-                            Tell the Nexora team what you want to move forward.
+                            Tell the Ravaite team what you want to move forward.
                             We will review the request before project work
                             begins.
                         </p>
@@ -163,7 +163,7 @@ export default function ProjectDialog() {
                                     }
                                     required
                                     maxLength={1200}
-                                    placeholder="What would you like Nexora to help you build?"
+                                    placeholder="What would you like Ravaite to help you build?"
                                 />
                             </label>
                             <label className={styles.field}>

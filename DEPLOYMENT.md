@@ -1,6 +1,6 @@
 # Deployment guide
 
-Nexora is deployed as two services: the Next.js frontend on Netlify and the
+Ravaite is deployed as two services: the Next.js frontend on Netlify and the
 Express API on a Docker-capable host. MongoDB and S3-compatible object storage
 are external managed services. The API must be deployed before the frontend.
 
@@ -9,7 +9,7 @@ are external managed services. The API must be deployed before the frontend.
 Build the image from the repository root:
 
 ```bash
-docker build -t nexora-api ./server
+docker build -t ravaite-api ./server
 ```
 
 Run the container on a Docker-capable platform with a public HTTPS domain such
@@ -69,6 +69,23 @@ environment variables (with the **Builds** scope), set:
 These are public build-time values, so do not store secrets in them. Redeploy
 after changing either variable. Attach the frontend custom domain, for example
 `app.example.com`, and set the API's `CORS_ORIGIN=https://app.example.com`.
+
+## Optional Docker Compose deployment
+
+`docker-compose.yml` is useful when both services share one Docker-capable
+host. Put the API variables from the table above, the two `NEXT_PUBLIC_*`
+variables, and the S3 variables in the host's deployment environment, then
+build and start the stack:
+
+```bash
+docker compose up --build -d
+```
+
+`NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_SITE_URL` are passed as Docker build
+arguments because Next.js embeds them in the browser bundle at build time.
+Changing either requires rebuilding the client image. The Compose setup uses
+durable S3-compatible storage in production; it intentionally does not rely
+on a container upload volume.
 
 ## Authentication and CORS
 

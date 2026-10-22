@@ -51,7 +51,7 @@ export default function ClientProjects() {
                     <h1 className={styles.title}>My projects</h1>
                     <p className={styles.subtle}>
                         Track progress, updates, and support across every
-                        Nexora project for your team.
+                        Ravaite project for your team.
                     </p>
                 </div>
             </header>
@@ -63,7 +63,7 @@ export default function ClientProjects() {
             ) : projects.length === 0 ? (
                 <div className={styles.emptyProjectState}>
                     <p className={styles.empty}>
-                        No projects yet. Start your next project with Nexora.
+                        No projects yet. Start your next project with Ravaite.
                     </p>
                 </div>
             ) : (

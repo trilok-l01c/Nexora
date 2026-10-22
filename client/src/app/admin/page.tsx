@@ -97,7 +97,7 @@ function LoginPanel({ onAuthenticated }: { onAuthenticated: () => void }) {
                 <div className={styles.authBrand}>
                     <span className={styles.brandMark}>N</span>
                     <span className={styles.brandText}>
-                        Nexora
+                        Ravaite
                         <small>Operations console</small>
                     </span>
                 </div>
@@ -119,7 +119,7 @@ function LoginPanel({ onAuthenticated }: { onAuthenticated: () => void }) {
                             className={styles.input}
                             type="email"
                             value={email}
-                            placeholder="you@nexora.studio"
+                            placeholder="you@ravaite.studio"
                             onChange={(event) => setEmail(event.target.value)}
                             required
                             autoComplete="username"
@@ -155,7 +155,7 @@ function LoginPanel({ onAuthenticated }: { onAuthenticated: () => void }) {
             </section>
             <aside className={styles.authSide} aria-hidden="true">
                 <div className={styles.authSideInner}>
-                    <p className={styles.authSideKicker}>Nexora · Internal</p>
+                    <p className={styles.authSideKicker}>Ravaite · Internal</p>
                     <p className={styles.authSideQuote}>
                         “Every lead answered, every project on track, every
                         client looked after.”

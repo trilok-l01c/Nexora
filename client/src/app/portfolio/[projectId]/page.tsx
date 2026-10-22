@@ -42,10 +42,10 @@ export async function generateMetadata({
     const { projectId } = await params;
     const project = await loadProject(projectId);
     if (!project) {
-        return { title: "Portfolio | Nexora" };
+        return { title: "Portfolio | Ravaite" };
     }
     return {
-        title: `${project.title} | Nexora`,
+        title: `${project.title} | Ravaite`,
         description: project.shortDescription,
         openGraph: {
             title: project.title,
@@ -289,9 +289,9 @@ export default async function PortfolioProjectPage({
                 </h2>
                 <a
                     className={styles.primaryButton}
-                    href="mailto:hello@nexora.studio"
+                    href="mailto:hello@ravaite.studio"
                 >
-                    hello@nexora.studio <span aria-hidden="true">↗</span>
+                    hello@ravaite.studio <span aria-hidden="true">↗</span>
                 </a>
             </section>
         </main>

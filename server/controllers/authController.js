@@ -58,8 +58,8 @@ export async function login(req, res, next, requiredRole) {
 
         const cookieName =
             user.role === "client"
-                ? "nexora_client_token"
-                : "nexora_admin_token";
+                ? "ravaite_client_token"
+                : "ravaite_admin_token";
         res.setHeader(
             "Set-Cookie",
             serializeAuthCookie(cookieName, token, 2 * 60 * 60),
@@ -86,8 +86,8 @@ export async function login(req, res, next, requiredRole) {
 
 export function logout(req, res) {
     res.setHeader("Set-Cookie", [
-        serializeAuthCookie("nexora_admin_token", "", 0),
-        serializeAuthCookie("nexora_client_token", "", 0),
+        serializeAuthCookie("ravaite_admin_token", "", 0),
+        serializeAuthCookie("ravaite_client_token", "", 0),
     ]);
     return res
         .status(200)
@@ -97,7 +97,7 @@ export function logout(req, res) {
 function sessionFromRequest(req) {
     const cookieHeader = req.headers.cookie || "";
     const cookies = cookieHeader.split(";").map((part) => part.trim());
-    for (const name of ["nexora_client_token", "nexora_admin_token"]) {
+    for (const name of ["ravaite_client_token", "ravaite_admin_token"]) {
         const match = cookies
             .find((part) => part.startsWith(`${name}=`))
             ?.split("=")[1];
@@ -252,7 +252,7 @@ export async function signupClient(req, res, next) {
         );
         res.setHeader(
             "Set-Cookie",
-            serializeAuthCookie("nexora_client_token", token, 2 * 60 * 60),
+            serializeAuthCookie("ravaite_client_token", token, 2 * 60 * 60),
         );
         return res.status(201).json({
             success: true,

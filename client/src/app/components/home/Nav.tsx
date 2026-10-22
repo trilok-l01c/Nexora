@@ -33,7 +33,7 @@ export default function Nav() {
                     onClick={() => setOpen(false)}
                 >
                     <span className={styles.brandMark}>N</span>
-                    <span>Nexora</span>
+                    <span>Ravaite</span>
                 </Link>
                 <div className={styles.links}>
                     {links.map((link) => (

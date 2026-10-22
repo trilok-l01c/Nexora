@@ -110,7 +110,7 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
                 {!isLoginPage && (
                     <aside className={styles.sidebar}>
                         <div className={styles.brand}>
-                            <span className={styles.brandMark}>N</span> Nexora
+                            <span className={styles.brandMark}>N</span> Ravaite
                         </div>
                         <nav
                             className={styles.nav}
@@ -156,7 +156,7 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
                 {!isLoginPage && (
                     <header className={styles.mobileHeader}>
                         <div className={styles.brand}>
-                            <span className={styles.brandMark}>N</span> Nexora
+                            <span className={styles.brandMark}>N</span> Ravaite
                         </div>
                         <button
                             ref={menuButtonRef}
@@ -191,7 +191,7 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
                             <div className={styles.drawerHeader}>
                                 <span className={styles.brand}>
                                     <span className={styles.brandMark}>N</span>
-                                    Nexora
+                                    Ravaite
                                 </span>
                                 <button
                                     type="button"

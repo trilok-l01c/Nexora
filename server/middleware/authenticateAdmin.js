@@ -14,7 +14,7 @@ export function authenticateAdmin(req, res, next) {
     const cookieToken = req.headers.cookie
         ?.split(";")
         .map((part) => part.trim())
-        .find((part) => part.startsWith("nexora_admin_token="))
+        .find((part) => part.startsWith("ravaite_admin_token="))
         ?.split("=")[1];
     const token =
         scheme === "Bearer" ? bearerToken || cookieToken : cookieToken;

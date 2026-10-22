@@ -17,15 +17,15 @@ export const defaultHomeContent: HomeContent = {
         { image: "/HERO-SLIDE-IMAGES/IT-HERO.jpg", alt: "IT support for local Indian businesses", phrase: "trust" },
         { image: "/HERO-SLIDE-IMAGES/RESTO-HERO.jpg", alt: "Restaurant digital presence solutions", phrase: "attract" },
     ],
-    intro: { kicker: "What Nexora brings to the table", title: "Technology should feel like a", emphasis: "good business decision.", text: "We turn a business need into a useful digital experience—without making you learn a new language first." },
+    intro: { kicker: "What Ravaite brings to the table", title: "Technology should feel like a", emphasis: "good business decision.", text: "We turn a business need into a useful digital experience—without making you learn a new language first." },
     services: [
         { title: "Websites that bring in enquiries", text: "A clear, credible home for your business—fast on every screen and easy to update.", image: "/Home-page-services/WEBSITE.png", alt: "Restaurant website with an online table-booking button" },
         { title: "Apps that keep customers close", text: "Make booking, ordering, updates, and everyday service feel effortless.", image: "/Home-page-services/APPS.jpg", alt: "Smartphone home screen filled with mobile app icons" },
         { title: "Systems that save your team time", text: "Replace scattered spreadsheets and repetitive tasks with a simpler way to work.", image: "/Home-page-services/AI.jpg", alt: "AI assistant on a screen listing what it can do" },
     ],
-    story: { kicker: "A partner, not a jargon machine", title: "We start with your day-to-day, then make it", emphasis: "work better.", text: "Whether you need a stronger first impression, a smoother customer journey, or a system behind the scenes, we keep the process straightforward and focused on what matters.", image: "/team-work.jpg", imageAlt: "Team discussing a project together", linkLabel: "Meet Nexora" },
+    story: { kicker: "A partner, not a jargon machine", title: "We start with your day-to-day, then make it", emphasis: "work better.", text: "Whether you need a stronger first impression, a smoother customer journey, or a system behind the scenes, we keep the process straightforward and focused on what matters.", image: "/team-work.jpg", imageAlt: "Team discussing a project together", linkLabel: "Meet Ravaite" },
     work: { kicker: "Ideas made real", title: "Work with a purpose, not just a pretty screen.", linkLabel: "View our work", primary: { label: "Digital solutions", title: "Better experiences begin with a better plan.", image: "/health-tech.jpg", alt: "Healthcare technology workspace" }, secondary: { label: "Local business", title: "Everyday business, made easier.", image: "/for-grocery-shop.jpg", alt: "Local grocery shop" } },
-    reasons: { kicker: "Why businesses choose Nexora", items: [
+    reasons: { kicker: "Why businesses choose Ravaite", items: [
         { title: "Business-first thinking", text: "We speak in outcomes, not technical acronyms." },
         { title: "One connected team", text: "Strategy, design, build, and support work together." },
         { title: "Built to be useful", text: "Every decision earns its place in your business." },

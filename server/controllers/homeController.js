@@ -7,7 +7,7 @@ const defaultContent = {
         title: "Build what",
         titleEmphasis: "moves",
         titleSuffix: "people.",
-        text: "Nexora turns ambitious ideas into intelligent digital products, from the first line of code to the last meaningful interaction.",
+        text: "Ravaite turns ambitious ideas into intelligent digital products, from the first line of code to the last meaningful interaction.",
     },
     ticker: [
         "Full-stack development",

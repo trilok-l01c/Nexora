@@ -16,7 +16,7 @@ if (databaseReady) {
 }
 
 const server = app.listen(env.port, () => {
-    console.log(`Nexora API listening on port ${env.port}`);
+    console.log(`Ravaite API listening on port ${env.port}`);
 });
 
 function shutDown(signal) {

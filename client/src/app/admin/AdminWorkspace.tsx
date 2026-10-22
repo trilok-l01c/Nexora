@@ -150,7 +150,7 @@ export default function AdminWorkspace({
                 <Link className={styles.sidebarBrand} href="/">
                     <span className={styles.brandMark}>N</span>
                     <span className={styles.brandText}>
-                        Nexora
+                        Ravaite
                         <small>Admin workspace</small>
                     </span>
                 </Link>
@@ -177,7 +177,7 @@ export default function AdminWorkspace({
                         >
                             <span className={styles.brandMark}>N</span>
                             <span className={styles.brandText}>
-                                Nexora
+                                Ravaite
                                 <small>Admin workspace</small>
                             </span>
                         </Link>

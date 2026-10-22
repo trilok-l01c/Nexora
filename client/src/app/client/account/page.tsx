@@ -164,7 +164,7 @@ export default function ClientAccount() {
                         </div>
                         <div className={styles.accountCard}>
                             <h2 className={styles.sectionTitle}>Security</h2>
-                            <p className={styles.subtle}>Password changes are handled by the Nexora team. Contact support for credential resets.</p>
+                            <p className={styles.subtle}>Password changes are handled by the Ravaite team. Contact support for credential resets.</p>
                         </div>
                     </div>
                     <div className={styles.accountCard}>

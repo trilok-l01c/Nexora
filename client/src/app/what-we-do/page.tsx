@@ -9,7 +9,7 @@ export default function WhatWeDoPage() {
                 <div data-motion="hero-copy">
                     <p className={styles.kicker}>What we do</p>
                     <h1>Digital support for the parts of business that need to <em>move better.</em></h1>
-                    <p>From your first impression online to the systems your team uses every day, Nexora makes technology clear, useful, and ready for real life.</p>
+                    <p>From your first impression online to the systems your team uses every day, Ravaite makes technology clear, useful, and ready for real life.</p>
                 </div>
                 <img data-motion="hero-media" src="/programmer.jpg" alt="Professional planning digital work" />
             </section>

@@ -571,7 +571,7 @@ export default function LeadDetailDialog({
                                         Creates a client account for this lead,
                                         reusing an existing company with the
                                         same name. Share the initial password
-                                        with the client securely — Nexora does
+                                        with the client securely — Ravaite does
                                         not send emails automatically.
                                     </p>
                                 </div>

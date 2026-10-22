@@ -70,20 +70,20 @@ export default function WhoWeArePage() {
                 <div className={styles.brand}>
                     <span>Digital solutions business</span>
                     <strong>
-                        <i>N</i> Nexora
+                        <i>N</i> Ravaite
                     </strong>
                 </div>
             </section>
             <section className={styles.story}>
                 <div>
-                    <p className={styles.kicker}>The Nexora approach</p>
+                    <p className={styles.kicker}>The Ravaite approach</p>
                     <h2>
                         Big enough to make progress.{" "}
                         <em>Close enough to care.</em>
                     </h2>
                 </div>
                 <p>
-                    Nexora is part of GRV Research and Solutions. Together, we
+                    Ravaite is part of GRV Research and Solutions. Together, we
                     bring a considered, problem-solving approach to the digital
                     needs of businesses. Our role is simple: listen well, make
                     the complicated parts clear, and build something that

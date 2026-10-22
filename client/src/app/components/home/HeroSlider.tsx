@@ -211,7 +211,7 @@ export default function HeroSlider({ slides }: HeroSliderProps) {
                     </em>
                 </h1>
                 <p className={styles.heroSupport}>
-                    Nexora helps local and growing businesses show up
+                    Ravaite helps local and growing businesses show up
                     professionally, serve customers better, and spend less time
                     fighting with technology. Powered by deep understanding of
                     Indian markets and real user needs.

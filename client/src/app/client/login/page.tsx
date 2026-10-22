@@ -46,7 +46,7 @@ export default function ClientLogin() {
             <section className={styles.loginCard}>
                 <div className={styles.loginBrand}>
                     <span className={styles.brandMark}>N</span>
-                    <span>Nexora <small>Client portal</small></span>
+                    <span>Ravaite <small>Client portal</small></span>
                 </div>
                 <p className={styles.loginKicker}>Private workspace</p>
                 <h1>Your work, in one place.</h1>
@@ -105,7 +105,7 @@ export default function ClientLogin() {
                     <ul>
                         <li>Track project progress in real time</li>
                         <li>Review delivery updates and milestones</li>
-                        <li>Get help directly from the Nexora team</li>
+                        <li>Get help directly from the Ravaite team</li>
                     </ul>
                 </div>
             </aside>

@@ -3,7 +3,7 @@ import { allServices } from "./services";
 
 export default function sitemap(): MetadataRoute.Sitemap {
     const baseUrl =
-        process.env.NEXT_PUBLIC_SITE_URL || "https://nexora.studio";
+        process.env.NEXT_PUBLIC_SITE_URL || "https://ravaite.studio";
     const now = new Date();
 
     const serviceUrls = allServices.map((service) => ({
